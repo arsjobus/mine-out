@@ -1,0 +1,50 @@
+#pragma once
+
+#ifndef BALL_H
+#define BALL_H
+
+#include <SFML/Graphics.hpp>
+#include "Block.h"
+#include "GameObject.h"
+#include "LeftPanel.h"
+#include "RightPanel.h"
+#include "TopPanel.h"
+#include "Window.h"
+
+#define PI 3.14159
+
+class Ball: public GameObject, public sf::CircleShape
+{
+public:
+	static enum Status {
+		STUCK_TO_PLAYER = 1,
+		LAUNCHING,
+		MOVING,
+		BOUNCING,
+	};
+
+	Ball( void );
+	Ball( float newRadius );
+	~Ball( void );
+
+	void update();
+
+public:
+	// setters and getters
+	size_t getStatus();
+	void setStatus(size_t newStatus);
+
+	bool getCanBounce();
+	void setCanBounce(bool canBounce);
+
+private:
+	// helpers
+	void loadDefaultSettings();
+
+private:
+	// private members
+	bool canBounce;
+	size_t status;
+};
+
+#endif

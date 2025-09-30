@@ -1,0 +1,48 @@
+#include "GoldBlock.h"
+
+GoldBlock::GoldBlock( void )
+{
+	this->loadDefaultSettings();
+}
+
+GoldBlock::GoldBlock( float width, float height )
+{
+	this->loadDefaultSettings();
+
+	// Override default settings here:
+	this->setSize( sf::Vector2f( width, height ) );
+
+	this->setOrigin( this->getGlobalBounds().width / 2.f, this->getGlobalBounds().height / 2.f );
+}
+
+GoldBlock::~GoldBlock(void)
+{
+	this->unloadTextures();
+}
+
+void GoldBlock::render(Window &window) {
+	Block::render(window);
+}
+
+/**
+* Updates members of this object.
+*/
+void GoldBlock::update(std::vector<Block *> block)
+{
+	Block::update(block);
+}
+
+/**
+* Loads default settings.
+*/
+void GoldBlock::loadDefaultSettings()
+{
+	Block::loadDefaultSettings();
+
+	// Override Block default settings here:
+	this->setLabel( "GoldBlock" );
+
+	this->setTextureID( 5 );
+
+	this->setDropChance( 90.f );
+}

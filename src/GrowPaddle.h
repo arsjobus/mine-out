@@ -1,0 +1,22 @@
+#pragma once
+
+#ifndef GROWPADDLE_H
+#define GROWPADDLE_H
+
+#include "powerup.h"
+#include "Window.h"
+
+class GrowPaddle: public PowerUp
+{
+public:
+	GrowPaddle(void);
+	~GrowPaddle(void);
+
+	void update();
+	void render(Window &window);
+
+private:
+	void loadDefaultSettings();
+};
+
+#endif
