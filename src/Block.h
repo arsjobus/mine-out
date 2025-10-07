@@ -6,9 +6,9 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "GameObject.h"
-#include "PowerUp.h"
-#include "DamageIncrease.h"
-#include "GrowPaddle.h"
+#include "PowerUp/PowerUp.h"
+#include "PowerUp/DamageIncrease.h"
+#include "PowerUp/GrowPaddle.h"
 #include "Window.h"
 
 class Block: public GameObject, public sf::RectangleShape

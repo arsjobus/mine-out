@@ -4,7 +4,7 @@
 #define DAMAGEINCREASE_H
 
 #include "PowerUp.h"
-#include "Window.h"
+#include "../Window.h"
 
 class DamageIncrease: public PowerUp
 {

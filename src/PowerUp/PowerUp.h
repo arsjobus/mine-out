@@ -4,8 +4,8 @@
 #define POWERUP_H
 
 #include <SFML/Graphics.hpp>
-#include "GameObject.h"
-#include "Window.h"
+#include "../GameObject.h"
+#include "../Window.h"
 
 class PowerUp: public GameObject, public sf::RectangleShape
 {

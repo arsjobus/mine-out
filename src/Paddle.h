@@ -5,7 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "GameObject.h"
-#include "PowerUp.h"
+#include "PowerUp/PowerUp.h"
 #include "StaticObject.h"
 
 class Paddle: public GameObject, public sf::RectangleShape

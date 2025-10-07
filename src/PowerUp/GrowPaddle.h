@@ -4,7 +4,7 @@
 #define GROWPADDLE_H
 
 #include "PowerUp.h"
-#include "Window.h"
+#include "../Window.h"
 
 class GrowPaddle: public PowerUp
 {
