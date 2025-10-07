@@ -75,8 +75,7 @@ void Ball::loadDefaultSettings()
 	this->setRadius(16.f);
 
 	// Center the origin based on local bounds (safe during setup)
-	auto bounds = getLocalBounds();
-	setOrigin(sf::Vector2f(bounds.size.x / 2.f, bounds.size.y / 2.f));
+	setOrigin(sf::Vector2f(getGlobalBounds().size.x / 2.f, getGlobalBounds().size.y / 2.f));
 
 	// Ensure that the ball will be stuck to the player's paddle at the beginning of each round.
 	status = STUCK_TO_PLAYER;

@@ -9,7 +9,7 @@
 #include "Level1.h"
 #include "Level2.h"
 #include "main.h"
-#include "log.h"
+#include "Log.h"
 #include "Window.h"
 using namespace std;
 

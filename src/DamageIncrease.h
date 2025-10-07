@@ -3,7 +3,7 @@
 #ifndef DAMAGEINCREASE_H
 #define DAMAGEINCREASE_H
 
-#include "powerup.h"
+#include "PowerUp.h"
 #include "Window.h"
 
 class DamageIncrease: public PowerUp

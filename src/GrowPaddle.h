@@ -3,7 +3,7 @@
 #ifndef GROWPADDLE_H
 #define GROWPADDLE_H
 
-#include "powerup.h"
+#include "PowerUp.h"
 #include "Window.h"
 
 class GrowPaddle: public PowerUp
