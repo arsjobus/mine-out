@@ -19,7 +19,8 @@ void Title::processEvents(Window &window) {
             const auto* keyEvent = event.getIf<sf::Event::KeyPressed>();
             if (keyEvent->code == sf::Keyboard::Key::Space) {
                 setNextState(STATE_LEVEL1);
-            }
+            } 
+			else if (keyEvent->code == sf::Keyboard::Key::Escape) setNextState(GameState::State::STATE_EXIT);
         }
     }
 }
