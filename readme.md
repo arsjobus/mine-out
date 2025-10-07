@@ -20,10 +20,10 @@ Before building, you need to install the following dependencies via Homebrew ([h
 ## Installing Dependencies on macOS (Apple Silicon)
 
 1. Install Homebrew (if you haven’t already) by running this command in your terminal:
-   /bin/bash -c "$(curl -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh))"
+   `/bin/bash -c "$(curl -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh))"`
 
 2. Install SFML and dependencies by running:
-   brew install sfml freetype libvorbis
+   `brew install sfml freetype libvorbis`
 
 ---
 
