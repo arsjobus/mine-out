@@ -9,18 +9,18 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "Ball.h"
-#include "LeftPanel.h"
-#include "Block/GoldBlock.h"
-#include "Block/NormalBlock.h"
-#include "Block/StoneBlock.h"
-#include "Block/TNTBlock.h"
-#include "TopPanel.h"
-#include "RightPanel.h"
-#include "GameState.h"
-#include "Log.h"
-#include "Paddle.h"
-#include "Window.h"
+#include "../Ball.h"
+#include "../LeftPanel.h"
+#include "../Block/GoldBlock.h"
+#include "../Block/NormalBlock.h"
+#include "../Block/StoneBlock.h"
+#include "../Block/TNTBlock.h"
+#include "../TopPanel.h"
+#include "../RightPanel.h"
+#include "../GameState.h"
+#include "../Log.h"
+#include "../Paddle.h"
+#include "../Window.h"
 
 class Level0: public GameState
 {

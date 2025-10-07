@@ -5,7 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Level0.h"
-#include "Window.h"
+#include "../Window.h"
 
 class Level1: public Level0
 {

@@ -4,8 +4,8 @@
 #define TITLE_H
 
 #include <SFML/Graphics.hpp>
-#include "GameState.h"
-#include "Window.h"
+#include "../GameState.h"
+#include "../Window.h"
 
 class Title: public GameState
 {

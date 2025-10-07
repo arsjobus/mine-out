@@ -3,7 +3,7 @@
 #ifndef LOADSCREEN_H
 #define LOADSCREEN_H
 
-#include "GameState.h"
+#include "../GameState.h"
 
 class LoadScreen: public GameState
 {
