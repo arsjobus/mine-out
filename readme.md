@@ -1,7 +1,3 @@
-Got it! Here's the README without any backticks or markdown code blocks, so it won't break when pasted anywhere:
-
----
-
 # Mine-Out Game (SFML C++)
 
 This is a C++ game built using SFML 3.0.2 on macOS ARM architecture (Apple Silicon).
