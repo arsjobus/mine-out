@@ -9,7 +9,7 @@ void PowerUp::update()
 	sf::Time dt = this->deltaClock.restart();
 
 	if (this->getActive()) {
-		this->setPosition( this->getPosition().x, this->getPosition().y + this->getSpeed() * dt.asSeconds() );
+		this->setPosition( sf::Vector2f(this->getPosition().x, this->getPosition().y + this->getSpeed() * dt.asSeconds()) );
 	}
 }
 
@@ -25,9 +25,9 @@ void PowerUp::loadDefaultSettings()
 
 	this->setSize(sf::Vector2f(32, 32));
 
-	this->setOrigin(this->getGlobalBounds().width / 2, this->getGlobalBounds().height /2);
+	this->setOrigin(sf::Vector2f(this->getGlobalBounds().size.x / 2, this->getGlobalBounds().size.y / 2));
 
-	this->setPosition(0,0);
+	this->setPosition(sf::Vector2f(0,0));
 }
 
 void PowerUp::render(Window &window)

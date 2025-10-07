@@ -86,16 +86,16 @@ bool Config::getSettingAsBool(const char*variableName, const char *filename)
 /**
 * Retrieves the specified user setting from the file and returns its value as an unsigned int.
 */
-size_t &Config::getSettingAsUInt(const char *variableName, const char *filename)
+size_t Config::getSettingAsUInt(const char *variableName, const char *filename)
 {
-	unsigned int uVariableValue;
+    unsigned int uVariableValue;
 
-	std::stringstream ss(findValue(variableName, filename));
-	
-	if (ss.str() != "")
-		ss >> uVariableValue;
-	else
-		uVariableValue = 0;
+    std::stringstream ss(findValue(variableName, filename));
+    
+    if (ss.str() != "")
+        ss >> uVariableValue;
+    else
+        uVariableValue = 0;
 
-	return uVariableValue;
+    return static_cast<size_t>(uVariableValue); // safe cast
 }

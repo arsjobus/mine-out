@@ -22,21 +22,23 @@ Title::~Title(void)
 
 void Title::processEvents(Window &window)
 {
-	sf::Event userInput;
+    while (std::optional<sf::Event> eventOpt = window.pollEvent())
+    {
+        sf::Event event = *eventOpt; // unwrap optional
 
-	while (window.pollEvent(userInput))
-	{
-		switch (userInput.type)
-		{
-			case sf::Event::Closed:
-				setNextState( STATE_EXIT );
-				break;
-			case sf::Event::KeyPressed:
-				if (userInput.key.code == sf::Keyboard::Space)
-					setNextState( STATE_LEVEL1 );
-				break;
-		}
-	}
+        if (event.is<sf::Event::Closed>())
+        {
+            setNextState(STATE_EXIT);
+        }
+        else if (event.is<sf::Event::KeyPressed>())
+        {
+            const auto* keyEvent = event.getIf<sf::Event::KeyPressed>();
+            if (keyEvent->code == sf::Keyboard::Key::Space)
+            {
+                setNextState(STATE_LEVEL1);
+            }
+        }
+    }
 }
 
 void Title::update(Window &window)
@@ -50,7 +52,7 @@ void Title::render(Window &window)
 
 	window.draw(getRefToBackground());
 
-	window.draw(txtMainTitle);
+	window.draw(*txtMainTitle);
 
 	window.display();
 }
@@ -63,8 +65,8 @@ void Title::loadBackground(Window &window)
 
 	getRefToBackground().setSize(sf::Vector2f(screenResolution.x, screenResolution.y));
     getRefToBackground().setFillColor(sf::Color::Black);
-    getRefToBackground().setOrigin(getRefToBackground().getGlobalBounds().width / 2, getRefToBackground().getGlobalBounds().height / 2);
-	getRefToBackground().setPosition(screenResolution.x / 2, screenResolution.y / 2);
+    getRefToBackground().setOrigin(sf::Vector2f(getRefToBackground().getGlobalBounds().size.x / 2, getRefToBackground().getGlobalBounds().size.y / 2));
+	getRefToBackground().setPosition(sf::Vector2f(screenResolution.x / 2, screenResolution.y / 2));
 }
 
 void Title::loadDefaultFonts()
@@ -96,13 +98,11 @@ void Title::loadTitle(Window &window)
 {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading title.."));
 
-	txtMainTitle.setFont(getPrimaryFont());
-    txtMainTitle.setString(window.getDefaultWindowTitle());
-    txtMainTitle.setCharacterSize(48);
-    txtMainTitle.setColor(getDefaultTextColor());
-    txtMainTitle.setStyle(sf::Text::Bold);
-    txtMainTitle.setOrigin(txtMainTitle.getGlobalBounds().width / 2, txtMainTitle.getGlobalBounds().height / 2);
-    txtMainTitle.setPosition(window.getSize().x / 2, window.getSize().y / 3);
+	txtMainTitle = new sf::Text(getPrimaryFont(), window.getDefaultWindowTitle(), 48);
+    txtMainTitle->setFillColor(getDefaultTextColor());
+    txtMainTitle->setStyle(sf::Text::Bold);
+    txtMainTitle->setOrigin(sf::Vector2f(txtMainTitle->getGlobalBounds().size.x / 2, txtMainTitle->getGlobalBounds().size.y / 2));
+    txtMainTitle->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 3));
 }
 
 

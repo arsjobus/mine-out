@@ -14,8 +14,8 @@ LeftPanel::LeftPanel(int newWidth, int newHeight)
 	iHeight = newHeight;
 
 	this->setSize(sf::Vector2f(iWidth, iHeight));
-		
-	this->setOrigin(getGlobalBounds().width / 2, getGlobalBounds().height / 2);
+
+	this->setOrigin(sf::Vector2f(getGlobalBounds().size.x / 2, getGlobalBounds().size.y / 2));
 }
 
 LeftPanel::~LeftPanel(void)
@@ -30,5 +30,5 @@ void LeftPanel::loadDefaultSettings()
 
 	this->setTexture(&resource.getLevelTexture( 1 ));
 
-    this->setOrigin(getGlobalBounds().width / 2, getGlobalBounds().height / 2);
+	this->setOrigin(sf::Vector2f(getGlobalBounds().size.x / 2, getGlobalBounds().size.y / 2));
 }

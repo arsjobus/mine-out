@@ -45,7 +45,7 @@ void Block::randomizePowerUp()
 			break;
 	};
 
-	this->powerup->setPosition(this->getPosition().x, this->getPosition().y);
+	this->powerup->setPosition(sf::Vector2f(this->getPosition().x, this->getPosition().y));
 
 }
 
@@ -58,7 +58,7 @@ void Block::update(std::vector<Block *> block)
 	{
 		this->setTexture( &resource.getBlockTexture( this->getTextureID() ) );
 
-		this->powerup->setPosition(this->getPosition().x, this->getPosition().y);
+		this->powerup->setPosition(sf::Vector2f(this->getPosition().x, this->getPosition().y));
 	}
 	
 	if ((this->getActive()) && (this->getHitPoints() <= 0))
@@ -107,7 +107,7 @@ void Block::loadDefaultSettings()
 
 	this->setSize( defaultSize );
 
-	this->setOrigin( this->getGlobalBounds().width / 2.f, this->getGlobalBounds().height / 2.f );
+	this->setOrigin( sf::Vector2f(this->getGlobalBounds().size.x / 2.f, this->getGlobalBounds().size.y / 2.f) );
 }
 
 void Block::render(Window &window)

@@ -12,7 +12,7 @@ NormalBlock::NormalBlock( float newWidth, float newHeight )
 	// Override default settings here:
 	setSize( sf::Vector2f( newWidth, newHeight ) );
 
-	setOrigin( getGlobalBounds().width / 2.f, getGlobalBounds().height / 2.f );
+	setOrigin( sf::Vector2f(getGlobalBounds().size.x / 2.f, getGlobalBounds().size.y / 2.f) );
 }
 
 /**

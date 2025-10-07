@@ -16,7 +16,7 @@ public:
 	Log log;
 
 	bool getSettingAsBool(const char*variableName, const char *filename);
-	size_t &getSettingAsUInt(const char *variableName, const char *filename);
+	size_t getSettingAsUInt(const char *variableName, const char *filename);
 
 private:
 	std::string findValue(const char *variableName, const char *filename);

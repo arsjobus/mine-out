@@ -13,7 +13,7 @@ Paddle::Paddle( int newWidth, int newHeight )
 	setSize( sf::Vector2f( newWidth, newHeight ) );
 
 	// Set the origin again after setting the size
-	setOrigin( getGlobalBounds().width / 2, getGlobalBounds().height / 2 );
+	setOrigin( sf::Vector2f(getGlobalBounds().size.x / 2, getGlobalBounds().size.y / 2) );
 }
 
 /**
@@ -33,7 +33,7 @@ void Paddle::update() {
 	sf::Time dt = deltaClock.restart();
 
 	// Update the position of the player's paddle
-	setPosition( getPosition().x + getVelocity().x * dt.asSeconds(), getPosition().y );
+	setPosition( sf::Vector2f(getPosition().x + getVelocity().x * dt.asSeconds(), getPosition().y ) );
 }
 
 size_t Paddle::getActivePowerUp()
@@ -90,10 +90,8 @@ void Paddle::loadDefaultSettings()
 {
 	sf::Vector2f defaultSize( 64.f, 32.f );
 	
-	sf::Sound sndHit;
+	sf::Sound sndHit = sf::Sound(resource.getBufferedSound( 0 ));
 		
-	sndHit.setBuffer(resource.getBufferedSound( 0 ));
-
 	this->getRefToSound()->push_back(sndHit);
 
 	this->canMoveLeft = this->canMoveRight = true;
@@ -112,7 +110,7 @@ void Paddle::loadDefaultSettings()
 	this->setSize( defaultSize );
 
 	// Set the origin after settings the size
-	this->setOrigin( this->getGlobalBounds().width / 2, this->getGlobalBounds().height / 2 );
+	this->setOrigin( sf::Vector2f(this->getGlobalBounds().size.x / 2, this->getGlobalBounds().size.y / 2) );
 
 	// Set default color to white.
 	this->setFillColor( sf::Color::White );

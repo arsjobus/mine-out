@@ -12,7 +12,7 @@ StoneBlock::StoneBlock( int newWidth, int newHeight )
 	// Override default settings here:
 	setSize( sf::Vector2f( newWidth, newHeight ) );
 
-	setOrigin( getGlobalBounds().width / 2.f, getGlobalBounds().height / 2.f );
+	setOrigin( sf::Vector2f(getGlobalBounds().size.x / 2.f, getGlobalBounds().size.y / 2.f) );
 }
 
 /**
@@ -60,7 +60,7 @@ void StoneBlock::loadDefaultSettings()
 
 	setHitPoints( 3 );
 
-	setFillColor( sf::Color::Color( 255, 255, 255 ) );
+	setFillColor( sf::Color( 255, 255, 255 ) );
 
 	setLabel( "StoneBlock" );
 

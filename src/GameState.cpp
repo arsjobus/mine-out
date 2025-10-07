@@ -25,9 +25,9 @@ void GameState::setDefaultTextColor(sf::Color newColor)
 	defaultTextColor = newColor;
 }
 
-void GameState::setPrimaryFont(std::string &relativePathToFile)
+void GameState::setPrimaryFont(const std::string &relativePathToFile)
 {
-	if (!fntPrimaryFont.loadFromFile(relativePathToFile))
+	if (!fntPrimaryFont.openFromFile(relativePathToFile))
 		log.quickWrite(LOG_WARNING, std::string(getCurrentModeName() + log.getSeparator() + "Could not load primary font."));
 	else {
 		log.quickWrite(LOG_SUCCESS, std::string(getCurrentModeName() + log.getSeparator() + "Primary font was loaded!"));
@@ -59,9 +59,9 @@ sf::Font &GameState::getSecondaryFont()
 	return fntSecondaryFont;
 }
 
-void GameState::setSecondaryFont(std::string &relativePathToFile)
+void GameState::setSecondaryFont(const std::string &relativePathToFile)
 {
-	if (!fntSecondaryFont.loadFromFile(relativePathToFile))
+	if (!fntSecondaryFont.openFromFile(relativePathToFile))
 		log.quickWrite(LOG_WARNING, "Could not load secondary font.");
 	else
 		log.quickWrite(LOG_SUCCESS, "Secondary font was loaded!");

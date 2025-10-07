@@ -15,7 +15,7 @@ TopPanel::TopPanel(int newWidth, int newHeight)
 
 	this->setSize(sf::Vector2f(iWidth, iHeight));
 
-	this->setOrigin(getGlobalBounds().width / 2, getGlobalBounds().height / 2);
+	this->setOrigin(sf::Vector2f(getGlobalBounds().size.x / 2, getGlobalBounds().size.y / 2));
 }
 
 TopPanel::~TopPanel(void)
@@ -30,5 +30,5 @@ void TopPanel::loadDefaultSettings()
 
 	this->setTexture(&resource.getLevelTexture( 0 ));
 
-    this->setOrigin(getGlobalBounds().width / 2, getGlobalBounds().height / 2);
+	this->setOrigin(sf::Vector2f(getGlobalBounds().size.x / 2, getGlobalBounds().size.y / 2));
 }

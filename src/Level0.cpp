@@ -2,62 +2,70 @@
 
 void Level0::processEvents(Window &window)
 {
-	sf::Event userInput;
+    while (std::optional<sf::Event> event = window.pollEvent())
+    {
+        // Handle window close
+        if (event->is<sf::Event::Closed>())
+        {
+            setNextState(GameState::State::STATE_EXIT);
+        }
 
-	while (window.pollEvent(userInput))
-	{
-		switch (userInput.type)
-		{
-			case sf::Event::Closed:
-				setNextState( GameState::State::STATE_EXIT );
-				break;
+        // Handle key press
+        else if (const auto* keyEvent = event->getIf<sf::Event::KeyPressed>())
+        {
+            auto key = keyEvent->scancode;
 
-			case sf::Event::KeyPressed:
-				if (userInput.key.code == sf::Keyboard::Space &&
-					(ball->getStatus() == Ball::STUCK_TO_PLAYER) &&
-					(isPlaying) &&
-					(!isPaused))
-				{
-					ball->setStatus(Ball::LAUNCHING);
-				}
-				else if ((userInput.key.code == sf::Keyboard::A || 
-					userInput.key.code == sf::Keyboard::Left) &&
-					(player->getCanMoveLeft()) &&
-                    (isPlaying) && 
-                    (!isPaused))
-                {
-                    player->setXVelocity(-player->getSpeed());
-                }              
-                else if ((userInput.key.code == sf::Keyboard::D || 
-                    userInput.key.code == sf::Keyboard::Right) &&
-					(player->getCanMoveRight()) &&
-                    (isPlaying) && 
-                    (!isPaused))
-                {
-                    player->setXVelocity(player->getSpeed());
-                }
-				else if (userInput.key.code == sf::Keyboard::R)
-				{
-					setNextState( GameState::State::STATE_LEVEL1 );
-				}
-				else if (userInput.key.code == sf::Keyboard::P)
-				{
-					if (this->isPaused)
-						this->isPaused = false;
-					else
-						this->isPaused = true;
-				}
-				else if (userInput.key.code == sf::Keyboard::Escape)
-				{
-					setNextState( STATE_EXIT );
-				}
-				break;
-			case sf::Event::KeyReleased:
-					if (userInput.key.code == sf::Keyboard::A || userInput.key.code == sf::Keyboard::D || userInput.key.code == sf::Keyboard::Left || userInput.key.code == sf::Keyboard::Right)
-						player->setXVelocity( 0 );
-				break;
-		}
-	}
+            if (key == sf::Keyboard::Scancode::Space &&
+                ball->getStatus() == Ball::STUCK_TO_PLAYER &&
+                isPlaying &&
+                !isPaused)
+            {
+                ball->setStatus(Ball::LAUNCHING);
+            }
+            else if ((key == sf::Keyboard::Scancode::A ||
+                      key == sf::Keyboard::Scancode::Left) &&
+                     player->getCanMoveLeft() &&
+                     isPlaying &&
+                     !isPaused)
+            {
+                player->setXVelocity(-player->getSpeed());
+            }
+            else if ((key == sf::Keyboard::Scancode::D ||
+                      key == sf::Keyboard::Scancode::Right) &&
+                     player->getCanMoveRight() &&
+                     isPlaying &&
+                     !isPaused)
+            {
+                player->setXVelocity(player->getSpeed());
+            }
+            else if (key == sf::Keyboard::Scancode::R)
+            {
+                setNextState(GameState::State::STATE_LEVEL1);
+            }
+            else if (key == sf::Keyboard::Scancode::P)
+            {
+                isPaused = !isPaused;
+            }
+            else if (key == sf::Keyboard::Scancode::Escape)
+            {
+                setNextState(GameState::State::STATE_EXIT);
+            }
+        }
+
+        // Handle key release
+        else if (const auto* keyRelease = event->getIf<sf::Event::KeyReleased>())
+        {
+            auto key = keyRelease->scancode;
+
+            if (key == sf::Keyboard::Scancode::A ||
+                key == sf::Keyboard::Scancode::D ||
+                key == sf::Keyboard::Scancode::Left ||
+                key == sf::Keyboard::Scancode::Right)
+            {
+                player->setXVelocity(0);
+            }
+        }
+    }
 }
 
 void Level0::update(Window &window)
@@ -73,7 +81,7 @@ void Level0::update(Window &window)
 		// :::::::::::::::::
 
 		// Play music if it is not
-		if (music.getStatus() != sf::Music::Playing)
+		if (music.getStatus() != sf::SoundSource::Status::Playing)
 		{
 			music.play();
 		}
@@ -179,14 +187,14 @@ bool Level0::detectCollisionBallAndBlock()
 	{
 		if (blocks[i]->getActive() &&
 			ball->getCanBounce() &&
-			ball->getGlobalBounds().intersects( blocks[i]->getGlobalBounds() ) )
+			ball->getGlobalBounds().findIntersection( blocks[i]->getGlobalBounds() ) )
 		{
 			blocks[i]->setHitPoints( blocks[i]->getHitPoints() - ball->getDamage() );
 
 			log.quickWrite(std::string( "Ball" + log.getSeparator() + "has dealt " + log.intToString(ball->getDamage()) + " points of damage to " + blocks[i]->getLabel() + "." ));
 
-			if (ball->getPosition().y > blocks[i]->getGlobalBounds().top + blocks[i]->getGlobalBounds().height ||
-				ball->getPosition().y < blocks[i]->getGlobalBounds().top)
+			if (ball->getPosition().y > blocks[i]->getGlobalBounds().position.y + blocks[i]->getGlobalBounds().size.y ||
+				ball->getPosition().y < blocks[i]->getGlobalBounds().position.y)
 			{
 				ball->setYVelocity( -ball->getVelocity().y );
 			}
@@ -205,7 +213,7 @@ bool Level0::detectCollisionBallAndBlock()
 bool Level0::detectCollisionBallAndLeftPanel()
 {
 	if (ball->getCanBounce() &&
-		ball->getGlobalBounds().intersects( leftPanel->getGlobalBounds() ) )
+		ball->getGlobalBounds().findIntersection( leftPanel->getGlobalBounds() ) )
 	{
 		ball->setXVelocity( -ball->getVelocity().x );
 		return true;
@@ -216,14 +224,14 @@ bool Level0::detectCollisionBallAndLeftPanel()
 bool Level0::detectCollisionBallAndPlayer()
 {
 	if (ball->getCanBounce() &&
-		ball->getGlobalBounds().intersects(player->getGlobalBounds()))
+		ball->getGlobalBounds().findIntersection(player->getGlobalBounds()))
 	{
 		player->playSound( 0 );
 
-		if (ball->getPosition().y > player->getGlobalBounds().top + player->getGlobalBounds().height ||
-			ball->getPosition().y < player->getGlobalBounds().top)
+		if (ball->getPosition().y > player->getGlobalBounds().position.y + player->getGlobalBounds().size.y ||
+			ball->getPosition().y < player->getGlobalBounds().position.y)
 		{
-			if (ball->getPosition().y < player->getGlobalBounds().top) 
+			if (ball->getPosition().y < player->getGlobalBounds().position.y) 
 			{
 				ball->setYVelocity( -ball->getVelocity().y );
 
@@ -245,7 +253,7 @@ void Level0::detectCollisionPlayerAndLeftPanel()
 {
 	if (player->getCanMoveLeft() &&
 		leftPanel->getPosition().x < player->getPosition().x && 
-		player->getGlobalBounds().intersects( leftPanel->getGlobalBounds() ) )
+		player->getGlobalBounds().findIntersection( leftPanel->getGlobalBounds() ) )
 	{
 		player->setCanMoveLeft( false );
 		player->setXVelocity( NULL );
@@ -253,7 +261,7 @@ void Level0::detectCollisionPlayerAndLeftPanel()
 
 	else if (player->getCanMoveRight() &&
 		rightPanel->getPosition().x > player->getPosition().x &&
-		player->getGlobalBounds().intersects( rightPanel->getGlobalBounds() ) )
+		player->getGlobalBounds().findIntersection( rightPanel->getGlobalBounds() ) )
 	{
 		player->setCanMoveRight( false );
 		player->setXVelocity( NULL );
@@ -264,14 +272,14 @@ void Level0::detectCollisionPlayerAndRightPanel()
 {
 	if ( ( !player->getCanMoveLeft() ) && 
 		leftPanel->getPosition().x < player->getPosition().x &&
-		( !player->getGlobalBounds().intersects( leftPanel->getGlobalBounds() ) ) )
+		( !player->getGlobalBounds().findIntersection( leftPanel->getGlobalBounds() ) ) )
     {
 		player->setCanMoveLeft( true );
     }
 
     else if ( ( !player->getCanMoveRight() ) && 
 		rightPanel->getPosition().x > player->getPosition().x && 
-		( !player->getGlobalBounds().intersects( rightPanel->getGlobalBounds() ) ) )
+		( !player->getGlobalBounds().findIntersection( rightPanel->getGlobalBounds() ) ) )
     {
         player->setCanMoveRight( true );
     }
@@ -285,7 +293,7 @@ void Level0::detectCollisionPlayerAndPowerUp()
 	for (int i = 0; i < blocks.size(); ++i)
 	{
 		if (blocks[i]->getPowerUp()->getActive() &&
-			player->getGlobalBounds().intersects(blocks[i]->getPowerUp()->getGlobalBounds()))
+			player->getGlobalBounds().findIntersection(blocks[i]->getPowerUp()->getGlobalBounds()))
 		{
 			// Set the powerup to inactive.
 			blocks[i]->getPowerUp()->setActive( false );
@@ -300,7 +308,7 @@ void Level0::detectCollisionPlayerAndPowerUp()
 bool Level0::detectCollisionBallAndRightPanel()
 {
 	if (ball->getCanBounce() &&
-		ball->getGlobalBounds().intersects(rightPanel->getGlobalBounds() ) )
+		ball->getGlobalBounds().findIntersection(rightPanel->getGlobalBounds() ) )
 	{
 		ball->setXVelocity( -ball->getVelocity().x );
 		return true;
@@ -311,7 +319,7 @@ bool Level0::detectCollisionBallAndRightPanel()
 bool Level0::detectCollisionBallAndTopPanel()
 {
 	if (ball->getCanBounce() && 
-		ball->getGlobalBounds().intersects( topPanel->getGlobalBounds() ) )
+		ball->getGlobalBounds().findIntersection( topPanel->getGlobalBounds() ) )
 	{
 		ball->setYVelocity( -ball->getVelocity().y );
 		return true;
@@ -371,11 +379,11 @@ void Level0::updatePowerUp()
 
 	if (player->getActivePowerUp() == PowerUp::TypeID::GrowPaddle)
 	{
-		player->setScale(2.0, 1.0);
+		player->setScale(sf::Vector2f(2.0f, 1.0f));
 	}
 	else
 	{
-		player->setScale(1.0, 1.0);
+		player->setScale(sf::Vector2f(1.0, 1.0));
 	}
 }
 
@@ -387,8 +395,8 @@ void Level0::loadBackground(Window &window)
 
 	getRefToBackground().setSize(sf::Vector2f(screenResolution.x, screenResolution.y));
     getRefToBackground().setFillColor(sf::Color::Black);
-    getRefToBackground().setOrigin(getRefToBackground().getGlobalBounds().width / 2, getRefToBackground().getGlobalBounds().height / 2);
-	getRefToBackground().setPosition(screenResolution.x / 2, screenResolution.y / 2);
+    getRefToBackground().setOrigin(sf::Vector2f(getRefToBackground().getGlobalBounds().size.x / 2, getRefToBackground().getGlobalBounds().size.y / 2));
+	getRefToBackground().setPosition(sf::Vector2f(screenResolution.x / 2, screenResolution.y / 2));
 }
 
 void Level0::loadBall()
@@ -410,7 +418,7 @@ void Level0::loadDefaultSettings()
 	// Load music and play
 	music.openFromFile("music/crystalcave.ogg");
 
-	music.setLoop( true );
+	music.setLooping( true );
 	
 	activeBlocksCount = 0;
 
@@ -593,7 +601,7 @@ void Level0::resetMatch(Window &window)
 void Level0::resetBall(Window &window)
 {
 	// Dependent on the position of the player
-	sf::Vector2f position(player->getPosition().x, player->getGlobalBounds().top - ball->getRadius());
+	sf::Vector2f position(player->getPosition().x, player->getGlobalBounds().position.y - ball->getRadius());
 
 	std::string strXPosition = log.floatToString(position.x);
 
@@ -626,19 +634,19 @@ void Level0::resetBlocks(Window &window)
 	{
 		blocks[i]->setSize(sf::Vector2f(blockWidth, blockHeight));
 
-		blocks[i]->setOrigin(blocks[i]->getGlobalBounds().width / 2, blocks[i]->getGlobalBounds().height / 2);
+		blocks[i]->setOrigin(sf::Vector2f(blocks[i]->getGlobalBounds().size.x / 2, blocks[i]->getGlobalBounds().size.y / 2));
 
 		if (++blockCounter == 1)
 			xPosition += blocks[i]->getOrigin().x;
 		else if ((blockCounter - 1) % getBlocksPerRow() == 0)
 		{
 			xPosition = leftPanel->getSize().x + getLevelMargin() + blocks[i]->getOrigin().x;
-			yPosition += blocks[i]->getGlobalBounds().height + getLevelMargin();
+			yPosition += blocks[i]->getGlobalBounds().size.y + getLevelMargin();
 		}
 		else
 			xPosition += padding + blocks[i]->getSize().x;
 
-		blocks[i]->setPosition(xPosition + padding, yPosition + blocks[i]->getOrigin().y);
+		blocks[i]->setPosition(sf::Vector2f(xPosition + padding, yPosition + blocks[i]->getOrigin().y));
 	}
 }
 
@@ -716,7 +724,7 @@ void Level0::stickBallToPlayer()
 	// The ball will follow the players paddle until it is launched.
 	if (ball->getStatus() == Ball::Status::STUCK_TO_PLAYER)
 	{
-		ball->setPosition(player->getPosition().x, ball->getPosition().y);
+		ball->setPosition(sf::Vector2f(player->getPosition().x, ball->getPosition().y));
 	}
 }
 

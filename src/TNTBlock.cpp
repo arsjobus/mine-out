@@ -12,7 +12,7 @@ TNTBlock::TNTBlock( float width, float height )
 	// Override default settings here:
 	this->setSize( sf::Vector2f( width, height ) );
 
-	this->setOrigin( this->getGlobalBounds().width / 2.f, this->getGlobalBounds().height / 2.f );
+	this->setOrigin(sf::Vector2f(this->getGlobalBounds().size.x / 2.f, this->getGlobalBounds().size.y / 2.f ));
 }
 
 /**

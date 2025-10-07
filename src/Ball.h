@@ -16,7 +16,7 @@
 class Ball: public GameObject, public sf::CircleShape
 {
 public:
-	static enum Status {
+	enum Status {
 		STUCK_TO_PLAYER = 1,
 		LAUNCHING,
 		MOVING,

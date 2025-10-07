@@ -4,6 +4,7 @@
 #define GAMESTATE_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Window/Event.hpp>
 #include <sstream>
 #include <string>
 #include "Log.h"
@@ -12,7 +13,7 @@
 
 class GameState {
 public:
-	static enum State {
+	enum State {
 		STATE_NULL,
 		STATE_LOAD,
 		STATE_INTRO,
@@ -34,10 +35,10 @@ public:
 	void setDefaultTextColor(sf::Color newColor);
 
 	sf::Font &getPrimaryFont();
-	void setPrimaryFont(std::string &pathToFile);
+	void setPrimaryFont(const std::string &pathToFile);
 
 	sf::Font &getSecondaryFont();
-	void setSecondaryFont(std::string &pathToFile);
+	void setSecondaryFont(const std::string &pathToFile);
 
 	sf::RectangleShape &getRefToBackground();
 

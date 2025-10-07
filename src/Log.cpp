@@ -191,7 +191,7 @@ void Log::quickWrite(int logtype, const char* textToWrite)
 	}
 }
 
-void Log::quickWrite(int logtype, std::string &textToWrite)
+void Log::quickWrite(int logtype, const std::string &textToWrite)
 {
 	if (eventIsAllowedToLog(logtype) || eventIsAllowedToConsoleOutput(logtype))
 	{
@@ -242,7 +242,7 @@ void Log::write(int logtype, const char* textToWrite)
 	}
 }
 
-void Log::write(int logtype, std::string &textToWrite)
+void Log::write(int logtype, const std::string &textToWrite)
 {
 	if (logfileWriteable.is_open())
 	{

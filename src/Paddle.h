@@ -11,7 +11,7 @@
 class Paddle: public GameObject, public sf::RectangleShape
 {
 public:
-	static enum Status {
+	enum Status {
 		NULL_STATUS,
 		COLLISION_DETECTED,
 	};

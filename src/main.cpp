@@ -29,7 +29,12 @@ int main() {
 
 	Window window;
 
-	window.create(sf::VideoMode(window.getScreenResolution().x, window.getScreenResolution().y), window.getDefaultWindowTitle());
+	window.create(sf::VideoMode(
+        sf::Vector2u(
+            window.getScreenResolution().x, 
+            window.getScreenResolution().y
+        )
+    ), window.getDefaultWindowTitle());
 
     // Set the current state ID
     stateID = GameState::State::STATE_LOAD;

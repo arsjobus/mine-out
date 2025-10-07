@@ -20,18 +20,12 @@ LoadScreen::~LoadScreen(void)
 
 void LoadScreen::processEvents(Window &window)
 {
-	sf::Event userInput;
-
-	while (window.pollEvent(userInput))
+	while (std::optional<sf::Event> event = window.pollEvent())
 	{
-		switch (userInput.type)
-		{
-			case sf::Event::Closed:
-				setNextState( STATE_EXIT );
-				break;
-			case sf::Event::KeyPressed:
-				break;
-		}
+        if (event->is<sf::Event::Closed>())
+        {
+            setNextState(STATE_EXIT);
+        }
 	}
 }
 
@@ -43,7 +37,7 @@ void LoadScreen::update(Window &window)
 		{
 			if (loadedAnimationsCount == 0 && !animationsAreLoading) 
 			{
-				textLoadingStatus.setString("Loading Animations..");
+				textLoadingStatus->setString("Loading Animations..");
 				animationsAreLoading = true;
 			}
 			else
@@ -53,7 +47,7 @@ void LoadScreen::update(Window &window)
 		{
 			if (loadedPaddlesCount == 0 && !paddlesAreLoading)
 			{
-				textLoadingStatus.setString("Loading Paddles..");
+				textLoadingStatus->setString("Loading Paddles..");
 				paddlesAreLoading = true;
 			}
 			else
@@ -63,7 +57,7 @@ void LoadScreen::update(Window &window)
 		{
 			if (loadedBlocksCount == 0 && !blocksAreLoading)
 			{
-				textLoadingStatus.setString("Loading Blocks..");
+				textLoadingStatus->setString("Loading Blocks..");
 				blocksAreLoading = true;
 			}
 			else
@@ -73,7 +67,7 @@ void LoadScreen::update(Window &window)
 		{
 			if (loadedPowerupCount == 0 && !powerupsAreLoading)
 			{
-				textLoadingStatus.setString("Loading Powerups..");
+				textLoadingStatus->setString("Loading Powerups..");
 				powerupsAreLoading = true;
 			}
 			else
@@ -83,7 +77,7 @@ void LoadScreen::update(Window &window)
 		{
 			if (loadedLevelCount == 0 && !levelsAreLoading)
 			{
-				textLoadingStatus.setString("Loading Level Resources..");
+				textLoadingStatus->setString("Loading Level Resources..");
 				levelsAreLoading = true;
 			}
 			else
@@ -93,7 +87,7 @@ void LoadScreen::update(Window &window)
 		{
 			if (loadedSoundCount == 0 && !soundsAreLoading)
 			{
-				textLoadingStatus.setString("Loading Sound Effects..");
+				textLoadingStatus->setString("Loading Sound Effects..");
 				soundsAreLoading = true;
 			}
 			else
@@ -102,16 +96,26 @@ void LoadScreen::update(Window &window)
 
 		// Update the appearance of the loading bar.
 		rectLoadBar.setSize(sf::Vector2f(resources.getLoadPercentile() / 100.f, 32));
-		rectLoadBar.setOrigin(rectLoadBar.getGlobalBounds().width / 2, rectLoadBar.getGlobalBounds().height / 2);
-		rectLoadBar.setPosition((rectLoadBarBackground.getPosition().x - rectLoadBarBackground.getOrigin().x) + rectLoadBar.getOrigin().x + 3, (rectLoadBarBackground.getPosition().y - rectLoadBarBackground.getOrigin().y) + rectLoadBar.getOrigin().y + 3);
+		rectLoadBar.setOrigin(sf::Vector2f(rectLoadBar.getGlobalBounds().size.x / 2, rectLoadBar.getGlobalBounds().size.y / 2));
+		rectLoadBar.setPosition(
+			sf::Vector2f(
+				(rectLoadBarBackground.getPosition().x - rectLoadBarBackground.getOrigin().x) + rectLoadBar.getOrigin().x + 3, 
+				(rectLoadBarBackground.getPosition().y - rectLoadBarBackground.getOrigin().y) + rectLoadBar.getOrigin().y + 3
+			)
+		);
 	}
 	else
 	{
 		setNextState( STATE_TITLE );
 	}
 
-	textLoadingStatus.setOrigin(textLoadingStatus.getGlobalBounds().width / 2, textLoadingStatus.getGlobalBounds().height / 2);
-	textLoadingStatus.setPosition(rectLoadBarBackground.getPosition().x, rectLoadBarBackground.getPosition().y + rectLoadBarBackground.getOrigin().y + 10);
+	textLoadingStatus->setOrigin(sf::Vector2f(textLoadingStatus->getGlobalBounds().size.x / 2, textLoadingStatus->getGlobalBounds().size.y / 2));
+	textLoadingStatus->setPosition(
+		sf::Vector2f(
+			rectLoadBarBackground.getPosition().x, 
+			rectLoadBarBackground.getPosition().y + rectLoadBarBackground.getOrigin().y + 10
+		)
+	);
 }
 
 void LoadScreen::render(Window &window)
@@ -124,7 +128,7 @@ void LoadScreen::render(Window &window)
 
 	window.draw(rectLoadBar);
 
-	window.draw(textLoadingStatus);
+	window.draw(*textLoadingStatus);
 
 	window.display();
 }
@@ -183,29 +187,36 @@ void LoadScreen::initilizeBackground(Window &window)
 	sf::Vector2f screenResolution(window.getScreenResolution().x, window.getScreenResolution().y);
 
 	getRefToBackground().setSize(sf::Vector2f(screenResolution.x, screenResolution.y));
-    getRefToBackground().setFillColor(sf::Color::Color(224, 224, 224));
-    getRefToBackground().setOrigin(getRefToBackground().getGlobalBounds().width / 2, getRefToBackground().getGlobalBounds().height / 2);
-	getRefToBackground().setPosition(screenResolution.x / 2, screenResolution.y / 2);
+    getRefToBackground().setFillColor(sf::Color(224, 224, 224));
+    getRefToBackground().setOrigin(sf::Vector2f(getRefToBackground().getGlobalBounds().size.x / 2, getRefToBackground().getGlobalBounds().size.y / 2));
+	getRefToBackground().setPosition(sf::Vector2f(screenResolution.x / 2, screenResolution.y / 2));
 }
 
 void LoadScreen::initilizeObjects(Window &window)
 {
 	rectLoadBarBackground.setFillColor(sf::Color::Black);
 	rectLoadBarBackground.setSize(sf::Vector2f(106, 38));
-	rectLoadBarBackground.setOrigin(rectLoadBarBackground.getGlobalBounds().width / 2, rectLoadBarBackground.getGlobalBounds().height / 2);
-	rectLoadBarBackground.setPosition(window.getSize().x / 2, window.getSize().y / 2);
+	rectLoadBarBackground.setOrigin(sf::Vector2f(rectLoadBarBackground.getGlobalBounds().size.x / 2, rectLoadBarBackground.getGlobalBounds().size.y / 2));
+	rectLoadBarBackground.setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2));
 
 	setPrimaryFont(std::string("fonts/arial.ttf"));
 
-	textLoadingStatus.setFont(getPrimaryFont());
-	textLoadingStatus.setColor(sf::Color::Black);
-	textLoadingStatus.setString("Loading..");
-	textLoadingStatus.setCharacterSize(24);
-	textLoadingStatus.setOrigin(textLoadingStatus.getGlobalBounds().width / 2, textLoadingStatus.getGlobalBounds().height / 2);
-	textLoadingStatus.setPosition(rectLoadBarBackground.getPosition().x, rectLoadBarBackground.getPosition().y + rectLoadBarBackground.getOrigin().y + 10);
+	textLoadingStatus = new sf::Text(getPrimaryFont(), "");
 
-	rectLoadBar.setFillColor(sf::Color::Color(153, 0, 76));
+	textLoadingStatus->setFont(getPrimaryFont());
+	textLoadingStatus->setFillColor(sf::Color::Black);
+	textLoadingStatus->setString("Loading..");
+	textLoadingStatus->setCharacterSize(24);
+	textLoadingStatus->setOrigin(sf::Vector2f(textLoadingStatus->getGlobalBounds().size.x / 2, textLoadingStatus->getGlobalBounds().size.y / 2));
+	textLoadingStatus->setPosition(sf::Vector2f(rectLoadBarBackground.getPosition().x, rectLoadBarBackground.getPosition().y + rectLoadBarBackground.getOrigin().y + 10));
+
+	rectLoadBar.setFillColor(sf::Color(153, 0, 76));
 	rectLoadBar.setSize(sf::Vector2f(0, 32));
-	rectLoadBar.setOrigin(rectLoadBar.getGlobalBounds().width / 2, rectLoadBar.getGlobalBounds().height / 2);
-	rectLoadBar.setPosition((rectLoadBarBackground.getPosition().x - rectLoadBarBackground.getOrigin().x) + rectLoadBar.getOrigin().x + 3, (rectLoadBarBackground.getPosition().y - rectLoadBarBackground.getOrigin().y) + rectLoadBar.getOrigin().y + 3);
+	rectLoadBar.setOrigin(sf::Vector2f(rectLoadBar.getGlobalBounds().size.x / 2, rectLoadBar.getGlobalBounds().size.y / 2));
+	rectLoadBar.setPosition(
+		sf::Vector2f(
+			(rectLoadBarBackground.getPosition().x - rectLoadBarBackground.getOrigin().x) + rectLoadBar.getOrigin().x + 3, 
+			(rectLoadBarBackground.getPosition().y - rectLoadBarBackground.getOrigin().y) + rectLoadBar.getOrigin().y + 3
+		)
+	);
 }

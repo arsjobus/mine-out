@@ -26,7 +26,7 @@ private:
 	void loadDefaultSettings();
 
 private:
-	sf::Text txtMainTitle;
+	sf::Text *txtMainTitle;
 };
 
 #endif

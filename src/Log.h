@@ -44,9 +44,9 @@ public:
 	void quickWrite(const char* textToWrite);
 	void quickWrite(std::string textToWrite);
 	void quickWrite(int logtype, const char* textToWrite);
-	void quickWrite(int logtype, std::string &textToWrite);
+	void quickWrite(int logtype, const std::string &textToWrite);
 	void write(int logtype, const char* textToWrite);
-	void write(int logtype, std::string &textToWrite);
+	void write(int logtype, const std::string &textToWrite);
 	void setFilename(const char* newFilename);
 
 	void setSeparator(const char *newSeparator);

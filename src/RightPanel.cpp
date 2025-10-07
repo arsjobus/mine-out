@@ -15,7 +15,7 @@ RightPanel::RightPanel(int newWidth, int newHeight)
 	// Override default settings here:
 	this->setSize(sf::Vector2f(iWidth, iHeight));
 
-	this->setOrigin(getGlobalBounds().width / 2, getGlobalBounds().height / 2);
+	this->setOrigin(sf::Vector2f(getGlobalBounds().size.x / 2, getGlobalBounds().size.y / 2));
 }
 
 RightPanel::~RightPanel(void)
@@ -30,5 +30,5 @@ void RightPanel::loadDefaultSettings()
 
 	this->setTexture(&resource.getLevelTexture( 2 ));
 
-    this->setOrigin(getGlobalBounds().width / 2, getGlobalBounds().height / 2);
+	this->setOrigin(sf::Vector2f(getGlobalBounds().size.x / 2, getGlobalBounds().size.y / 2));
 }
