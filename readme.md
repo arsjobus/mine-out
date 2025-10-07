@@ -31,25 +31,27 @@ Before building, you need to install the following dependencies via Homebrew ([h
 
 ---
 
-## Build Instructions
+## Build Instructions (Using CMake)
 
-1. Clone or download the source code.
+1. Clone or download the project.
 
-2. Open a terminal and navigate to the project directory.
+2. Open Terminal and cd into the project directory.
 
-3. Edit the Makefile if necessary to match your Homebrew installation path:
+3. Create a new build directory:
 
-* For Apple Silicon (M1/M2), the SFML path is usually:
-  /opt/homebrew/opt/sfml
+   `mkdir build`
 
-* For Intel Macs, it might be:
-  /usr/local/opt/sfml
+4. Run CMake to configure the project:
 
-4. Build the game by running:
-   make
+   `cmake -S . -B build`
 
-5. After a successful build, run the game executable by running:
-   ./game
+5. Build the game:
+
+   `cmake --build build`
+
+6. Run the game:
+
+   `./build/game`
 
 ---
 
