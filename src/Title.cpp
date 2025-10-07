@@ -54,6 +54,8 @@ void Title::render(Window &window)
 
 	window.draw(*txtMainTitle);
 
+	window.draw(*txtPlayInstruction);
+
 	window.display();
 }
 
@@ -84,13 +86,9 @@ void Title::loadDefaultFonts()
 void Title::loadDefaultSettings()
 {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading default settings.."));
-
 	setPrimaryFontName("abandon.ttf");
-
 	setSecondaryFontName("arial.ttf");
-
 	setFontDirectoryName("fonts");
-
 	setDefaultTextColor(sf::Color::Red);
 }
 
@@ -103,6 +101,12 @@ void Title::loadTitle(Window &window)
     txtMainTitle->setStyle(sf::Text::Bold);
     txtMainTitle->setOrigin(sf::Vector2f(txtMainTitle->getGlobalBounds().size.x / 2, txtMainTitle->getGlobalBounds().size.y / 2));
     txtMainTitle->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 3));
+
+	txtPlayInstruction = new sf::Text(getPrimaryFont(), "Press SPACE", 24);
+    txtPlayInstruction->setFillColor(getDefaultTextColor());
+    //txtPlayInstruction->setStyle(sf::Text::Bold);
+    txtPlayInstruction->setOrigin(sf::Vector2f(txtPlayInstruction->getGlobalBounds().size.x / 2, txtPlayInstruction->getGlobalBounds().size.y / 2));
+    txtPlayInstruction->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y - 100));
 }
 
 

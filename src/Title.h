@@ -27,6 +27,7 @@ private:
 
 private:
 	sf::Text *txtMainTitle;
+	sf::Text *txtPlayInstruction;
 };
 
 #endif
