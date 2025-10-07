@@ -1,17 +1,12 @@
 #include "Paddle.h"
 
-Paddle::Paddle(void) {
-	loadDefaultSettings();
-}
-
+Paddle::Paddle(void) { loadDefaultSettings(); }
 Paddle::Paddle( int newWidth, int newHeight ) {
 	loadDefaultSettings();
-
 	// Override default settings here:
 	setSize( sf::Vector2f( newWidth, newHeight ) );
 	setOrigin( sf::Vector2f(getGlobalBounds().size.x / 2, getGlobalBounds().size.y / 2) ); // Set the origin again after setting the size
 }
-
 /**
 * Destructor
 */
