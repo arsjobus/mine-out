@@ -3,7 +3,7 @@
 #ifndef TOPPANEL_H
 #define TOPPANEL_H
 
-#include "StaticObject.h"
+#include "../StaticObject.h"
 
 class TopPanel: public StaticObject
 {

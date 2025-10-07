@@ -3,7 +3,7 @@
 #ifndef LEFTPANEL_H
 #define LEFTPANEL_H
 
-#include "StaticObject.h"
+#include "../StaticObject.h"
 
 class LeftPanel: public StaticObject
 {
