@@ -7,7 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Rect.hpp> 
 #include <SFML/Audio.hpp>
-#include "Block.h"
+#include "Block/Block.h"
 #include "GameObject.h"
 
 class Explosion: public GameObject, public sf::RectangleShape

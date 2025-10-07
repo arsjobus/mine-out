@@ -4,7 +4,7 @@
 #define TNTBLOCK_H
 
 #include "Block.h"
-#include "Explosion.h"
+#include "../Explosion.h"
 
 class TNTBlock: public Block
 {
