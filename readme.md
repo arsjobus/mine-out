@@ -77,7 +77,3 @@ export PATH="/usr/local/bin:$PATH"
 ---
 
 Enjoy playing and modifying the game! Feel free to submit issues or pull requests.
-
----
-
-If you'd like me to help with anything else, just let me know!
