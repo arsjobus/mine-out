@@ -44,11 +44,11 @@ void Paddle::loadDefaultSettings() {
 	sf::Sound sndHit = sf::Sound(resource.getBufferedSound( 0 ));
 	this->getRefToSound()->push_back(sndHit);
 	this->canMoveLeft = this->canMoveRight = true;
-	this->setActivePowerUp( NULL );
+	this->setActivePowerUp( 0 );
 	this->setStatus( Paddle::Status::NULL_STATUS );
 	this->setSpeed( 500.f );
-	this->setXVelocity( NULL );
-	this->setYVelocity( NULL );
+	this->setXVelocity( 0.f );
+	this->setYVelocity( 0.f );
 	this->setSize( defaultSize ); // Set the default size
 	// Set the origin after settings the size
 	this->setOrigin( sf::Vector2f(this->getGlobalBounds().size.x / 2, this->getGlobalBounds().size.y / 2) );
