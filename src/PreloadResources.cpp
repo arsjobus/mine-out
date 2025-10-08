@@ -28,7 +28,9 @@ void PreloadResources::loadDefaultSettings() {
 	this->setResourceCount( 0 );
 }
 
-std::string PreloadResources::soundFilePath() { return std::string( this->getSoundDirectoryName() + "/" ); }
+std::string PreloadResources::soundFilePath() {
+	return std::string( this->getSoundDirectoryName() + "/" );
+}
 
 std::string PreloadResources::animationTextureFilePath() {
 	return std::string( this->getTextureDirectoryName() + "/" + this->getAnimationDirectoryName() + "/" );
