@@ -11,7 +11,6 @@ PreloadResources::PreloadResources(void) {
 	loadDefaultSettings();
 	// Override default settings here:
 }
-
 PreloadResources::~PreloadResources(void) { }
 
 void PreloadResources::loadDefaultSettings() {
