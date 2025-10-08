@@ -9,7 +9,7 @@ Window::Window(void) {
 	uDefaultScreenResolution.x = 800;
 	uDefaultScreenResolution.y = 600;
 	// The default window title
-	defaultWindowTitle = "Breakout";
+	defaultWindowTitle = "Mine Out";
 	// Load settings from settings.ini file into qualifying object members
 	loadFromConfig();
 }
