@@ -346,293 +346,185 @@ void Level0::loadLevelDataFromFile(const char *filename) {
 	}
 }
 
-void Level0::loadObjects(Window &window)
-{
+void Level0::loadObjects(Window &window) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading objects.."));
-
 	loadTopPanel(window.getScreenResolution().x, 100);
-
 	loadRightPanel(topPanel->getSize().y / 2, window.getScreenResolution().y - topPanel->getSize().y);
-
 	loadLeftPanel(topPanel->getSize().y / 2, window.getScreenResolution().y - topPanel->getSize().y);
-
 	loadBall(8);
-
 	loadPaddle(96, 16);
 }
 
-void Level0::loadTopPanel()
-{
+void Level0::loadTopPanel() {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the top panel.."));
-
 	topPanel = new TopPanel();
 }
 
-void Level0::loadTopPanel(int newWidth, int newHeight)
-{
+void Level0::loadTopPanel(int newWidth, int newHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the top panel.."));
-
 	topPanel = new TopPanel(newWidth, newHeight);
 }
 
-void Level0::loadRightPanel()
-{
+void Level0::loadRightPanel() {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the right panel.."));
-
 	rightPanel = new RightPanel();
 }
 
-void Level0::loadRightPanel(int newWidth, int newHeight)
-{
+void Level0::loadRightPanel(int newWidth, int newHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the right panel.."));
-
 	rightPanel = new RightPanel(newWidth, newHeight);
 }
 
-void Level0::loadPaddle() 
-{
+void Level0::loadPaddle() {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the player's paddle.."));
-
 	player = new Paddle(160, 32);
 }
 
-void Level0::loadPaddle(int paddleWidth, int paddleHeight) 
-{
+void Level0::loadPaddle(int paddleWidth, int paddleHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the player's paddle.."));
-
 	player = new Paddle(paddleWidth, paddleHeight);
 }
 
-void Level0::resetAllObjects(Window &window)
-{
+void Level0::resetAllObjects(Window &window) {
 	// Always reset the top panel before the left panel and right panel
 	resetTopPanel(window);
-
 	resetRightPanel(window);
-
 	resetLeftPanel(window);
-
 	// Always reset the player before the ball.
 	resetPlayer(window);
-
 	resetBall(window);
-
 	resetBlocks(window);
 }
 
-void Level0::resetMatch(Window &window)
-{
+void Level0::resetMatch(Window &window) {
 	resetBall(window);
 	resetPlayer(window);
 }
 
-void Level0::resetBall(Window &window)
-{
+void Level0::resetBall(Window &window) {
 	// Dependent on the position of the player
 	sf::Vector2f position(player->getPosition().x, player->getGlobalBounds().position.y - ball->getRadius());
-
 	std::string strXPosition = log.floatToString(position.x);
-
 	std::string strYPosition = log.floatToString(position.y);
-
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Resetting position of the ball: " + "X = " + strXPosition + "; Y = " + strYPosition ));
-
 	ball->setStatus( Ball::Status::STUCK_TO_PLAYER );
-
 	ball->setPosition(position);
-
 	defaultBallSpeed = 500;
 }
 
-void Level0::resetBlocks(Window &window)
-{
+void Level0::resetBlocks(Window &window) {
 	int blockCounter = 0;
-
 	float padding = 2;
-
 	int xPosition = leftPanel->getSize().x + getLevelMargin();
-
 	int yPosition = topPanel->getSize().y + getLevelMargin();
-
 	float blockWidth = ((window.getSize().x - (leftPanel->getSize().x + (getLevelMargin() * 2.f) + rightPanel->getSize().x)) / (getBlocksPerRow()) - padding);
-
 	float blockHeight = 32.f;
-	
-	for (int i = 0; i < blocks.size(); ++i)
-	{
+	for (int i = 0; i < blocks.size(); ++i) {
 		blocks[i]->setSize(sf::Vector2f(blockWidth, blockHeight));
-
 		blocks[i]->setOrigin(sf::Vector2f(blocks[i]->getGlobalBounds().size.x / 2, blocks[i]->getGlobalBounds().size.y / 2));
-
 		if (++blockCounter == 1)
 			xPosition += blocks[i]->getOrigin().x;
-		else if ((blockCounter - 1) % getBlocksPerRow() == 0)
-		{
+		else if ((blockCounter - 1) % getBlocksPerRow() == 0) {
 			xPosition = leftPanel->getSize().x + getLevelMargin() + blocks[i]->getOrigin().x;
 			yPosition += blocks[i]->getGlobalBounds().size.y + getLevelMargin();
 		}
 		else
 			xPosition += padding + blocks[i]->getSize().x;
-
 		blocks[i]->setPosition(sf::Vector2f(xPosition + padding, yPosition + blocks[i]->getOrigin().y));
 	}
 }
 
-void Level0::resetLeftPanel(Window &window)
-{
+void Level0::resetLeftPanel(Window &window) {
 	// Dependent on the top panel
 	sf::Vector2f position(
 		leftPanel->getOrigin().x,
 		window.getScreenResolution().y / 2 + topPanel->getOrigin().y
-		);
-
+	);
 	std::string strXPosition = log.floatToString(position.x);
-
 	std::string strYPosition = log.floatToString(position.y);
-
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Resetting position of the left panel: " + "X = " + strXPosition + "; Y = " + strYPosition ));
-
 	leftPanel->setPosition(position);
 }
 
-void Level0::resetTopPanel(Window &window)
-{
+void Level0::resetTopPanel(Window &window) {
 	sf::Vector2f position(window.getScreenResolution().x / 2, topPanel->getSize().y - topPanel->getOrigin().y);
-
 	std::string strXPosition = log.floatToString(position.x);
-
 	std::string strYPosition = log.floatToString(position.y);
-
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Resetting position of the top panel: " + "X = " + strXPosition + "; Y = " + strYPosition ));
-
 	topPanel->setPosition(position);
 }
 
-void Level0::resetRightPanel(Window &window)
-{
+void Level0::resetRightPanel(Window &window) {
 	// Dependent on the top panel
 	sf::Vector2f position(
 		window.getScreenResolution().x - rightPanel->getOrigin().x,
 		window.getScreenResolution().y / 2 + topPanel->getOrigin().y
-		);
-
+	);
 	std::string strXPosition = log.floatToString(position.x);
-
 	std::string strYPosition = log.floatToString(position.y);
-
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Resetting position of the right panel: " + "X = " + strXPosition + "; Y = " + strYPosition ));
-
 	rightPanel->setPosition(position);
 }
 
-void Level0::resetPlayer(Window &window)
-{
+void Level0::resetPlayer(Window &window) {
 	// Dependent on the position of the bottom panel
 	sf::Vector2f position(window.getScreenResolution().x / 2, window.getScreenResolution().y - player->getOrigin().y - 16);
-
 	std::string strXPosition = log.floatToString(position.x);
-
 	std::string strYPosition = log.floatToString(position.y);
-
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Resetting position of the paddle: " + "X = " + strXPosition + "; Y = " + strYPosition ));
-
 	player->setActivePowerUp( PowerUp::TypeID::None );
-
 	player->setPosition(position);
-
 	player->setXVelocity( 0.f );
-
 	player->setYVelocity( 0.f );
-
 	this->defaultPaddleSpeed = 500;
 }
 
-void Level0::stickBallToPlayer()
-{
+void Level0::stickBallToPlayer() {
 	// The ball will follow the players paddle until it is launched.
 	if (ball->getStatus() == Ball::Status::STUCK_TO_PLAYER)
-	{
 		ball->setPosition(sf::Vector2f(player->getPosition().x, ball->getPosition().y));
-	}
 }
 
-void Level0::unloadObjects()
-{
-	if (ball != 0)
-	{
+void Level0::unloadObjects() {
+	if (ball != 0) {
 		delete ball;
 		ball = 0;
 	}
-
-	if (topPanel != 0)
-	{
+	if (topPanel != 0) {
 		delete topPanel;
 		topPanel = 0;
 	}
-
-	if (leftPanel != 0)
-	{
+	if (leftPanel != 0) {
 		delete leftPanel;
 		leftPanel = 0;
 	}
-	
 	if (rightPanel != 0)
 	{
 		delete rightPanel;
 		rightPanel = 0;
 	}
-
-	if (player != 0)
-	{
+	if (player != 0) {
 		delete player;
 		player = 0;
 	}
-
-	if (blocks.size() > 0)
-	{
+	if (blocks.size() > 0) {
 		for (int i = 0; i < blocks.size(); ++i)
-		{
 			blocks.erase(blocks.begin() + i);
-		}
 	}
 }
 
-size_t Level0::getBlocksPerRow()
-{
-	return blocksPerRow;
-}
+size_t Level0::getBlocksPerRow() { return blocksPerRow; }
 
-void Level0::setBlocksPerRow(int blockCount)
-{
-	blocksPerRow = blockCount;
-}
+void Level0::setBlocksPerRow(int blockCount) { blocksPerRow = blockCount; }
 
-std::string Level0::getDefaultDataDirectoryName()
-{
-	return defaultDataDirectoryName;
-}
+std::string Level0::getDefaultDataDirectoryName() { return defaultDataDirectoryName; }
 
-void Level0::setDefaultDataDirectoryName(const char *newName)
-{
-	defaultDataDirectoryName = newName;
-}
+void Level0::setDefaultDataDirectoryName(const char *newName) { defaultDataDirectoryName = newName; }
 
-float Level0::getLevelMargin()
-{
-	return levelMargin;
-}
+float Level0::getLevelMargin() { return levelMargin; }
 
-void Level0::setLevelMargin(float marginLength)
-{
-	levelMargin = marginLength;
-}
+void Level0::setLevelMargin(float marginLength) { levelMargin = marginLength; }
 
-int Level0::getActiveBlocksCount()
-{
-	return this->activeBlocksCount;
-}
+int Level0::getActiveBlocksCount() { return this->activeBlocksCount; }
 
-void Level0::setActiveBlocksCount(int count)
-{
-	this->activeBlocksCount = count;
-}
+void Level0::setActiveBlocksCount(int count) { this->activeBlocksCount = count; }
