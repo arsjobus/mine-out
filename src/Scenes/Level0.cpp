@@ -91,6 +91,7 @@ void Level0::update(Window &window) {
 		// Detect and handle the ball going out of bounds.
 		detectBallOutOfBounds(window);
 	} else {
+		updateActiveBlockCount();
 		music.pause();
 		//window.setMouseCursorVisible( true );
 	}

@@ -115,8 +115,10 @@ protected:
 	int defaultPaddleSpeed;
 	float levelMargin;
 	sf::Music music;
+
 protected:
 	sf::Clock deltaClock;
+	GameState::State nextGameState = GameState::State::STATE_NULL;
 
 protected:
 	void unloadObjects();

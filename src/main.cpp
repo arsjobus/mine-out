@@ -6,8 +6,7 @@
 #include "PreloadResources.h"
 #include "Scenes/LoadScreen.h"
 #include "Scenes/Title.h"
-#include "Scenes/Level1.h"
-#include "Scenes/Level2.h"
+#include "Scenes/LevelX.h"
 #include "main.h"
 #include "Log.h"
 #include "Window.h"
@@ -76,10 +75,13 @@ void changeState(Window &window) {
                 currentState = new Title(window);
                 break;
 			case GameState::State::STATE_LEVEL1:
-                currentState = new Level1(window);
+                currentState = new LevelX(window, "level1.dat", GameState::State::STATE_LEVEL2);
                 break;
 			case GameState::State::STATE_LEVEL2:
-				currentState = new Level2(window);
+				currentState = new LevelX(window, "level2.dat", GameState::State::STATE_LEVEL3);
+                break;
+            case GameState::State::STATE_LEVEL3:
+                currentState = new LevelX(window, "level3.dat", GameState::State::STATE_TITLE);
                 break;
 			case GameState::State::STATE_EXIT:
 				PreloadResources::unloadResources();

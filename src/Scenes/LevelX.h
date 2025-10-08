@@ -1,17 +1,17 @@
 #pragma once
 
-#ifndef LEVEL1_H
-#define LEVEL1_H
+#ifndef LEVELX_H
+#define LEVELX_H
 
 #include <SFML/Graphics.hpp>
 #include "Level0.h"
 #include "../Window.h"
 
-class Level1: public Level0
+class LevelX: public Level0
 {
 public:
-	Level1(Window &window);
-	~Level1(void);
+	LevelX(Window &window, const char *filename, GameState::State nextState);
+	~LevelX(void);
 
 	void loadBackground(Window &window);
 	void loadDefaultSettings();
