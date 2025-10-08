@@ -22,11 +22,8 @@ int nextState = GameState::State::STATE_NULL;
 
 int main() {
 	sf::Clock randomTime;
-
 	std::srand(randomTime.restart().asMicroseconds());
-
 	Log log;
-
 	Window window;
 
 	window.create(sf::VideoMode(
@@ -46,47 +43,32 @@ int main() {
 
     log.quickWrite(LOG_INFO, "Entering game loop..");
 
-    while ( stateID != GameState::State::STATE_EXIT )
-    {
+    while ( stateID != GameState::State::STATE_EXIT ) {
 		currentState->processEvents(window);
-
 		currentState->update(window);
-
 		changeState(window);
-
 		currentState->render(window);
     }
-
     log.quickWrite(LOG_INFO, "Exiting game loop..");
-
     return 0;
 }
 
 /**
 * Set the next state of the game.
 */
-void setNextState( int newState )
-{
-    if ( nextState != GameState::State::STATE_EXIT ) {
-		nextState = newState;
-    }
+void setNextState( int newState ) {
+    if ( nextState != GameState::State::STATE_EXIT ) nextState = newState;
 }
 
 /**
 * 
 */
-void changeState(Window &window)
-{
-    if ( nextState != GameState::State::STATE_NULL)
-    {
-        if ( nextState != GameState::State::STATE_EXIT )
-        {
-			delete currentState;
-        }
+void changeState(Window &window) {
+    if ( nextState != GameState::State::STATE_NULL) {
+        if ( nextState != GameState::State::STATE_EXIT ) delete currentState;
 
         // Change the state
-        switch ( nextState )
-        {
+        switch ( nextState ) {
 			case GameState::State::STATE_LOAD:
 				currentState = new LoadScreen(window);
 				break;
@@ -106,7 +88,6 @@ void changeState(Window &window)
 
         // Change the current state ID
         stateID = nextState;
-
         // NULL the next state ID
         nextState = GameState::State::STATE_NULL;
     }
