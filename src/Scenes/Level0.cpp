@@ -44,29 +44,25 @@ void Level0::processEvents(Window &window) {
 }
 
 void Level0::update(Window &window) {
-	// If the game is playing and not paused.
+	// If the game is playing and not paused
 	if (isPlaying && !isPaused) {
-		// Reset the delta time at the beginning of every update phase.
-		sf::Time dt = deltaClock.restart();
+		sf::Time dt = deltaClock.restart(); // Reset the delta time at the beginning of every update phase
 		// :::::::::::::::::
 		// :::: UPDATES ::::
 		// :::::::::::::::::
+
 		// Play music if it is not
 		if (music.getStatus() != sf::SoundSource::Status::Playing) music.play();
-		// Update active block count
-		updateActiveBlockCount();
-		// Update game objects.
-		updateGameObjects();
-		// Update the player's currently active powerup.
-		updatePowerUp();
-		// The ball follows player's paddle until it is launched.
-		stickBallToPlayer();
+		updateActiveBlockCount(); // Update active block count
+		updateGameObjects(); // Update game objects
+		updatePowerUp(); // Update the player's currently active powerup
+		stickBallToPlayer(); // The ball follows player's paddle until it is launched
+
 		// :::::::::::::::::::::::::::
 		// :::: DETECT COLLISIONS ::::
 		// :::::::::::::::::::::::::::
 		if (
-			ball->getCanBounce() &&
-			detectCollisionBallAndBlock() ||
+			ball->getCanBounce() && detectCollisionBallAndBlock() ||
 			detectCollisionBallAndLeftPanel() ||
 			detectCollisionBallAndPlayer() ||
 			detectCollisionBallAndRightPanel() ||
@@ -80,6 +76,7 @@ void Level0::update(Window &window) {
 			!detectCollisionBallAndRightPanel() &&
 			!detectCollisionBallAndTopPanel()
 		) ball->setCanBounce( true );
+
 		// Detect and handle collision between the player and the left panel.
 		detectCollisionPlayerAndLeftPanel();
 		// Detect and handle collision between the player and the right panel.
@@ -91,9 +88,8 @@ void Level0::update(Window &window) {
 		// Detect and handle the ball going out of bounds.
 		detectBallOutOfBounds(window);
 	} else {
-		updateActiveBlockCount();
 		music.pause();
-		//window.setMouseCursorVisible( true );
+		updateActiveBlockCount();
 	}
 }
 
