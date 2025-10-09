@@ -23,7 +23,7 @@ void LoadScreen::update(Window &window)
 {
 	if (resources.getLoadedResourceCount() < resources.getResourceCount()) {
 		if (loadedAnimationsCount < animationTextureNames.size()) {
-			if (loadedAnimationsCount == 0 && !animationsAreLoading)  {
+			if (loadedAnimationsCount == 0 && !animationsAreLoading) {
 				textLoadingStatus->setString("Loading Animations..");
 				animationsAreLoading = true;
 			}
