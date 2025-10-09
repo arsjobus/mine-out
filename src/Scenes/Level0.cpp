@@ -482,7 +482,9 @@ void Level0::resetPlayer(Window &window) {
 void Level0::stickBallToPlayer() {
 	// The ball will follow the players paddle until it is launched.
 	if (ball->getStatus() == Ball::Status::STUCK_TO_PLAYER)
-		ball->setPosition(sf::Vector2f(player->getPosition().x, ball->getPosition().y));
+		ball->setPosition(
+			sf::Vector2f(player->getPosition().x, ball->getPosition().y)
+		);
 }
 
 void Level0::unloadObjects() {
