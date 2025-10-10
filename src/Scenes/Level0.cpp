@@ -82,8 +82,7 @@ void Level0::update(Window &window) {
 			ball->isCollisionDetected(panelT)
 		) ball->setCanBounce( false );
 		else if (
-			!ball->getCanBounce() &&
-			!detectCollisionBallAndBlock() &&
+			!ball->getCanBounce() && !detectCollisionBallAndBlock() &&
 			!ball->isCollisionDetected(panelL) &&
 			!ball->isCollisionDetected(player) &&
 			!ball->isCollisionDetected(panelR) &&
@@ -372,26 +371,16 @@ void Level0::resetPlayer(Window &window) {
 }
 
 void Level0::unloadObjects() {
-	if (ball != 0) {
-		delete ball;
-		ball = 0;
-	}
-	if (panelT != 0) {
-		delete panelT;
-		panelT = 0;
-	}
-	if (panelL != 0) {
-		delete panelL;
-		panelL = 0;
-	}
-	if (panelR != 0) {
-		delete panelR;
-		panelR = 0;
-	}
-	if (player != 0) {
-		delete player;
-		player = 0;
-	}
+	delete ball;
+	ball   = NULL;
+	delete panelT;
+	panelT = NULL;
+	delete panelL;
+	panelL = NULL;
+	delete panelR;
+	panelR = NULL;
+	delete player;
+	player = NULL;
 	if (blocks.size() > 0) {
 		for (int i = 0; i < blocks.size(); ++i)
 			blocks.erase(blocks.begin() + i);
