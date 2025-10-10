@@ -46,6 +46,7 @@ private:
 	void loadDefaultSettings();
 	bool checkCollisionWithPanelL(GameObject *otherGameObject);
 	bool checkCollisionWithPanelR(GameObject *otherGameObject);
+	bool checkCollisionWithPowerUp(GameObject *otherGameObject);
 
 private:
 	// private members

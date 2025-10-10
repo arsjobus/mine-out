@@ -11,6 +11,7 @@ void GrowPaddle::update() {
 void GrowPaddle::loadDefaultSettings() {
 	PowerUp::loadDefaultSettings();
 	// Override PowerUp default settings here:
+	this->setLabel("power-up");
 	this->setPowerID( TypeID::GrowPaddle );
 	this->setTexture( &resource.getPowerupTexture( 1 ) );
 }

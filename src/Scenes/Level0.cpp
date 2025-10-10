@@ -126,14 +126,8 @@ bool Level0::detectCollisionBallAndBlock() {
 */
 void Level0::detectCollisionPlayerAndPowerUp() {
 	for (int i = 0; i < blocks.size(); ++i) {
-		if (blocks[i]->getPowerUp()->getActive() &&
-			player->getGlobalBounds().findIntersection(blocks[i]->getPowerUp()->getGlobalBounds())) {
-			// Set the powerup to inactive.
-			blocks[i]->getPowerUp()->setActive( false );
-			// Set the players active power up equal to the ID of the powerup that was
-			// collided with.
-			player->setActivePowerUp( blocks[i]->getPowerUp()->getPowerID() );
-		}
+		if (!blocks[i]->getPowerUp()->getActive()) continue;
+		player->isCollisionDetected(blocks[i]->getPowerUp());
 	}
 }
 
@@ -156,7 +150,7 @@ void Level0::updateActiveBlockCount() {
 
 void Level0::updateGameObjects() {
 	player->update(); // Update the player object
-	ball->update(); // Update the ball object
+	ball->update();   // Update the ball object
 	for (int i = 0; i < blocks.size(); ++i)
 		blocks[i]->update(blocks); // Update every block object
 }

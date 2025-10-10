@@ -21,6 +21,7 @@ Ball::~Ball(void) { }
 void Ball::update() {
 	// Reset delta time at the beginning of each update phase.
 	sf::Time dt = deltaClock.restart();
+
 	// If the ball is returning a status of 'launching':
 	if (getStatus() == Ball::Status::LAUNCHING) {
 		setXVelocity(0);

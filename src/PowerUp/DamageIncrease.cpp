@@ -11,6 +11,7 @@ void DamageIncrease::update() {
 void DamageIncrease::loadDefaultSettings() {
 	PowerUp::loadDefaultSettings();
 	// Override PowerUp default settings here:
+	this->setLabel("power-up");
 	this->setPowerID( PowerUp::TypeID::IncreasedDamage );
 	this->setTexture( &resource.getPowerupTexture( 0 ) );
 }

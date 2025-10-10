@@ -35,8 +35,9 @@ void Paddle::setCanMoveLeft( bool newBoolean ) { canMoveLeft = newBoolean; }
 void Paddle::setCanMoveRight( bool newBoolean ) { canMoveRight = newBoolean; }
 
 bool Paddle::isCollisionDetected(GameObject *otherGameObject) {
-	if (otherGameObject->getLabel() == "panel-l") return checkCollisionWithPanelL(otherGameObject);
-	if (otherGameObject->getLabel() == "panel-r") return checkCollisionWithPanelR(otherGameObject);
+	if (otherGameObject->getLabel() == "panel-l")  return checkCollisionWithPanelL(otherGameObject);
+	if (otherGameObject->getLabel() == "panel-r")  return checkCollisionWithPanelR(otherGameObject);
+	if (otherGameObject->getLabel() == "power-up") return checkCollisionWithPowerUp(otherGameObject);
 	return false;
 }
 
@@ -61,6 +62,15 @@ bool Paddle::checkCollisionWithPanelR(GameObject *otherGameObject) {
 	} else {
 		setCanMoveRight( true );
 		return false; 
+	}
+}
+
+bool Paddle::checkCollisionWithPowerUp(GameObject *otherGameObject) {
+	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
+	PowerUp *powerup = dynamic_cast<PowerUp*>(otherGameObject);
+	if (getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds() )) {
+		powerup->setActive( false );
+		setActivePowerUp( powerup->getPowerID() );
 	}
 }
 
