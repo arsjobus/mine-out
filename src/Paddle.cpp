@@ -40,6 +40,7 @@ void Paddle::loadDefaultSettings() {
 	this->getRefToSound()->push_back(sndHit);
 	this->canMoveLeft = this->canMoveRight = true;
 	this->setActivePowerUp( 0 );
+	this->setLabel( "player" );
 	this->setStatus( Paddle::Status::NULL_STATUS );
 	this->setSpeed( 500.f );
 	this->setXVelocity( 0.f );

@@ -12,6 +12,7 @@ TopPanel::TopPanel(int newWidth, int newHeight) {
 TopPanel::~TopPanel(void) { }
 
 void TopPanel::loadDefaultSettings() {
+	this->setLabel("panel-t");
 	this->setSize(sf::Vector2f(1024, 768));
     this->setFillColor(sf::Color::White);
 	this->setTexture(&resource.getLevelTexture( 0 ));

@@ -12,6 +12,7 @@ LeftPanel::LeftPanel(int newWidth, int newHeight) {
 LeftPanel::~LeftPanel(void) { }
 
 void LeftPanel::loadDefaultSettings() {
+	this->setLabel("panel-l");
 	this->setSize(sf::Vector2f(100, 668));
     this->setFillColor(sf::Color::White);
 	this->setTexture(&resource.getLevelTexture( 1 ));

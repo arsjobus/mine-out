@@ -63,18 +63,18 @@ void Level0::update(Window &window) {
 		// :::::::::::::::::::::::::::
 		if (
 			ball->getCanBounce() && detectCollisionBallAndBlock() ||
-			detectCollisionBallAndLeftPanel() ||
-			detectCollisionBallAndPlayer() ||
-			detectCollisionBallAndRightPanel() ||
-			detectCollisionBallAndTopPanel()
+			ball->isCollisionDetected(leftPanel)  ||
+			ball->isCollisionDetected(player)     ||
+			ball->isCollisionDetected(rightPanel) ||
+			ball->isCollisionDetected(topPanel)
 		) ball->setCanBounce( false );
 		else if (
 			!ball->getCanBounce() &&
 			!detectCollisionBallAndBlock() &&
-			!detectCollisionBallAndLeftPanel() &&
-			!detectCollisionBallAndPlayer() &&
-			!detectCollisionBallAndRightPanel() &&
-			!detectCollisionBallAndTopPanel()
+			!ball->isCollisionDetected(leftPanel)  &&
+			!ball->isCollisionDetected(player)     &&
+			!ball->isCollisionDetected(rightPanel) &&
+			!ball->isCollisionDetected(topPanel)
 		) ball->setCanBounce( true );
 
 		// Detect and handle collision between the player and the left panel.
@@ -133,31 +133,6 @@ bool Level0::detectCollisionBallAndBlock() {
 	return false;
 }
 
-bool Level0::detectCollisionBallAndLeftPanel() {
-	if (ball->getCanBounce() &&
-		ball->getGlobalBounds().findIntersection( leftPanel->getGlobalBounds() ) ) {
-		ball->setXVelocity( -ball->getVelocity().x );
-		return true;
-	}
-	else return false;
-}
-
-bool Level0::detectCollisionBallAndPlayer() {
-	if (ball->getCanBounce() && ball->getGlobalBounds().findIntersection(player->getGlobalBounds())) {
-		player->playSound( 0 );
-		if (ball->getPosition().y > player->getGlobalBounds().position.y + player->getGlobalBounds().size.y ||
-			ball->getPosition().y < player->getGlobalBounds().position.y) {
-			if (ball->getPosition().y < player->getGlobalBounds().position.y) {
-				ball->setYVelocity( -ball->getVelocity().y );
-				ball->setXVelocity((ball->getPosition().x - player->getPosition().x) * 2);
-			}
-		}
-		else ball->setXVelocity( -ball->getVelocity().x );
-		return true;
-	}
-	return false;
-}
-
 void Level0::detectCollisionPlayerAndLeftPanel() {
 	if (player->getCanMoveLeft() &&
 		leftPanel->getPosition().x < player->getPosition().x && 
@@ -200,22 +175,6 @@ void Level0::detectCollisionPlayerAndPowerUp() {
 			player->setActivePowerUp( blocks[i]->getPowerUp()->getPowerID() );
 		}
 	}
-}
-
-bool Level0::detectCollisionBallAndRightPanel() {
-	if (ball->getCanBounce() && ball->getGlobalBounds().findIntersection(rightPanel->getGlobalBounds() ) ) {
-		ball->setXVelocity( -ball->getVelocity().x );
-		return true;
-	}
-	else return false;
-}
-
-bool Level0::detectCollisionBallAndTopPanel() {
-	if (ball->getCanBounce() && ball->getGlobalBounds().findIntersection( topPanel->getGlobalBounds() ) ) {
-		ball->setYVelocity( -ball->getVelocity().y );
-		return true;
-	}
-	else return false;
 }
 
 /**

@@ -36,10 +36,15 @@ public:
 
 	bool getCanBounce();
 	void setCanBounce(bool canBounce);
+	bool isCollisionDetected(GameObject *otherGameObject);
 
 private:
 	// helpers
 	void loadDefaultSettings();
+	bool checkCollisionWithPlayer(GameObject *otherGameObject);
+	bool checkCollisionWithPanelL(GameObject *otherGameObject);
+	bool checkCollisionWithPanelR(GameObject *otherGameObject);
+	bool checkCollisionWithPanelT(GameObject *otherGameObject);
 
 private:
 	// private members
