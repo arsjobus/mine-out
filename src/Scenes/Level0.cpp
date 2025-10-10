@@ -86,7 +86,7 @@ void Level0::update(Window &window) {
 		// Detect and handle the powerup going out of bounds.
 		detectPowerUpOutOfBounds(window);
 		// Detect and handle the ball going out of bounds.
-		detectBallOutOfBounds(window);
+		if (ball->isOutOfBounds(window)) resetMatch(window);
 	} else {
 		music.pause();
 		updateActiveBlockCount();
@@ -103,18 +103,6 @@ void Level0::render(Window& window) {
 	window.draw(*rightPanel);
 	for (int i = 0; i < blocks.size(); ++i)
 		blocks[i]->render(window);
-}
-
-/**
-* Detect and handle the ball going out of bounds.
-*/
-void Level0::detectBallOutOfBounds(Window &window) {
-	if (ball->getPosition().y > window.getSize().y ||
-		ball->getPosition().y < 0 ||
-		ball->getPosition().x > window.getSize().x ||
-		ball->getPosition().x < 0
-		)
-		resetMatch(window);
 }
 
 bool Level0::detectCollisionBallAndBlock() {

@@ -37,6 +37,7 @@ public:
 	bool getCanBounce();
 	void setCanBounce(bool canBounce);
 	bool isCollisionDetected(GameObject *otherGameObject);
+	bool isOutOfBounds(Window &window);
 
 private:
 	// helpers

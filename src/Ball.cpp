@@ -52,6 +52,15 @@ bool Ball::isCollisionDetected(GameObject *otherGameObject) {
 	return false;
 }
 
+bool Ball::isOutOfBounds(Window &window) {
+	return (
+		getPosition().y > window.getSize().y ||
+		getPosition().y < 0 ||
+		getPosition().x > window.getSize().x ||
+		getPosition().x < 0
+	);
+}
+
 bool Ball::checkCollisionWithPanelL(GameObject *otherGameObject) {
 	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
 	if (getCanBounce() &&
