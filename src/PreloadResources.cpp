@@ -2,6 +2,7 @@
 
 std::vector<sf::SoundBuffer> PreloadResources::sound;
 std::vector<sf::Texture> PreloadResources::txtAnimation;
+std::vector<sf::Texture> PreloadResources::txtBackground;
 std::vector<sf::Texture> PreloadResources::txtBlock;
 std::vector<sf::Texture> PreloadResources::txtLevel;
 std::vector<sf::Texture> PreloadResources::txtPaddle;
@@ -15,6 +16,7 @@ PreloadResources::~PreloadResources(void) { }
 
 void PreloadResources::loadDefaultSettings() {
 	this->setAnimationDirectoryName("animations");
+	this->setBackgroundDirectoryName("backgrounds");
 	this->setBlockDirectoryName("blocks");
 	this->setPaddleDirectoryName("paddles");
 	this->setLevelDirectoryName("levels");
@@ -34,6 +36,10 @@ std::string PreloadResources::soundFilePath() {
 
 std::string PreloadResources::animationTextureFilePath() {
 	return std::string( this->getTextureDirectoryName() + "/" + this->getAnimationDirectoryName() + "/" );
+}
+
+std::string PreloadResources::backgroundTextureFilePath() {
+	return std::string( this->getTextureDirectoryName() + "/" + this->getBackgroundDirectoryName() + "/" );
 }
 
 std::string PreloadResources::blockTextureFilePath() {
@@ -70,6 +76,17 @@ void PreloadResources::loadAnimationTexture(const char *filename) {
 	else
 		std::cout << "Loaded: " << filename << this->getTextureFileType() << std::endl;
 	txtAnimation.push_back(texture);
+	this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
+	this->calculateLoadPercentile();
+}
+
+void PreloadResources::loadBackgroundTexture(const char *filename) {
+	sf::Texture texture;
+	if (!texture.loadFromFile(std::string(this->backgroundTextureFilePath() + filename + this->getTextureFileType())))
+		std::cout << "Could not load: " << filename << this->getTextureFileType() << std::endl;
+	else
+		std::cout << "Loaded: " << filename << this->getTextureFileType() << std::endl;
+	txtBackground.push_back(texture);
 	this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
 	this->calculateLoadPercentile();
 }
@@ -125,6 +142,7 @@ void PreloadResources::calculateLoadPercentile() {
 void PreloadResources::unloadResources() {
 	sound.clear();
 	txtAnimation.clear();
+	txtBackground.clear();
 	txtBlock.clear();
 	txtLevel.clear();
 	txtPaddle.clear();
@@ -134,6 +152,8 @@ void PreloadResources::unloadResources() {
 sf::SoundBuffer &PreloadResources::getBufferedSound(int index) { return this->sound[index]; }
 
 sf::Texture &PreloadResources::getAnimationTexture(int index) { return this->txtAnimation[index]; }
+
+sf::Texture &PreloadResources::getBackgroundTexture(int index) { return this->txtBackground[index]; }
 
 sf::Texture &PreloadResources::getBlockTexture(int index) { return this->txtBlock[index]; }
 
@@ -167,6 +187,12 @@ std::string &PreloadResources::getAnimationDirectoryName() { return this->animat
 
 void PreloadResources::setAnimationDirectoryName(const char *animationDirectoryName) {
 	this->animationDirectoryName = animationDirectoryName;
+}
+
+std::string &PreloadResources::getBackgroundDirectoryName() { return this->backgroundDirectoryName; }
+
+void PreloadResources::setBackgroundDirectoryName(const char *backgroundDirectoryName) {
+	this->backgroundDirectoryName = backgroundDirectoryName;
 }
 
 std::string &PreloadResources::getBlockDirectoryName() { return this->blockDirectoryName; }

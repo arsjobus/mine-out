@@ -22,6 +22,7 @@ public:
 	~PreloadResources(void);
 
 	void loadAnimationTexture(const char *filename);
+	void loadBackgroundTexture(const char *filename);
 	void loadBlockTexture(const char *filename);
 	void loadLevelTexture(const char *filename);
 	void loadPaddleTexture(const char *filename);
@@ -29,6 +30,7 @@ public:
 	void loadSound(const char *filename);
 
 	std::string animationTextureFilePath();
+	std::string backgroundTextureFilePath();
 	std::string blockTextureFilePath();
 	std::string levelTextureFilePath();
 	std::string paddleTextureFilePath();
@@ -60,6 +62,9 @@ public:
 	std::string &getAnimationDirectoryName();
 	void setAnimationDirectoryName(const char *animationDirectoryName);
 
+	std::string &getBackgroundDirectoryName();
+	void setBackgroundDirectoryName(const char *animationDirectoryName);
+
 	std::string &getBlockDirectoryName();
 	void setBlockDirectoryName(const char *blockDirectoryName);
 
@@ -77,6 +82,7 @@ public:
 
 	sf::SoundBuffer &getBufferedSound(int index);
 	sf::Texture &getAnimationTexture(int index);
+	sf::Texture &getBackgroundTexture(int index);
 	sf::Texture &getBlockTexture(int index);
 	sf::Texture &getLevelTexture(int index);
 	sf::Texture &getPaddleTexture(int index);
@@ -99,8 +105,10 @@ private:
 	static std::vector<sf::Texture> txtLevel;
 	static std::vector<sf::Texture> txtPaddle;
 	static std::vector<sf::Texture> txtPowerup;
+	static std::vector<sf::Texture> txtBackground;
 
 	std::string animationDirectoryName;
+	std::string backgroundDirectoryName;
 	std::string blockDirectoryName;
 	std::string levelDirectoryName;
 	std::string paddleDirectoryName;

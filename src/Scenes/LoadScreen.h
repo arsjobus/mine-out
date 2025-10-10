@@ -21,6 +21,7 @@ public:
 
 private:
 	bool animationsAreLoading;
+	bool backgroundsAreLoading;
 	bool blocksAreLoading;
 	bool levelsAreLoading;
 	bool paddlesAreLoading;
@@ -28,6 +29,7 @@ private:
 	bool soundsAreLoading;
 
 	size_t loadedAnimationsCount;
+	size_t loadedBackgroundsCount;
 	size_t loadedBlocksCount;
 	size_t loadedLevelCount;
 	size_t loadedPaddlesCount;
@@ -35,6 +37,7 @@ private:
 	size_t loadedSoundCount;
 
 	std::vector<std::string> animationTextureNames;
+	std::vector<std::string> backgroundTextureNames;
 	std::vector<std::string> blockTextureNames;
 	std::vector<std::string> levelTextureNames;
 	std::vector<std::string> paddleTextureNames;

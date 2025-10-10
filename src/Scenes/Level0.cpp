@@ -161,8 +161,9 @@ void Level0::updatePowerUp() {
 void Level0::loadBackground(Window &window) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading background.."));
 	sf::Vector2f screenResolution(window.getScreenResolution().x, window.getScreenResolution().y);
+	getRefToBackground().setTexture( &resources.getBackgroundTexture(0) );
 	getRefToBackground().setSize(sf::Vector2f(screenResolution.x, screenResolution.y));
-    getRefToBackground().setFillColor(sf::Color::Black);
+    //getRefToBackground().setFillColor(sf::Color::White);
     getRefToBackground().setOrigin(sf::Vector2f(getRefToBackground().getGlobalBounds().size.x / 2, getRefToBackground().getGlobalBounds().size.y / 2));
 	getRefToBackground().setPosition(sf::Vector2f(screenResolution.x / 2, screenResolution.y / 2));
 }
@@ -244,6 +245,7 @@ void Level0::loadLevelDataFromFile(const char *filename) {
 
 void Level0::loadObjects(Window &window) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading objects.."));
+	loadBackground(window);
 	loadPanelT(window.getScreenResolution().x, 100);
 	loadPanelR(panelT->getSize().y / 2, window.getScreenResolution().y - panelT->getSize().y);
 	loadPanelL(panelT->getSize().y / 2, window.getScreenResolution().y - panelT->getSize().y);

@@ -29,6 +29,13 @@ void LoadScreen::update(Window &window, sf::Time dt)
 			}
 			else resources.loadAnimationTexture(animationTextureNames[loadedAnimationsCount++].c_str());
 		}
+		else if (loadedBackgroundsCount < backgroundTextureNames.size()) {
+			if (loadedBackgroundsCount == 0 && !backgroundsAreLoading) {
+				textLoadingStatus->setString("Loading Backgrounds..");
+				backgroundsAreLoading = true;
+			}
+			else resources.loadBackgroundTexture(backgroundTextureNames[loadedBackgroundsCount++].c_str());
+		}
 		else if (loadedPaddlesCount < paddleTextureNames.size()) {
 			if (loadedPaddlesCount == 0 && !paddlesAreLoading) {
 				textLoadingStatus->setString("Loading Paddles..");
@@ -95,31 +102,34 @@ void LoadScreen::render(Window &window, sf::Time dt) {
 
 void LoadScreen::initialize() {
 	animationsAreLoading = false;
+	backgroundsAreLoading = false;
 	blocksAreLoading = false;
 	levelsAreLoading = false;
 	paddlesAreLoading = false;
 	powerupsAreLoading = false;
 	soundsAreLoading = false;
 	loadedAnimationsCount = 0;
+	loadedBackgroundsCount = 0;
 	loadedPaddlesCount = 0;
 	loadedBlocksCount = 0;
 	loadedLevelCount = 0;
 	loadedPowerupCount = 0;
 	loadedSoundCount = 0;
 
-	animationTextureNames.push_back("explosion1");// id: 0
-	blockTextureNames.push_back("block-default"); // id: 0
-	blockTextureNames.push_back("block-stone1");  // id: 1
-	blockTextureNames.push_back("block-stone2");  // id: 2
-	blockTextureNames.push_back("block-stone3");  // id: 3
-	blockTextureNames.push_back("block-normal1"); // id: 4
-	blockTextureNames.push_back("block-gold1");   // id: 5
-	blockTextureNames.push_back("block-tnt1");    // id: 6
-	paddleTextureNames.push_back("paddle");       // id: 0
-	paddleTextureNames.push_back("paddle-grow");  // id: 1
-	levelTextureNames.push_back("level-top");     // id: 0
-	levelTextureNames.push_back("level-left");    // id: 1
-	levelTextureNames.push_back("level-right");   // id: 2
+	animationTextureNames.push_back("explosion1");   // id: 0
+	backgroundTextureNames.push_back("background1"); // id: 0
+	blockTextureNames.push_back("block-default");    // id: 0
+	blockTextureNames.push_back("block-stone1");     // id: 1
+	blockTextureNames.push_back("block-stone2");     // id: 2
+	blockTextureNames.push_back("block-stone3");     // id: 3
+	blockTextureNames.push_back("block-normal1");    // id: 4
+	blockTextureNames.push_back("block-gold1");      // id: 5
+	blockTextureNames.push_back("block-tnt1");       // id: 6
+	paddleTextureNames.push_back("paddle");          // id: 0
+	paddleTextureNames.push_back("paddle-grow");     // id: 1
+	levelTextureNames.push_back("level-top");        // id: 0
+	levelTextureNames.push_back("level-left");       // id: 1
+	levelTextureNames.push_back("level-right");      // id: 2
 	powerupTextureNames.push_back("powerup-increased-damage"); // id: 0
 	powerupTextureNames.push_back("powerup-grow-paddle"); // id: 1
 	soundNames.push_back("paddle-hit"); // id: 0
@@ -127,6 +137,7 @@ void LoadScreen::initialize() {
 	resources.setResourceCount(resources.getResourceCount() + 
 		blockTextureNames.size() + 
 		animationTextureNames.size() +
+		backgroundTextureNames.size() +
 		paddleTextureNames.size() +
 		powerupTextureNames.size() +
 		levelTextureNames.size() +
