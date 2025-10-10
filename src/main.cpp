@@ -92,9 +92,7 @@ int main() {
     }
 
     log.quickWrite(LOG_INFO, "Exiting game loop...");
-
     currentState.reset();
-
     PreloadResources::unloadResources();
 
     return 0;
