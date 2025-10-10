@@ -22,7 +22,7 @@ public:
 	virtual ~Block( void );
 	virtual void update(std::vector<Block *> block, sf::Time dt);
 	virtual void loadDefaultSettings();
-	virtual void render(Window &window);
+	virtual void render(Window &window, sf::Time dt);
 
 	void dropPowerUp();
 	void randomizePowerUp();

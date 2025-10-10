@@ -13,7 +13,7 @@ public:
 	TNTBlock(float width, float height);
 	~TNTBlock(void);
 
-	void render(Window &window);
+	void render(Window &window, sf::Time dt);
 	void update(std::vector<Block *> block, sf::Time dt);
 
 	Explosion *getExplosion();
@@ -30,6 +30,7 @@ private:
 	Explosion *explosion;
 	void loadDefaultSettings();
 	float explosiveRadius;
+	sf::Time explosionTimer;
 };
 
 #endif

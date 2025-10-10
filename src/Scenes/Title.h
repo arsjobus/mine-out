@@ -18,8 +18,8 @@ public:
 
 public:
 	void processEvents(Window &window);
-    void update(Window &window);
-    void render(Window &window);
+    void update(Window &window, sf::Time dt);
+    void render(Window &window, sf::Time dt);
 
 private:
 	void loadDefaultFonts();

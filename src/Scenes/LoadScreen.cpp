@@ -19,7 +19,7 @@ void LoadScreen::processEvents(Window &window) {
 	}
 }
 
-void LoadScreen::update(Window &window)
+void LoadScreen::update(Window &window, sf::Time dt)
 {
 	if (resources.getLoadedResourceCount() < resources.getResourceCount()) {
 		if (loadedAnimationsCount < animationTextureNames.size()) {
@@ -84,7 +84,7 @@ void LoadScreen::update(Window &window)
 	);
 }
 
-void LoadScreen::render(Window &window) {
+void LoadScreen::render(Window &window, sf::Time dt) {
 	window.clear();
 	window.draw(getRefToBackground());
 	window.draw(rectLoadBarBackground);

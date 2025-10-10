@@ -12,7 +12,7 @@ StoneBlock::StoneBlock( int newWidth, int newHeight ) {
 */
 StoneBlock::~StoneBlock(void) { unloadTextures(); }
 
-void StoneBlock::render(Window &window) { Block::render(window); }
+void StoneBlock::render(Window &window, sf::Time dt) { Block::render(window, dt); }
 
 /**
 * Updates members of this object.

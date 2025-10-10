@@ -12,8 +12,8 @@ public:
 	~LoadScreen(void);
 
 	void processEvents(Window &window);
-    void update(Window &window);
-    void render(Window &window);
+    void update(Window &window, sf::Time dt);
+    void render(Window &window, sf::Time dt);
 
 	void initialize();
 	void initilizeBackground(Window &window);

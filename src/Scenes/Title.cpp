@@ -25,9 +25,9 @@ void Title::processEvents(Window &window) {
     }
 }
 
-void Title::update(Window &window) { }
+void Title::update(Window &window, sf::Time dt) { }
 
-void Title::render(Window &window) {
+void Title::render(Window &window, sf::Time dt) {
 	window.clear();
 	window.draw(getRefToBackground());
 	window.draw(*txtMainTitle);

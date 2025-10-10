@@ -12,7 +12,7 @@ public:
 	GoldBlock(float width, float height);
 	~GoldBlock(void);
 
-	void render(Window &window);
+	void render(Window &window, sf::Time dt);
 	void update(std::vector<Block *> block, sf::Time dt);
 
 private:

@@ -19,7 +19,7 @@ public:
 
 	bool detectCollisionWithBlocks(Block &block);
 
-	bool nextFrame();
+	bool nextFrame(sf::Time dt);
 
 	bool getActive();
 	void setActive(bool active);
@@ -31,8 +31,7 @@ private:
 	bool active;
 	bool canPlayAnimation;
 	float radius;
-	sf::Clock deltaClock;
-	sf::Time dt;
+	sf::Time animationTimer;
 	sf::Vector2i currentFrame;
 	sf::Vector2i totalFrames;
 

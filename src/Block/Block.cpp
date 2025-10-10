@@ -71,7 +71,7 @@ void Block::loadDefaultSettings() {
 	this->setOrigin( sf::Vector2f(this->getGlobalBounds().size.x / 2.f, this->getGlobalBounds().size.y / 2.f) );
 }
 
-void Block::render(Window &window) {
+void Block::render(Window &window, sf::Time dt) {
 	if (this->getActive())
 		window.draw( *this );
 	powerup->render(window);

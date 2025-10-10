@@ -21,6 +21,7 @@ int nextState = GameState::State::STATE_NULL;
 
 int main() {
 	sf::Clock randomTime;
+    sf::Clock deltaClock;
 	std::srand(randomTime.restart().asMicroseconds());
 	Log log;
 	Window window;
@@ -41,12 +42,13 @@ int main() {
 	//currentState = new Level2(window);
 
     log.quickWrite(LOG_INFO, "Entering game loop..");
-
+    
     while ( stateID != GameState::State::STATE_EXIT ) {
+        sf::Time dt = deltaClock.restart();
 		currentState->processEvents(window);
-		currentState->update(window);
+		currentState->update(window, dt);
 		changeState(window);
-		currentState->render(window);
+		currentState->render(window, dt);
     }
     log.quickWrite(LOG_INFO, "Exiting game loop..");
     return 0;

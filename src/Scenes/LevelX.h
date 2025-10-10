@@ -18,8 +18,8 @@ public:
 	void loadObjects(Window &window);
 
 public:
-    void render(Window &window);
-	void update(Window &window);
+    void render(Window &window, sf::Time dt);
+	void update(Window &window, sf::Time dt);
 };
 
 #endif

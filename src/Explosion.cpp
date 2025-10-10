@@ -17,10 +17,10 @@ bool Explosion::detectCollisionWithBlocks(Block &block) {
     return this->getGlobalBounds().findIntersection(block.getGlobalBounds()).has_value();
 }
 
-bool Explosion::nextFrame() {
-    dt += deltaClock.restart();
+bool Explosion::nextFrame(sf::Time dt) {
+    animationTimer += dt;
     sf::Vector2i frameSize(256, 256);
-    if (dt.asMilliseconds() >= sf::milliseconds(20).asMilliseconds()) {
+    if (animationTimer.asMilliseconds() >= sf::milliseconds(20).asMilliseconds()) {
         if (++currentFrame.x < totalFrames.x)
             this->setTextureRect(sf::Rect<int>(
                 sf::Vector2i(currentFrame.x * frameSize.x, currentFrame.y * frameSize.y),
@@ -37,15 +37,13 @@ bool Explosion::nextFrame() {
                 this->setActive(false);
             }
         }
-        dt = sf::seconds(0);
+        animationTimer = sf::Time::Zero;
         return true;
     }
     return false;
 }
 
 void Explosion::loadDefaultSettings() {
-    this->deltaClock.restart();
-    this->dt = sf::seconds(0);
     sf::Sound sndExplosion = sf::Sound(resource.getBufferedSound(1));
 	this->getRefToSound()->push_back(sndExplosion);
     this->setActive(true);

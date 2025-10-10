@@ -16,14 +16,14 @@ LevelX::~LevelX(void) {
 	unloadObjects();
 }
 
-void LevelX::render( Window &window ) {
-	Level0::render( window );
+void LevelX::render( Window &window, sf::Time dt ) {
+	Level0::render( window, dt );
 	// Add more objects to render here:
 	window.display();
 }
 
-void LevelX::update( Window &window ) {
-	Level0::update( window );
+void LevelX::update( Window &window, sf::Time dt ) {
+	Level0::update( window, dt );
 	//If all blocks have been destoryed go to next level.
 	if (this->getActiveBlocksCount() <= 0)
 		setNextState( nextGameState );

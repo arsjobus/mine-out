@@ -9,7 +9,7 @@ GoldBlock::GoldBlock( float width, float height ) {
 }
 GoldBlock::~GoldBlock(void) { this->unloadTextures(); }
 
-void GoldBlock::render(Window &window) { Block::render(window); }
+void GoldBlock::render(Window &window, sf::Time dt) { Block::render(window, dt); }
 
 /**
 * Updates members of this object.

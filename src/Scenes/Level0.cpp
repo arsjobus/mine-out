@@ -35,7 +35,6 @@ void Level0::processEvents(Window &window) {
             else if (key == sf::Keyboard::Scancode::R) setNextState(GameState::State::STATE_LEVEL1);
             else if (key == sf::Keyboard::Scancode::P) {
 				isPaused = !isPaused;
-				deltaClock.restart(); // must restart the deltaclock when pausing / unpausing
 				if (isPaused && isMusicLoaded) music.pause();	
 			}
             else if (key == sf::Keyboard::Scancode::Escape) setNextState(GameState::State::STATE_EXIT);
@@ -53,8 +52,8 @@ void Level0::processEvents(Window &window) {
     }
 }
 
-void Level0::update(Window &window) {
-	sf::Time dt = (!isPaused) ? deltaClock.restart() : sf::Time::Zero;
+void Level0::update(Window &window, sf::Time dt) {
+	dt = (!isPaused) ? dt : sf::Time::Zero;
 	// ::::::::::::::::::::::::
 	// :::: HANDLE UPDATES ::::
 	// :::::::::::::::::
@@ -89,7 +88,8 @@ void Level0::update(Window &window) {
 	if (ball->isOutOfBounds(window)) resetMatch(window);
 }
 
-void Level0::render(Window& window) {
+void Level0::render(Window& window, sf::Time dt) {
+	dt = (!isPaused) ? dt : sf::Time::Zero;
 	window.clear();
 	window.draw(getRefToBackground());
 	window.draw(*player);
@@ -98,7 +98,7 @@ void Level0::render(Window& window) {
 	window.draw(*panelL);
 	window.draw(*panelR);
 	for (int i = 0; i < blocks.size(); ++i)
-		blocks[i]->render(window);
+		blocks[i]->render(window, dt);
 }
 
 bool Level0::detectCollisionBallAndBlock() {
@@ -138,10 +138,7 @@ void Level0::detectPowerUpOutOfBounds(Window &window) {
 }
 
 void Level0::updateActiveBlockCount() {
-	for (int i = 0; i < blocks.size(); ++i) {
-		if (blocks[i]->getActive())
-			this->setActiveBlocksCount(this->getActiveBlocksCount() + 1);
-	}
+	for (int i = 0; i < blocks.size(); ++i) if (blocks[i]->getActive()) activeBlocksCount++;
 }
 
 void Level0::updateGameObjects(sf::Time dt) {
@@ -354,18 +351,11 @@ void Level0::resetPlayer(Window &window) {
 }
 
 void Level0::unloadObjects() {
-	delete ball;
-	ball   = NULL;
-	delete panelT;
-	panelT = NULL;
-	delete panelL;
-	panelL = NULL;
-	delete panelR;
-	panelR = NULL;
-	delete player;
-	player = NULL;
-	if (blocks.size() > 0) {
-		for (int i = 0; i < blocks.size(); ++i)
-			blocks.erase(blocks.begin() + i);
-	}
+	delete ball;     ball   = nullptr;
+	delete panelT;   panelT = nullptr;
+	delete panelL;   panelL = nullptr;
+	delete panelR;   panelR = nullptr;
+	delete player;   player = nullptr;
+	for (auto& block : blocks) delete block;
+	blocks.clear();
 }

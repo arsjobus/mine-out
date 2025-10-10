@@ -17,35 +17,38 @@ TNTBlock::~TNTBlock( void ) { this->unloadTextures(); }
 */
 void TNTBlock::update(std::vector<Block *> block, sf::Time dt) {
 	Block::update(block, dt);
-	// Override Block updates here:
-	if ( !this->getActive() && !this->getHasExploded() ) {
-		dt += deltaClock.restart();
-		if (explosion == NULL) {
-			explosion = new Explosion( this->getExplosiveRadius(), this->getPosition().x, this->getPosition().y );
 
-			explosion->playSound( 0 );
+	if (!getActive() && !getHasExploded()) {
+		// Accumulate time only if the game is not paused
+		explosionTimer += dt;
+
+		if (explosion == nullptr) {
+			explosion = new Explosion(getExplosiveRadius(), getPosition().x, getPosition().y);
+			explosion->playSound(0);
 		}
-		if (!explosion->getActive() || 
-			dt.asMilliseconds() >= sf::milliseconds(250).asMilliseconds()) {
-			// Detect collision between explosion and other blocks.
-			for (int i = 0; i < block.size(); ++i) {
-				if (block[i]->getActive() && explosion->detectCollisionWithBlocks(*block[i])) {
-					block[i]->setHitPoints(block[i]->getHitPoints() - explosion->getDamage());
-					log.quickWrite(std::string( this->getLabel() + log.getSeparator() + "has dealt " + log.intToString(explosion->getDamage()) + " points of damage to " + block[i]->getLabel() + "." ));
+
+		if (!explosion->getActive() || explosionTimer >= sf::milliseconds(50)) {
+			// Damage nearby blocks
+			for (auto& b : block) {
+				if (b->getActive() && explosion->detectCollisionWithBlocks(*b)) {
+					b->setHitPoints(b->getHitPoints() - explosion->getDamage());
+					log.quickWrite(getLabel() + log.getSeparator() +
+						"has dealt " + log.intToString(explosion->getDamage()) +
+						" points of damage to " + b->getLabel() + ".");
 				}
 			}
-			dt = sf::seconds( 0 );
-			this->setHasExploded( true );
+			explosionTimer = sf::Time::Zero;
+			setHasExploded(true);
 		}
 	}
 }
 
-void TNTBlock::render(Window &window) {
-	Block::render(window);
+void TNTBlock::render(Window &window, sf::Time dt) {
+	Block::render(window, dt);
 	if (explosion != NULL) {
 		if (explosion->getActive()) {
 			window.draw(*explosion);
-			explosion->nextFrame();
+			explosion->nextFrame(dt);
 		}
 	}
 }
@@ -58,6 +61,7 @@ void TNTBlock::loadDefaultSettings() {
 	// Override Block default settings here:
 	this->deltaClock.restart();
 	this->dt = sf::seconds(0);
+	this->explosionTimer = sf::Time::Zero;
 	this->setDropChance( 0.f );
 	this->setTextureID( 6 );
 	this->setLabel( "TNTBlock" );

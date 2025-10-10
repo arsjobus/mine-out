@@ -14,7 +14,7 @@ NormalBlock::NormalBlock( float newWidth, float newHeight ) {
 */
 NormalBlock::~NormalBlock( void ) { unloadTextures(); }
 
-void NormalBlock::render(Window &window) { Block::render(window); }
+void NormalBlock::render(Window &window, sf::Time dt) { Block::render(window, dt); }
 
 /**
 * Updates members of this object.

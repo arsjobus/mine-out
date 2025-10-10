@@ -25,8 +25,8 @@ public:
 	};
 
     virtual void processEvents(Window &window) = 0;
-    virtual void update(Window &window) = 0;
-    virtual void render(Window &window) = 0;
+    virtual void update(Window &window, sf::Time dt) = 0;
+    virtual void render(Window &window, sf::Time dt) = 0;
     virtual ~GameState() {};
 
 public:
