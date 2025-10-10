@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include "Block.h"
 #include "GameObject.h"
+#include "Paddle.h"
 #include "Panel/PanelL.h"
 #include "Panel/PanelR.h"
 #include "Panel/PanelT.h"
@@ -36,6 +37,7 @@ public:
 
 	bool getCanBounce();
 	void setCanBounce(bool canBounce);
+	void followPaddle(Paddle *paddle);
 	bool isCollisionDetected(GameObject *otherGameObject);
 	bool isOutOfBounds(Window &window);
 

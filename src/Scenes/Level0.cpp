@@ -53,10 +53,11 @@ void Level0::update(Window &window) {
 
 		// Play music if it is not
 		if (music.getStatus() != sf::SoundSource::Status::Playing) music.play();
+
 		updateActiveBlockCount(); // Update active block count
 		updateGameObjects(); // Update game objects
 		updatePowerUp(); // Update the player's currently active powerup
-		stickBallToPlayer(); // The ball follows player's paddle until it is launched
+		ball->followPaddle(player); // The ball follows player's paddle until it is launched
 
 		// :::::::::::::::::::::::::::
 		// :::: DETECT COLLISIONS ::::
@@ -372,14 +373,6 @@ void Level0::resetPlayer(Window &window) {
 	player->setXVelocity( 0.f );
 	player->setYVelocity( 0.f );
 	this->defaultPaddleSpeed = 500;
-}
-
-void Level0::stickBallToPlayer() {
-	// The ball will follow the players paddle until it is launched.
-	if (ball->getStatus() == Ball::Status::STUCK_TO_PLAYER)
-		ball->setPosition(
-			sf::Vector2f(player->getPosition().x, ball->getPosition().y)
-		);
 }
 
 void Level0::unloadObjects() {

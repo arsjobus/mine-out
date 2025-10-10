@@ -102,6 +102,10 @@ bool Ball::checkCollisionWithPlayer(GameObject *otherGameObject) {
 	} else return false;
 }
 
+void Ball::followPaddle(Paddle *paddle) {
+	if (getStatus() == Ball::Status::STUCK_TO_PLAYER) setPosition( sf::Vector2f(paddle->getPosition().x, getPosition().y) );
+}
+
 /**
  * Loads default settings.
  */
