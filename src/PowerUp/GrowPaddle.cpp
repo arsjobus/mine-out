@@ -3,8 +3,8 @@
 GrowPaddle::GrowPaddle(void) { this->loadDefaultSettings(); }
 GrowPaddle::~GrowPaddle(void) { }
 
-void GrowPaddle::update(bool isPaused) {
-	PowerUp::update(isPaused);
+void GrowPaddle::update(sf::Time dt) {
+	PowerUp::update(dt);
 	// Override PowerUp updates here:
 }
 

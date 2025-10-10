@@ -19,7 +19,7 @@ public:
 
 	~PowerUp(void);
 
-	virtual void update(bool isPaused);
+	virtual void update(sf::Time dt);
 	virtual void loadDefaultSettings();
 	virtual void render(Window &window);
 

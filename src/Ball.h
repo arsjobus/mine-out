@@ -28,7 +28,7 @@ public:
 	Ball( float newRadius );
 	~Ball( void );
 
-	void update(bool isPaused);
+	void update(sf::Time dt);
 
 public:
 	// setters and getters

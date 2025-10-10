@@ -3,8 +3,8 @@
 DamageIncrease::DamageIncrease(void) { loadDefaultSettings(); }
 DamageIncrease::~DamageIncrease(void) { }
 
-void DamageIncrease::update(bool isPaused) {
-	PowerUp::update(isPaused);
+void DamageIncrease::update(sf::Time dt) {
+	PowerUp::update(dt);
 	// Override PowerUp updates here:
 }
 

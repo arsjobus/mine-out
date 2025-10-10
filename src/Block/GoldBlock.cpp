@@ -14,7 +14,7 @@ void GoldBlock::render(Window &window) { Block::render(window); }
 /**
 * Updates members of this object.
 */
-void GoldBlock::update(std::vector<Block *> block, bool isPaused) { Block::update(block, isPaused); }
+void GoldBlock::update(std::vector<Block *> block, sf::Time dt) { Block::update(block, dt); }
 
 /**
 * Loads default settings.

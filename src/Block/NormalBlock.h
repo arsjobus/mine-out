@@ -13,7 +13,7 @@ public:
 	~NormalBlock( void );
 
 	void render(Window &window);
-	void update(std::vector<Block *> block, bool isPaused);
+	void update(std::vector<Block *> block, sf::Time dt);
 
 private:
 	// helpers

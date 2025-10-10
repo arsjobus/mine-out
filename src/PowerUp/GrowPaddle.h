@@ -12,7 +12,7 @@ public:
 	GrowPaddle(void);
 	~GrowPaddle(void);
 
-	void update(bool isPaused);
+	void update(sf::Time dt);
 	void render(Window &window);
 
 private:

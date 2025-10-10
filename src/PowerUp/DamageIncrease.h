@@ -12,7 +12,7 @@ public:
 	DamageIncrease(void);
 	~DamageIncrease(void);
 
-	void update(bool isPaused);
+	void update(sf::Time dt);
 	void loadDefaultSettings();
 	void render(Window &window);
 };

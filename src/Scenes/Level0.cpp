@@ -33,7 +33,10 @@ void Level0::processEvents(Window &window) {
 				player->getCanMoveRight() && !isPaused
 			) player->setXVelocity(player->getSpeed());
             else if (key == sf::Keyboard::Scancode::R) setNextState(GameState::State::STATE_LEVEL1);
-            else if (key == sf::Keyboard::Scancode::P) isPaused = !isPaused;
+            else if (key == sf::Keyboard::Scancode::P) {
+				isPaused = !isPaused;
+				deltaClock.restart();
+			}
             else if (key == sf::Keyboard::Scancode::Escape) setNextState(GameState::State::STATE_EXIT);
         }
         // Handle key release
@@ -50,11 +53,11 @@ void Level0::processEvents(Window &window) {
 }
 
 void Level0::update(Window &window) {
-	sf::Time dt = deltaClock.restart(); // Reset the delta time at the beginning of every update phase
+	sf::Time dt = (!isPaused) ? deltaClock.restart() : sf::Time::Zero;
 	// :::::::::::::::::
 	// :::: UPDATES ::::
 	// :::::::::::::::::
-	updateGameObjects(); // Update game objects
+	updateGameObjects(dt); // Update game objects
 	updateActiveBlockCount(); // Update active block count
 	updatePowerUp(); // Update the player's currently active powerup
 	ball->followPaddle(player); // The ball follows player's paddle until it is launched
@@ -151,11 +154,10 @@ void Level0::updateActiveBlockCount() {
 	}
 }
 
-void Level0::updateGameObjects() {
-	player->update(isPaused); // Update the player object
-	ball->update(isPaused); // Update the ball object
-	for (int i = 0; i < blocks.size(); ++i)
-		blocks[i]->update(blocks, isPaused); // Update every block object
+void Level0::updateGameObjects(sf::Time dt) {
+	player->update(dt); // Update the player / paddle object
+	ball->update(dt);   // Update the ball object
+	for (int i = 0; i < blocks.size(); ++i) blocks[i]->update(blocks, dt);
 }
 
 void Level0::updatePowerUp() {

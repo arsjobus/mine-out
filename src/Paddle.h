@@ -20,7 +20,7 @@ public:
 	Paddle(int newWidth, int newHeight);
 	~Paddle(void);
 
-	void update(bool isPaused);
+	void update(sf::Time dt);
 
 public:
 	// setters and getters

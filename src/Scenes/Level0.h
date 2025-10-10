@@ -69,7 +69,7 @@ private:
 	void resetPanelT(Window &window);
 	void resetPlayer(Window &window);
 	void updateActiveBlockCount();
-	void updateGameObjects();
+	void updateGameObjects(sf::Time dt);
 	void updatePowerUp();
 
 private:
