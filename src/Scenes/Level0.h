@@ -32,28 +32,13 @@ public:
 	void render(Window &window);
 
 public:
-	void loadBall(float radius);
-
 	void loadBackground(Window &window);
 
 	void loadDefaultSettings();
 
 	void loadLevelDataFromFile(const char *filename);
-	
-	void loadPanelL(int newWidth, int newHeight);
-	void loadPanelR(int newWidth, int newHeight);
-	void loadPanelT(int newWidth, int newHeight);
 
 	void loadObjects(Window &window);
-	
-	void loadPaddle(int paddleWidth, int paddleHeight);
-
-	void resetBall(Window &window);
-	void resetBlocks(Window &window);
-	void resetPanelL(Window &window);
-	void resetPanelR(Window &window);
-	void resetPanelT(Window &window);
-	void resetPlayer(Window &window);
 
 	void resetAllObjects(Window &window);
 
@@ -77,6 +62,17 @@ private:
 	bool detectCollisionBallAndBlock();
 	void detectCollisionPlayerAndPowerUp();
 	void detectPowerUpOutOfBounds(Window &window);
+	void loadBall(float radius);
+	void loadPaddle(int paddleWidth, int paddleHeight);
+	void loadPanelL(int newWidth, int newHeight);
+	void loadPanelR(int newWidth, int newHeight);
+	void loadPanelT(int newWidth, int newHeight);
+	void resetBall(Window &window);
+	void resetBlocks(Window &window);
+	void resetPanelL(Window &window);
+	void resetPanelR(Window &window);
+	void resetPanelT(Window &window);
+	void resetPlayer(Window &window);
 	void updateActiveBlockCount();
 	void updateGameObjects();
 	void updatePowerUp();
