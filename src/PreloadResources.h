@@ -35,13 +35,7 @@ public:
 	std::string powerupTextureFilePath();
 	std::string soundFilePath();
 
-	static void unloadAnimations();
-	static void unloadLevels();
-	static void unloadPaddles();
-	static void unloadPowerups();
 	static void unloadResources();
-	static void unloadSounds();
-	static void unloadTextures();
 
 public:
 	// Accessors and Mutators

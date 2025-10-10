@@ -70,7 +70,8 @@ bool Paddle::checkCollisionWithPowerUp(GameObject *otherGameObject) {
 	if (getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds() )) {
 		powerup->setActive( false );
 		setActivePowerUp( powerup->getPowerID() );
-	}
+		return true;
+	} return false;
 }
 
 void Paddle::loadDefaultSettings() {

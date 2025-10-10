@@ -53,67 +53,67 @@ std::string PreloadResources::powerupTextureFilePath() {
 }
 
 void PreloadResources::loadSound(const char *filename) {
-	sf::SoundBuffer *ptrSoundBuffer = new sf::SoundBuffer;
-	if (!ptrSoundBuffer->loadFromFile(std::string(this->soundFilePath() + filename + this->getSoundFileType())))
+	sf::SoundBuffer soundBuffer;
+	if (!soundBuffer.loadFromFile(std::string(this->soundFilePath() + filename + this->getSoundFileType())))
 		std::cout << "Could not load: " << filename << this->getSoundFileType() << std::endl;
 	else
 		std::cout << "Loaded: " << filename << this->getSoundFileType() << std::endl;
-	sound.push_back(*ptrSoundBuffer);
+	sound.push_back(soundBuffer);
 	this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
 	this->calculateLoadPercentile();
 }
 
 void PreloadResources::loadAnimationTexture(const char *filename) {
-	sf::Texture *ptrTexture = new sf::Texture;
-	if (!ptrTexture->loadFromFile(std::string(this->animationTextureFilePath() + filename + this->getTextureFileType())))
+	sf::Texture texture;
+	if (!texture.loadFromFile(std::string(this->animationTextureFilePath() + filename + this->getTextureFileType())))
 		std::cout << "Could not load: " << filename << this->getTextureFileType() << std::endl;
 	else
 		std::cout << "Loaded: " << filename << this->getTextureFileType() << std::endl;
-	txtAnimation.push_back(*ptrTexture);
+	txtAnimation.push_back(texture);
 	this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
 	this->calculateLoadPercentile();
 }
 
 void PreloadResources::loadBlockTexture(const char *filename) {
-	sf::Texture *ptrTexture = new sf::Texture;
-	if (!ptrTexture->loadFromFile(std::string(this->blockTextureFilePath() + filename + this->getTextureFileType())))
+	sf::Texture texture;
+	if (!texture.loadFromFile(std::string(this->blockTextureFilePath() + filename + this->getTextureFileType())))
 		std::cout << "Could not load: " << filename << this->getTextureFileType() << std::endl;
 	else
 		std::cout << "Loaded: " << filename << this->getTextureFileType() << std::endl;
-	txtBlock.push_back(*ptrTexture);
+	txtBlock.push_back(texture);
 	this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
 	this->calculateLoadPercentile();
 }
 
 void PreloadResources::loadLevelTexture(const char *filename) {
-	sf::Texture *ptrTexture = new sf::Texture;
-	if (!ptrTexture->loadFromFile(std::string(this->levelTextureFilePath() + filename + this->getTextureFileType())))
+	sf::Texture texture;
+	if (!texture.loadFromFile(std::string(this->levelTextureFilePath() + filename + this->getTextureFileType())))
 		std::cout << "Could not load: " << filename << this->getTextureFileType() << std::endl;
 	else
 		std::cout << "Loaded: " << filename << this->getTextureFileType() << std::endl;
-	txtLevel.push_back(*ptrTexture);
+	txtLevel.push_back(texture);
 	this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
 	this->calculateLoadPercentile();
 }
 
 void PreloadResources::loadPaddleTexture(const char *filename) {
-	sf::Texture *ptrTexture = new sf::Texture;
-	if (!ptrTexture->loadFromFile(std::string(this->paddleTextureFilePath() + filename + this->getTextureFileType())))
+	sf::Texture texture;
+	if (!texture.loadFromFile(std::string(this->paddleTextureFilePath() + filename + this->getTextureFileType())))
 		std::cout << "Could not load: " << filename << this->getTextureFileType() << std::endl;
 	else
 		std::cout << "Loaded: " << filename << this->getTextureFileType() << std::endl;
-	txtPaddle.push_back(*ptrTexture);
+	txtPaddle.push_back(texture);
 	this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
 	this->calculateLoadPercentile();
 }
 
 void PreloadResources::loadPowerupTexture(const char *filename) {
-	sf::Texture *ptrTexture = new sf::Texture;
-	if (!ptrTexture->loadFromFile(std::string(this->powerupTextureFilePath() + filename + this->getTextureFileType())))
+	sf::Texture texture;
+	if (!texture.loadFromFile(std::string(this->powerupTextureFilePath() + filename + this->getTextureFileType())))
 		std::cout << "Could not load: " << filename << this->getTextureFileType() << std::endl;
 	else
 		std::cout << "Loaded: " << filename << this->getTextureFileType() << std::endl;
-	txtPowerup.push_back(*ptrTexture);
+	txtPowerup.push_back(texture);
 	this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
 	this->calculateLoadPercentile();
 }
@@ -122,55 +122,13 @@ void PreloadResources::calculateLoadPercentile() {
 	this->setLoadPercentile( this->getLoadedResourceCount() * 100 / this->getResourceCount() * 100 );
 }
 
-void PreloadResources::unloadAnimations() {
-	if (txtAnimation.size() > 0) {
-		for (int i = 0; txtAnimation.size() > 0; ++i)
-			txtAnimation.pop_back();
-	}
-}
-
-void PreloadResources::unloadLevels() {
-	if (txtLevel.size() > 0) {
-		for (int i = 0; txtLevel.size() > 0; ++i)
-			txtLevel.pop_back();
-	}
-}
-
-void PreloadResources::unloadPaddles() {
-	if (txtPaddle.size() > 0) {
-		for (int i = 0; txtPaddle.size() > 0; ++i)
-			txtPaddle.pop_back();
-	}
-}
-
-void PreloadResources::unloadPowerups() {
-	if (txtPowerup.size() > 0) {
-		for (int i = 0; txtPowerup.size() > 0; ++i)
-			txtPowerup.pop_back();
-	}
-}
-
 void PreloadResources::unloadResources() {
-	unloadAnimations();
-	unloadLevels();
-	unloadPaddles();
-	unloadPowerups();
-	unloadSounds();
-	unloadTextures();
-}
-
-void PreloadResources::unloadSounds() {
-	if (sound.size() > 0) {
-		for (int i = 0; sound.size() > 0; ++i)
-			sound.pop_back();
-	}
-}
-
-void PreloadResources::unloadTextures() {
-	if (txtBlock.size() > 0) {
-		for (int i = 0; txtBlock.size() > 0; ++i)
-			txtBlock.pop_back();
-	}
+	sound.clear();
+	txtAnimation.clear();
+	txtBlock.clear();
+	txtLevel.clear();
+	txtPaddle.clear();
+	txtPowerup.clear();
 }
 
 sf::SoundBuffer &PreloadResources::getBufferedSound(int index) { return this->sound[index]; }
