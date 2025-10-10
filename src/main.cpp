@@ -10,84 +10,52 @@
 #include "main.h"
 #include "Log.h"
 #include "Window.h"
+
 using namespace std;
 
-//Game state object
-GameState *currentState = NULL;
+// Game state object
+GameState* currentState = nullptr;
 
-//State variables
+// State variables
 int stateID = GameState::State::STATE_NULL;
 int nextState = GameState::State::STATE_NULL;
 
-int main() {
-	sf::Clock randomTime;
-    sf::Clock deltaClock;
-	std::srand(randomTime.restart().asMicroseconds());
-	Log log;
-	Window window;
-
-	window.create(sf::VideoMode(
-        sf::Vector2u(
-            window.getScreenResolution().x, 
-            window.getScreenResolution().y
-        )
-    ), window.getDefaultWindowTitle());
-
-    // Set the current state ID
-    stateID = GameState::State::STATE_LOAD;
-	//stateID = GameState::State::STATE_LEVEL2;
-
-    // Set the current game state object
-    currentState = new LoadScreen(window);
-	//currentState = new Level2(window);
-
-    log.quickWrite(LOG_INFO, "Entering game loop..");
-    
-    while ( stateID != GameState::State::STATE_EXIT ) {
-        sf::Time dt = deltaClock.restart();
-		currentState->processEvents(window);
-		currentState->update(window, dt);
-		changeState(window);
-		currentState->render(window, dt);
-    }
-    log.quickWrite(LOG_INFO, "Exiting game loop..");
-    return 0;
+/**
+ * Set the next state of the game.
+ */
+void setNextState(int newState) {
+    if (nextState != GameState::State::STATE_EXIT) nextState = newState;
 }
 
 /**
-* Set the next state of the game.
-*/
-void setNextState( int newState ) {
-    if ( nextState != GameState::State::STATE_EXIT ) nextState = newState;
-}
-
-/**
-* 
-*/
-void changeState(Window &window) {
-    if ( nextState != GameState::State::STATE_NULL) {
-        if ( nextState != GameState::State::STATE_EXIT ) delete currentState;
+ * Change the current game state.
+ */
+void changeState(Window& window) {
+    if (nextState != GameState::State::STATE_NULL) {
+        if (nextState != GameState::State::STATE_EXIT && currentState != nullptr) {
+            delete currentState;
+        }
 
         // Change the state
-        switch ( nextState ) {
-			case GameState::State::STATE_LOAD:
-				currentState = new LoadScreen(window);
-				break;
-			case GameState::State::STATE_TITLE:
+        switch (nextState) {
+            case GameState::State::STATE_LOAD:
+                currentState = new LoadScreen(window);
+                break;
+            case GameState::State::STATE_TITLE:
                 currentState = new Title(window);
                 break;
-			case GameState::State::STATE_LEVEL1:
+            case GameState::State::STATE_LEVEL1:
                 currentState = new LevelX(window, "level1.dat", GameState::State::STATE_LEVEL2);
                 break;
-			case GameState::State::STATE_LEVEL2:
-				currentState = new LevelX(window, "level2.dat", GameState::State::STATE_LEVEL3);
+            case GameState::State::STATE_LEVEL2:
+                currentState = new LevelX(window, "level2.dat", GameState::State::STATE_LEVEL3);
                 break;
             case GameState::State::STATE_LEVEL3:
                 currentState = new LevelX(window, "level3.dat", GameState::State::STATE_TITLE);
                 break;
-			case GameState::State::STATE_EXIT:
-				PreloadResources::unloadResources();
-				break;
+            case GameState::State::STATE_EXIT:
+                PreloadResources::unloadResources();
+                break;
         }
 
         // Change the current state ID
@@ -95,4 +63,39 @@ void changeState(Window &window) {
         // NULL the next state ID
         nextState = GameState::State::STATE_NULL;
     }
+}
+
+int main() {
+    sf::Clock randomTime;
+    sf::Clock deltaClock;
+    std::srand(randomTime.restart().asMicroseconds());
+
+    Log log;
+    Window window;
+
+    window.create(sf::VideoMode(
+        sf::Vector2u(
+            window.getScreenResolution().x,
+            window.getScreenResolution().y
+        )
+    ), window.getDefaultWindowTitle());
+
+    // Initial state
+    stateID = GameState::State::STATE_LOAD;
+    currentState = new LoadScreen(window);
+
+    log.quickWrite(LOG_INFO, "Entering game loop...");
+
+    while (stateID != GameState::State::STATE_EXIT) {
+        sf::Time dt = deltaClock.restart();
+        // Game logic
+        currentState->processEvents(window);
+        currentState->update(window, dt);
+        changeState(window);
+        currentState->render(window, dt);
+    }
+
+    log.quickWrite(LOG_INFO, "Exiting game loop...");
+
+    return 0;
 }

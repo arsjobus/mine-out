@@ -20,6 +20,9 @@ public:
 public:
     void render(Window &window, sf::Time dt);
 	void update(Window &window, sf::Time dt);
+
+private:
+	std::unique_ptr<sf::Text> fpsText;
 };
 
 #endif

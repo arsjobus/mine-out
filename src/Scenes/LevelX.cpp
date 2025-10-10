@@ -17,8 +17,13 @@ LevelX::~LevelX(void) {
 }
 
 void LevelX::render( Window &window, sf::Time dt ) {
+	// Calculate FPS
+	float fps = 1.f / dt.asSeconds();
+	fpsText->setString("FPS: " + std::to_string(static_cast<int>(fps)));
+
 	Level0::render( window, dt );
 	// Add more objects to render here:
+	window.draw(*fpsText);
 	window.display();
 }
 
@@ -44,5 +49,11 @@ void LevelX::loadObjects( Window &window ) {
 void LevelX::loadDefaultSettings() {
 	Level0::loadDefaultSettings();
 	// Override level 0 default settings here:
+	setPrimaryFontName("arial.ttf");
+	setFontDirectoryName("fonts");
+	setPrimaryFont(std::string(getFontDirectoryName() + "/" + getPrimaryFontName()));
+	fpsText = std::make_unique<sf::Text>(getPrimaryFont(), "", 10);
+    fpsText->setFillColor(sf::Color::White);
+    fpsText->setPosition(sf::Vector2f(10.f, 10.f));
 	setCurrentModeName( "Level X" );
 }
