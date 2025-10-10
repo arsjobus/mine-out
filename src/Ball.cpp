@@ -45,14 +45,10 @@ void Ball::update() {
 }
 
 bool Ball::isCollisionDetected(GameObject *otherGameObject) {
-	if (otherGameObject->getLabel() == "player")
-		return checkCollisionWithPlayer(otherGameObject);
-	if (otherGameObject->getLabel() == "panel-l")
-		return checkCollisionWithPanelL(otherGameObject);
-	if (otherGameObject->getLabel() == "panel-r")
-		return checkCollisionWithPanelR(otherGameObject);
-	if (otherGameObject->getLabel() == "panel-t")
-		return checkCollisionWithPanelT(otherGameObject);
+	if (otherGameObject->getLabel() == "player")  return checkCollisionWithPlayer(otherGameObject);
+	if (otherGameObject->getLabel() == "panel-l") return checkCollisionWithPanelL(otherGameObject);
+	if (otherGameObject->getLabel() == "panel-r") return checkCollisionWithPanelR(otherGameObject);
+	if (otherGameObject->getLabel() == "panel-t") return checkCollisionWithPanelT(otherGameObject);
 	return false;
 }
 
