@@ -103,9 +103,9 @@ private:
 protected:
 	Log log;
 	Ball *ball;
-	LeftPanel *leftPanel;
-	TopPanel *topPanel;
-	RightPanel *rightPanel;
+	LeftPanel  *panelL;
+	TopPanel   *panelT;
+	RightPanel *panelR;
 	Paddle *player;
 	std::vector<Block *> blocks;
 	bool isPaused;
