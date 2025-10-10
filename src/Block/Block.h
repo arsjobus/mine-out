@@ -20,7 +20,7 @@ public:
 	};
 
 	virtual ~Block( void );
-	virtual void update(std::vector<Block *> block, sf::Time dt);
+	virtual void update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt);
 	virtual void loadDefaultSettings();
 	virtual void render(Window &window, sf::Time dt);
 
@@ -59,7 +59,7 @@ private:
 	bool hasDroppedPowerUp;
 	int dropChance;
 	int hitPoints;
-	PowerUp *powerup;
+	std::unique_ptr<PowerUp> powerup;
 	size_t status;
 	size_t textureID;
 };

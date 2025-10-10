@@ -14,7 +14,7 @@ void GoldBlock::render(Window &window, sf::Time dt) { Block::render(window, dt);
 /**
 * Updates members of this object.
 */
-void GoldBlock::update(std::vector<Block *> block, sf::Time dt) { Block::update(block, dt); }
+void GoldBlock::update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt) { Block::update(blocks, dt); }
 
 /**
 * Loads default settings.

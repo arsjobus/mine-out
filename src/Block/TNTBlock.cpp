@@ -15,21 +15,21 @@ TNTBlock::~TNTBlock( void ) { this->unloadTextures(); }
 /**
 * Updates members of this object.
 */
-void TNTBlock::update(std::vector<Block *> block, sf::Time dt) {
-	Block::update(block, dt);
+void TNTBlock::update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt) {
+	Block::update(blocks, dt);
 
 	if (!getActive() && !getHasExploded()) {
 		// Accumulate time only if the game is not paused
 		explosionTimer += dt;
 
 		if (explosion == nullptr) {
-			explosion = new Explosion(getExplosiveRadius(), getPosition().x, getPosition().y);
+			explosion = std::make_unique<Explosion>(getExplosiveRadius(), getPosition().x, getPosition().y);
 			explosion->playSound(0);
 		}
 
 		if (!explosion->getActive() || explosionTimer >= sf::milliseconds(50)) {
 			// Damage nearby blocks
-			for (auto& b : block) {
+			for (auto& b : blocks) {
 				if (b->getActive() && explosion->detectCollisionWithBlocks(*b)) {
 					b->setHitPoints(b->getHitPoints() - explosion->getDamage());
 					log.quickWrite(getLabel() + log.getSeparator() +
@@ -77,4 +77,4 @@ float TNTBlock::getExplosiveRadius() { return this->explosiveRadius; }
 void TNTBlock::setExplosiveRadius(float explosiveRadius) { this->explosiveRadius = explosiveRadius; }
 bool TNTBlock::getHasExploded() { return this->hasExploded; }
 void TNTBlock::setHasExploded(bool hasExploded) { this->hasExploded = hasExploded; }
-Explosion *TNTBlock::getExplosion() { return this->explosion; }
+Explosion *TNTBlock::getExplosion() { return this->explosion.get(); }

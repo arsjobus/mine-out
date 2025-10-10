@@ -1,11 +1,6 @@
 #include "Block.h"
 
-Block::~Block(void) {
-	if (powerup != NULL) {
-		delete powerup;
-		powerup = NULL;
-	}
-}
+Block::~Block(void) { }
 
 void Block::dropPowerUp() {
 	int difficulty = 100;
@@ -24,10 +19,10 @@ void Block::randomizePowerUp() {
 	switch (randomPowerupID)
 	{
 		case PowerUp::TypeID::IncreasedDamage:
-			powerup = new DamageIncrease;
+			powerup = std::make_unique<DamageIncrease>();
 			break;
 		case PowerUp::TypeID::GrowPaddle:
-			powerup = new GrowPaddle;
+			powerup = std::make_unique<GrowPaddle>();
 			break;
 	};
 	this->powerup->setPosition(sf::Vector2f(this->getPosition().x, this->getPosition().y));
@@ -36,7 +31,7 @@ void Block::randomizePowerUp() {
 /**
 * Updates members of this object.
 */
-void Block::update(std::vector<Block *> block, sf::Time dt) {
+void Block::update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt) {
 	if (this->getActive()) {
 		this->setTexture( &resource.getBlockTexture( this->getTextureID() ) );
 		this->powerup->setPosition(sf::Vector2f(this->getPosition().x, this->getPosition().y));
@@ -95,6 +90,6 @@ int Block::getDropChance() { return this->dropChance; }
 void Block::setDropChance(int dropChance) { this->dropChance = dropChance; }
 int Block::getHitPoints() { return this->hitPoints; }
 void Block::setHitPoints( int hitPoints ) { this->hitPoints = hitPoints; }
-PowerUp *Block::getPowerUp() { return this->powerup; }
+PowerUp *Block::getPowerUp() { return this->powerup.get(); }
 int Block::getTextureID() { return this->textureID; }
 void Block::setTextureID( int textureID ) { this->textureID = textureID; }

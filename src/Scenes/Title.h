@@ -26,8 +26,8 @@ private:
 	void loadDefaultSettings();
 
 private:
-	sf::Text *txtMainTitle;
-	sf::Text *txtPlayInstruction;
+	std::unique_ptr<sf::Text> txtMainTitle;
+	std::unique_ptr<sf::Text> txtPlayInstruction;
 };
 
 #endif

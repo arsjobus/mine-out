@@ -61,7 +61,7 @@ void Level0::update(Window &window, sf::Time dt) {
 	if (isPaused) return;
 	updateGameObjects(dt); // Update game objects
 	updatePowerUp(); // Update the player's currently active powerup
-	ball->followPaddle(player); // The ball follows player's paddle until it is launched
+	ball->followPaddle(player.get()); // The ball follows player's paddle until it is launched
 	// Play music if it is not
 	if (isMusicLoaded && music.getStatus() != sf::SoundSource::Status::Playing) music.play();
 	// :::::::::::::::::::::::::::
@@ -69,20 +69,20 @@ void Level0::update(Window &window, sf::Time dt) {
 	// :::::::::::::::::::::::::::
 	if (
 		ball->getCanBounce() && detectCollisionBallAndBlock() ||
-		ball->isCollisionDetected(panelL) ||
-		ball->isCollisionDetected(player) ||
-		ball->isCollisionDetected(panelR) ||
-		ball->isCollisionDetected(panelT)
+		ball->isCollisionDetected(panelL.get()) ||
+		ball->isCollisionDetected(player.get()) ||
+		ball->isCollisionDetected(panelR.get()) ||
+		ball->isCollisionDetected(panelT.get())
 	) ball->setCanBounce( false );
 	else if (
 		!ball->getCanBounce() && !detectCollisionBallAndBlock() &&
-		!ball->isCollisionDetected(panelL) &&
-		!ball->isCollisionDetected(player) &&
-		!ball->isCollisionDetected(panelR) &&
-		!ball->isCollisionDetected(panelT)
+		!ball->isCollisionDetected(panelL.get()) &&
+		!ball->isCollisionDetected(player.get()) &&
+		!ball->isCollisionDetected(panelR.get()) &&
+		!ball->isCollisionDetected(panelT.get())
 	) ball->setCanBounce( true );
-	player->isCollisionDetected(panelL); // detect / handle collision between the paddle and panel L
-	player->isCollisionDetected(panelR); // detect / handle collision between the paddle and panel R
+	player->isCollisionDetected(panelL.get()); // detect / handle collision between the paddle and panel L
+	player->isCollisionDetected(panelR.get()); // detect / handle collision between the paddle and panel R
 	detectCollisionPlayerAndPowerUp();
 	detectPowerUpOutOfBounds(window);
 	if (ball->isOutOfBounds(window)) resetMatch(window);
@@ -169,7 +169,7 @@ void Level0::loadBackground(Window &window) {
 
 void Level0::loadBall(float radius) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the ball.."));
-	ball = new Ball(radius);
+	ball = std::make_unique<Ball>(radius);
 }
 
 void Level0::loadDefaultSettings() {
@@ -184,17 +184,17 @@ void Level0::loadDefaultSettings() {
 
 void Level0::loadPanelL(int newWidth, int newHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the left panel.."));
-	panelL = new PanelL(newWidth, newHeight);
+	panelL = std::make_unique<PanelL>(newWidth, newHeight);
 }
 
 void Level0::loadPanelR(int newWidth, int newHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the right panel.."));
-	panelR = new PanelR(newWidth, newHeight);
+	panelR = std::make_unique<PanelR>(newWidth, newHeight);
 }
 
 void Level0::loadPanelT(int newWidth, int newHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the top panel.."));
-	panelT = new PanelT(newWidth, newHeight);
+	panelT = std::make_unique<PanelT>(newWidth, newHeight);
 }
 
 void Level0::loadLevelDataFromFile(const char *filename) {
@@ -209,31 +209,31 @@ void Level0::loadLevelDataFromFile(const char *filename) {
 		setNextState( STATE_EXIT );
 	} else {
 		std::string strDataEntry;
-		NormalBlock *ptrNormalBlock;
-		StoneBlock *ptrStoneBlock;
-		GoldBlock *ptrGoldBlock;
-		TNTBlock *ptrTNTBlock;
+		std::shared_ptr<NormalBlock> ptrNormalBlock;
+		std::shared_ptr<StoneBlock>  ptrStoneBlock;
+		std::shared_ptr<GoldBlock>   ptrGoldBlock;
+		std::shared_ptr<TNTBlock>    ptrTNTBlock;
 		while(!levelDataFile.eof()) {
 			// Read data into memory
 			std::getline(levelDataFile, strDataEntry, ',');
 			if (std::strcmp(strDataEntry.c_str(), ":normal:") == 0) {
-				ptrNormalBlock = new NormalBlock();
+				ptrNormalBlock = std::make_shared<NormalBlock>();
 				blocks.push_back(ptrNormalBlock);
 			}
 			else if (std::strcmp(strDataEntry.c_str(), ":stone:") == 0) {
-				ptrStoneBlock = new StoneBlock();
+				ptrStoneBlock = std::make_shared<StoneBlock>();
 				blocks.push_back(ptrStoneBlock);
 			}
 			else if (std::strcmp(strDataEntry.c_str(), ":gold:" ) == 0) {
-				ptrGoldBlock = new GoldBlock();
+				ptrGoldBlock = std::make_shared<GoldBlock>();
 				blocks.push_back(ptrGoldBlock);
 			}
 			else if (std::strcmp(strDataEntry.c_str(), ":tnt:" ) == 0) {
-				ptrTNTBlock = new TNTBlock();
+				ptrTNTBlock = std::make_shared<TNTBlock>();
 				blocks.push_back(ptrTNTBlock);
 			}
 			else if (std::strcmp(strDataEntry.c_str(), ":blank:" ) == 0) {
-				ptrNormalBlock = new NormalBlock();
+				ptrNormalBlock = std::make_shared<NormalBlock>();
 				ptrNormalBlock->setActive( false );
 				ptrNormalBlock->setHasDroppedPowerUp( true );
 				blocks.push_back(ptrNormalBlock);
@@ -253,7 +253,7 @@ void Level0::loadObjects(Window &window) {
 
 void Level0::loadPaddle(int paddleWidth, int paddleHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the player's paddle.."));
-	player = new Paddle(paddleWidth, paddleHeight);
+	player = std::make_unique<Paddle>(paddleWidth, paddleHeight);
 }
 
 void Level0::resetAllObjects(Window &window) {
@@ -351,11 +351,5 @@ void Level0::resetPlayer(Window &window) {
 }
 
 void Level0::unloadObjects() {
-	delete ball;     ball   = nullptr;
-	delete panelT;   panelT = nullptr;
-	delete panelL;   panelL = nullptr;
-	delete panelR;   panelR = nullptr;
-	delete player;   player = nullptr;
-	for (auto& block : blocks) delete block;
-	blocks.clear();
+
 }

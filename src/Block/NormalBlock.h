@@ -13,7 +13,7 @@ public:
 	~NormalBlock( void );
 
 	void render(Window &window, sf::Time dt);
-	void update(std::vector<Block *> block, sf::Time dt);
+	void update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt);
 
 private:
 	// helpers

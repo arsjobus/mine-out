@@ -149,8 +149,7 @@ void LoadScreen::initilizeObjects(Window &window) {
 
 	setPrimaryFont(std::string("fonts/arial.ttf"));
 
-	textLoadingStatus = new sf::Text(getPrimaryFont(), "");
-
+	textLoadingStatus = std::make_unique<sf::Text>(getPrimaryFont(), "");
 	textLoadingStatus->setFont(getPrimaryFont());
 	textLoadingStatus->setFillColor(sf::Color::Black);
 	textLoadingStatus->setString("Loading..");

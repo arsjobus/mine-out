@@ -19,8 +19,8 @@ void NormalBlock::render(Window &window, sf::Time dt) { Block::render(window, dt
 /**
 * Updates members of this object.
 */
-void NormalBlock::update(std::vector<Block *> block, sf::Time dt) {
-	Block::update(block, dt);
+void NormalBlock::update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt) {
+	Block::update(blocks, dt);
 	// Override Block update here:
 }
 

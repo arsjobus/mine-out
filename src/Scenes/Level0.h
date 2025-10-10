@@ -79,12 +79,12 @@ private:
 
 protected:
 	Log log;
-	Ball *ball;
-	PanelL *panelL;
-	PanelT *panelT;
-	PanelR *panelR;
-	Paddle *player;
-	std::vector<Block *> blocks;
+	std::unique_ptr<Ball> ball;
+	std::unique_ptr<PanelL> panelL;
+	std::unique_ptr<PanelT> panelT;
+	std::unique_ptr<PanelR> panelR;
+	std::unique_ptr<Paddle> player;
+	std::vector<std::shared_ptr<Block>> blocks;
 	bool isPaused;
 	int defaultBallSpeed;
 	std::string defaultDataDirectoryName;

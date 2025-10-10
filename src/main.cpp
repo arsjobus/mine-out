@@ -14,7 +14,7 @@
 using namespace std;
 
 // Game state object
-GameState* currentState = nullptr;
+std::unique_ptr<GameState> currentState;
 
 // State variables
 int stateID = GameState::State::STATE_NULL;
@@ -32,26 +32,22 @@ void setNextState(int newState) {
  */
 void changeState(Window& window) {
     if (nextState != GameState::State::STATE_NULL) {
-        if (nextState != GameState::State::STATE_EXIT && currentState != nullptr) {
-            delete currentState;
-        }
-
         // Change the state
         switch (nextState) {
             case GameState::State::STATE_LOAD:
-                currentState = new LoadScreen(window);
+                currentState = std::make_unique<LoadScreen>(window);
                 break;
             case GameState::State::STATE_TITLE:
-                currentState = new Title(window);
+                currentState = std::make_unique<Title>(window);
                 break;
             case GameState::State::STATE_LEVEL1:
-                currentState = new LevelX(window, "level1.dat", GameState::State::STATE_LEVEL2);
+                currentState = std::make_unique<LevelX>(window, "level1.dat", GameState::State::STATE_LEVEL2);
                 break;
             case GameState::State::STATE_LEVEL2:
-                currentState = new LevelX(window, "level2.dat", GameState::State::STATE_LEVEL3);
+                currentState = std::make_unique<LevelX>(window, "level2.dat", GameState::State::STATE_LEVEL3);
                 break;
             case GameState::State::STATE_LEVEL3:
-                currentState = new LevelX(window, "level3.dat", GameState::State::STATE_TITLE);
+                currentState = std::make_unique<LevelX>(window, "level3.dat", GameState::State::STATE_TITLE);
                 break;
             case GameState::State::STATE_EXIT:
                 PreloadResources::unloadResources();
@@ -82,7 +78,7 @@ int main() {
 
     // Initial state
     stateID = GameState::State::STATE_LOAD;
-    currentState = new LoadScreen(window);
+    currentState = std::make_unique<LoadScreen>(window);
 
     log.quickWrite(LOG_INFO, "Entering game loop...");
 

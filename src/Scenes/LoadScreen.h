@@ -43,7 +43,7 @@ private:
 
 	sf::RectangleShape rectLoadBar;
 	sf::RectangleShape rectLoadBarBackground;
-	sf::Text *textLoadingStatus;
+	std::unique_ptr<sf::Text> textLoadingStatus;
 };
 
 #endif

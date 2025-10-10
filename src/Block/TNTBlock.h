@@ -14,7 +14,7 @@ public:
 	~TNTBlock(void);
 
 	void render(Window &window, sf::Time dt);
-	void update(std::vector<Block *> block, sf::Time dt);
+	void update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt);
 
 	Explosion *getExplosion();
 
@@ -27,7 +27,7 @@ public:
 private:
 	// helpers
 	bool hasExploded;
-	Explosion *explosion;
+	std::unique_ptr<Explosion> explosion;
 	void loadDefaultSettings();
 	float explosiveRadius;
 	sf::Time explosionTimer;

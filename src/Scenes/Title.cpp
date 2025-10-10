@@ -60,12 +60,12 @@ void Title::loadDefaultSettings() {
 
 void Title::loadTitle(Window &window) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading title.."));
-	txtMainTitle = new sf::Text(getPrimaryFont(), window.getDefaultWindowTitle(), 48);
+	txtMainTitle = std::make_unique<sf::Text>(getPrimaryFont(), window.getDefaultWindowTitle(), 48);
     txtMainTitle->setFillColor(getDefaultTextColor());
     txtMainTitle->setStyle(sf::Text::Bold);
     txtMainTitle->setOrigin(sf::Vector2f(txtMainTitle->getGlobalBounds().size.x / 2, txtMainTitle->getGlobalBounds().size.y / 2));
     txtMainTitle->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 3));
-	txtPlayInstruction = new sf::Text(getSecondaryFont(), "PRESS <SPACE> TO PLAY", 24);
+	txtPlayInstruction = std::make_unique<sf::Text>(getSecondaryFont(), "PRESS <SPACE> TO PLAY", 24);
     txtPlayInstruction->setFillColor(getDefaultTextColor());
     txtPlayInstruction->setStyle(sf::Text::Bold);
     txtPlayInstruction->setOrigin(sf::Vector2f(txtPlayInstruction->getGlobalBounds().size.x / 2, txtPlayInstruction->getGlobalBounds().size.y / 2));
