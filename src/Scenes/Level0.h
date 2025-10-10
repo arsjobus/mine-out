@@ -32,7 +32,6 @@ public:
 	void render(Window &window);
 
 public:
-	void loadBall();
 	void loadBall(float radius);
 
 	void loadBackground(Window &window);
@@ -46,8 +45,7 @@ public:
 	void loadPanelT(int newWidth, int newHeight);
 
 	void loadObjects(Window &window);
-
-	void loadPaddle();
+	
 	void loadPaddle(int paddleWidth, int paddleHeight);
 
 	void resetBall(Window &window);

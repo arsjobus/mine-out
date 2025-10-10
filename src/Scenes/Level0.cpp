@@ -175,11 +175,6 @@ void Level0::loadBackground(Window &window) {
 	getRefToBackground().setPosition(sf::Vector2f(screenResolution.x / 2, screenResolution.y / 2));
 }
 
-void Level0::loadBall() {
-	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the ball.."));
-	ball = new Ball(16);
-}
-
 void Level0::loadBall(float radius) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the ball.."));
 	ball = new Ball(radius);
@@ -263,11 +258,6 @@ void Level0::loadObjects(Window &window) {
 	loadPanelL(panelT->getSize().y / 2, window.getScreenResolution().y - panelT->getSize().y);
 	loadBall(8);
 	loadPaddle(96, 16);
-}
-
-void Level0::loadPaddle() {
-	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the player's paddle.."));
-	player = new Paddle(160, 32);
 }
 
 void Level0::loadPaddle(int paddleWidth, int paddleHeight) {
