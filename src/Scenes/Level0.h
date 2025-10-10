@@ -14,9 +14,9 @@
 #include "../Block/NormalBlock.h"
 #include "../Block/StoneBlock.h"
 #include "../Block/TNTBlock.h"
-#include "../Panel/LeftPanel.h"
-#include "../Panel/RightPanel.h"
-#include "../Panel/TopPanel.h"
+#include "../Panel/PanelL.h"
+#include "../Panel/PanelR.h"
+#include "../Panel/PanelT.h"
 #include "../GameState.h"
 #include "../Log.h"
 #include "../Paddle.h"
@@ -41,14 +41,14 @@ public:
 
 	void loadLevelDataFromFile(const char *filename);
 
-	void loadLeftPanel();
-	void loadLeftPanel(int newWidth, int newHeight);
+	void loadPanelL();
+	void loadPanelL(int newWidth, int newHeight);
 
-	void loadTopPanel();
-	void loadTopPanel(int newWidth, int newHeight);
+	void loadPanelR();
+	void loadPanelR(int newWidth, int newHeight);
 
-	void loadRightPanel();
-	void loadRightPanel(int newWidth, int newHeight);
+	void loadPanelT();
+	void loadPanelT(int newWidth, int newHeight);
 
 	void loadObjects(Window &window);
 
@@ -57,9 +57,9 @@ public:
 
 	void resetBall(Window &window);
 	void resetBlocks(Window &window);
-	void resetLeftPanel(Window &window);
-	void resetTopPanel(Window &window);
-	void resetRightPanel(Window &window);
+	void resetPanelL(Window &window);
+	void resetPanelR(Window &window);
+	void resetPanelT(Window &window);
 	void resetPlayer(Window &window);
 
 	void resetAllObjects(Window &window);
@@ -103,9 +103,9 @@ private:
 protected:
 	Log log;
 	Ball *ball;
-	LeftPanel  *panelL;
-	TopPanel   *panelT;
-	RightPanel *panelR;
+	PanelL *panelL;
+	PanelT *panelT;
+	PanelR *panelR;
 	Paddle *player;
 	std::vector<Block *> blocks;
 	bool isPaused;

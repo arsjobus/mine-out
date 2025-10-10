@@ -1,7 +1,7 @@
-#include "TopPanel.h"
+#include "PanelL.h"
 
-TopPanel::TopPanel(void) { this->loadDefaultSettings(); }
-TopPanel::TopPanel(int newWidth, int newHeight) {
+PanelL::PanelL(void) { this->loadDefaultSettings(); }
+PanelL::PanelL(int newWidth, int newHeight) {
 	this->loadDefaultSettings();
 	// Override default settings here:
 	iWidth = newWidth;
@@ -9,12 +9,12 @@ TopPanel::TopPanel(int newWidth, int newHeight) {
 	this->setSize(sf::Vector2f(iWidth, iHeight));
 	this->setOrigin(sf::Vector2f(getGlobalBounds().size.x / 2, getGlobalBounds().size.y / 2));
 }
-TopPanel::~TopPanel(void) { }
+PanelL::~PanelL(void) { }
 
-void TopPanel::loadDefaultSettings() {
-	this->setLabel("panel-t");
-	this->setSize(sf::Vector2f(1024, 768));
+void PanelL::loadDefaultSettings() {
+	this->setLabel("panel-l");
+	this->setSize(sf::Vector2f(100, 668));
     this->setFillColor(sf::Color::White);
-	this->setTexture(&resource.getLevelTexture( 0 ));
+	this->setTexture(&resource.getLevelTexture( 1 ));
 	this->setOrigin(sf::Vector2f(getGlobalBounds().size.x / 2, getGlobalBounds().size.y / 2));
 }

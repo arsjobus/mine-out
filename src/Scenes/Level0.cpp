@@ -201,14 +201,14 @@ void Level0::loadDefaultSettings() {
 	isPlaying = true;
 }
 
-void Level0::loadLeftPanel() {
+void Level0::loadPanelL() {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the left panel.."));
-	panelL = new LeftPanel();
+	panelL = new PanelL();
 }
 
-void Level0::loadLeftPanel(int newWidth, int newHeight) {
+void Level0::loadPanelL(int newWidth, int newHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the left panel.."));
-	panelL = new LeftPanel(newWidth, newHeight);
+	panelL = new PanelL(newWidth, newHeight);
 }
 
 void Level0::loadLevelDataFromFile(const char *filename) {
@@ -258,31 +258,31 @@ void Level0::loadLevelDataFromFile(const char *filename) {
 
 void Level0::loadObjects(Window &window) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading objects.."));
-	loadTopPanel(window.getScreenResolution().x, 100);
-	loadRightPanel(panelT->getSize().y / 2, window.getScreenResolution().y - panelT->getSize().y);
-	loadLeftPanel(panelT->getSize().y / 2, window.getScreenResolution().y - panelT->getSize().y);
+	loadPanelT(window.getScreenResolution().x, 100);
+	loadPanelR(panelT->getSize().y / 2, window.getScreenResolution().y - panelT->getSize().y);
+	loadPanelL(panelT->getSize().y / 2, window.getScreenResolution().y - panelT->getSize().y);
 	loadBall(8);
 	loadPaddle(96, 16);
 }
 
-void Level0::loadTopPanel() {
+void Level0::loadPanelT() {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the top panel.."));
-	panelT = new TopPanel();
+	panelT = new PanelT();
 }
 
-void Level0::loadTopPanel(int newWidth, int newHeight) {
+void Level0::loadPanelT(int newWidth, int newHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the top panel.."));
-	panelT = new TopPanel(newWidth, newHeight);
+	panelT = new PanelT(newWidth, newHeight);
 }
 
-void Level0::loadRightPanel() {
+void Level0::loadPanelR() {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the right panel.."));
-	panelR = new RightPanel();
+	panelR = new PanelR();
 }
 
-void Level0::loadRightPanel(int newWidth, int newHeight) {
+void Level0::loadPanelR(int newWidth, int newHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the right panel.."));
-	panelR = new RightPanel(newWidth, newHeight);
+	panelR = new PanelR(newWidth, newHeight);
 }
 
 void Level0::loadPaddle() {
@@ -297,9 +297,9 @@ void Level0::loadPaddle(int paddleWidth, int paddleHeight) {
 
 void Level0::resetAllObjects(Window &window) {
 	// Always reset the top panel before the left panel and right panel
-	resetTopPanel(window);
-	resetRightPanel(window);
-	resetLeftPanel(window);
+	resetPanelL(window);
+	resetPanelR(window);
+	resetPanelT(window);
 	// Always reset the player before the ball.
 	resetPlayer(window);
 	resetBall(window);
@@ -344,7 +344,7 @@ void Level0::resetBlocks(Window &window) {
 	}
 }
 
-void Level0::resetLeftPanel(Window &window) {
+void Level0::resetPanelL(Window &window) {
 	// Dependent on the top panel
 	sf::Vector2f position(
 		panelL->getOrigin().x,
@@ -356,7 +356,7 @@ void Level0::resetLeftPanel(Window &window) {
 	panelL->setPosition(position);
 }
 
-void Level0::resetTopPanel(Window &window) {
+void Level0::resetPanelT(Window &window) {
 	sf::Vector2f position(window.getScreenResolution().x / 2, panelT->getSize().y - panelT->getOrigin().y);
 	std::string strXPosition = log.floatToString(position.x);
 	std::string strYPosition = log.floatToString(position.y);
@@ -364,7 +364,7 @@ void Level0::resetTopPanel(Window &window) {
 	panelT->setPosition(position);
 }
 
-void Level0::resetRightPanel(Window &window) {
+void Level0::resetPanelR(Window &window) {
 	// Dependent on the top panel
 	sf::Vector2f position(
 		window.getScreenResolution().x - panelR->getOrigin().x,

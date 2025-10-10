@@ -6,9 +6,9 @@
 #include <SFML/Graphics.hpp>
 #include "Block.h"
 #include "GameObject.h"
-#include "Panel/LeftPanel.h"
-#include "Panel/RightPanel.h"
-#include "Panel/TopPanel.h"
+#include "Panel/PanelL.h"
+#include "Panel/PanelR.h"
+#include "Panel/PanelT.h"
 #include "Window.h"
 
 #define PI 3.14159
