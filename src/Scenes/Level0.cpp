@@ -1,5 +1,17 @@
 #include "Level0.h"
 
+size_t Level0::getBlocksPerRow() { return blocksPerRow; }
+void Level0::setBlocksPerRow(int blockCount) { blocksPerRow = blockCount; }
+
+std::string Level0::getDefaultDataDirectoryName() { return defaultDataDirectoryName; }
+void Level0::setDefaultDataDirectoryName(const char *newName) { defaultDataDirectoryName = newName; }
+
+float Level0::getLevelMargin() { return levelMargin; }
+void Level0::setLevelMargin(float marginLength) { levelMargin = marginLength; }
+
+int Level0::getActiveBlocksCount() { return this->activeBlocksCount; }
+void Level0::setActiveBlocksCount(int count) { this->activeBlocksCount = count; }
+
 void Level0::processEvents(Window &window) {
     while (std::optional<sf::Event> event = window.pollEvent()) {
         // Handle window close
@@ -52,7 +64,7 @@ void Level0::update(Window &window) {
 		// :::::::::::::::::
 
 		// Play music if it is not
-		if (music.getStatus() != sf::SoundSource::Status::Playing) music.play();
+		if (isMusicLoaded && music.getStatus() != sf::SoundSource::Status::Playing) music.play();
 
 		updateActiveBlockCount(); // Update active block count
 		updateGameObjects(); // Update game objects
@@ -88,7 +100,7 @@ void Level0::update(Window &window) {
 		// Detect and handle the ball going out of bounds.
 		if (ball->isOutOfBounds(window)) resetMatch(window);
 	} else {
-		music.pause();
+		if (isMusicLoaded) music.pause();
 		updateActiveBlockCount();
 	}
 }
@@ -181,8 +193,8 @@ void Level0::loadBall(float radius) {
 }
 
 void Level0::loadDefaultSettings() {
-	music.openFromFile("music/crystalcave.ogg"); // Load music and play
-	music.setLooping( true );
+	isMusicLoaded = music.openFromFile("music/crystalcave.ogg"); // Load music and play
+	if (isMusicLoaded) music.setLooping( true );
 	activeBlocksCount = 0;
 	setBlocksPerRow(15); // Set the blocks per row to 15
 	setDefaultDataDirectoryName("data"); // Set default data directory name
@@ -267,9 +279,9 @@ void Level0::loadPaddle(int paddleWidth, int paddleHeight) {
 
 void Level0::resetAllObjects(Window &window) {
 	// Always reset the top panel before the left panel and right panel
+	resetPanelT(window);
 	resetPanelL(window);
 	resetPanelR(window);
-	resetPanelT(window);
 	// Always reset the player before the ball.
 	resetPlayer(window);
 	resetBall(window);
@@ -385,19 +397,3 @@ void Level0::unloadObjects() {
 			blocks.erase(blocks.begin() + i);
 	}
 }
-
-size_t Level0::getBlocksPerRow() { return blocksPerRow; }
-
-void Level0::setBlocksPerRow(int blockCount) { blocksPerRow = blockCount; }
-
-std::string Level0::getDefaultDataDirectoryName() { return defaultDataDirectoryName; }
-
-void Level0::setDefaultDataDirectoryName(const char *newName) { defaultDataDirectoryName = newName; }
-
-float Level0::getLevelMargin() { return levelMargin; }
-
-void Level0::setLevelMargin(float marginLength) { levelMargin = marginLength; }
-
-int Level0::getActiveBlocksCount() { return this->activeBlocksCount; }
-
-void Level0::setActiveBlocksCount(int count) { this->activeBlocksCount = count; }

@@ -33,15 +33,10 @@ public:
 
 public:
 	void loadBackground(Window &window);
-
 	void loadDefaultSettings();
-
 	void loadLevelDataFromFile(const char *filename);
-
 	void loadObjects(Window &window);
-
 	void resetAllObjects(Window &window);
-
 	void resetMatch(Window &window);
 
 public:
@@ -80,6 +75,7 @@ private:
 private:
 	size_t blocksPerRow;
 	size_t activeBlocksCount;
+	bool isMusicLoaded;
 
 protected:
 	Log log;
