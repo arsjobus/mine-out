@@ -33,13 +33,17 @@ void TNTBlock::update(std::vector<Block *> block, sf::Time dt) {
 				if (b->getActive() && explosion->detectCollisionWithBlocks(*b)) {
 					b->setHitPoints(b->getHitPoints() - explosion->getDamage());
 					log.quickWrite(getLabel() + log.getSeparator() +
-						"has dealt " + log.intToString(explosion->getDamage()) +
-						" points of damage to " + b->getLabel() + ".");
+						"has dealt " + log.intToString(explosion->getDamage()) + " points of damage to " + b->getLabel() + ".");
 				}
 			}
 			explosionTimer = sf::Time::Zero;
 			setHasExploded(true);
 		}
+	}
+
+	if (explosion == NULL) return;
+	if (explosion->getActive()) {
+		explosion->nextFrame(dt);
 	}
 }
 
@@ -48,7 +52,6 @@ void TNTBlock::render(Window &window, sf::Time dt) {
 	if (explosion != NULL) {
 		if (explosion->getActive()) {
 			window.draw(*explosion);
-			explosion->nextFrame(dt);
 		}
 	}
 }

@@ -17,11 +17,9 @@ LevelX::~LevelX(void) {
 }
 
 void LevelX::render( Window &window, sf::Time dt ) {
-	// Calculate FPS
+	Level0::render( window, dt );
 	float fps = 1.f / dt.asSeconds();
 	fpsText->setString("FPS: " + std::to_string(static_cast<int>(fps)));
-
-	Level0::render( window, dt );
 	// Add more objects to render here:
 	window.draw(*fpsText);
 	window.display();
