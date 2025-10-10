@@ -35,7 +35,8 @@ void Level0::processEvents(Window &window) {
             else if (key == sf::Keyboard::Scancode::R) setNextState(GameState::State::STATE_LEVEL1);
             else if (key == sf::Keyboard::Scancode::P) {
 				isPaused = !isPaused;
-				deltaClock.restart();
+				deltaClock.restart(); // must restart the deltaclock when pausing / unpausing
+				if (isPaused && isMusicLoaded) music.pause();	
 			}
             else if (key == sf::Keyboard::Scancode::Escape) setNextState(GameState::State::STATE_EXIT);
         }
@@ -54,49 +55,38 @@ void Level0::processEvents(Window &window) {
 
 void Level0::update(Window &window) {
 	sf::Time dt = (!isPaused) ? deltaClock.restart() : sf::Time::Zero;
+	// ::::::::::::::::::::::::
+	// :::: HANDLE UPDATES ::::
 	// :::::::::::::::::
-	// :::: UPDATES ::::
-	// :::::::::::::::::
+	updateActiveBlockCount(); // Update active block count 
+	if (isPaused) return;
 	updateGameObjects(dt); // Update game objects
-	updateActiveBlockCount(); // Update active block count
 	updatePowerUp(); // Update the player's currently active powerup
 	ball->followPaddle(player); // The ball follows player's paddle until it is launched
-
-	// If the game is playing and not paused
-	if (!isPaused) {
-		// Play music if it is not
-		if (isMusicLoaded && music.getStatus() != sf::SoundSource::Status::Playing) music.play();
-
-		// :::::::::::::::::::::::::::
-		// :::: DETECT COLLISIONS ::::
-		// :::::::::::::::::::::::::::
-		if (
-			ball->getCanBounce() && detectCollisionBallAndBlock() ||
-			ball->isCollisionDetected(panelL) ||
-			ball->isCollisionDetected(player) ||
-			ball->isCollisionDetected(panelR) ||
-			ball->isCollisionDetected(panelT)
-		) ball->setCanBounce( false );
-		else if (
-			!ball->getCanBounce() && !detectCollisionBallAndBlock() &&
-			!ball->isCollisionDetected(panelL) &&
-			!ball->isCollisionDetected(player) &&
-			!ball->isCollisionDetected(panelR) &&
-			!ball->isCollisionDetected(panelT)
-		) ball->setCanBounce( true );
-
-		player->isCollisionDetected(panelL); // detect / handle collision between the paddle and panel L
-		player->isCollisionDetected(panelR); // detect / handle collision between the paddle and panel R
-
-		// Detect and handle collision between the player and a powerup.
-		detectCollisionPlayerAndPowerUp();
-		// Detect and handle the powerup going out of bounds.
-		detectPowerUpOutOfBounds(window);
-		// Detect and handle the ball going out of bounds.
-		if (ball->isOutOfBounds(window)) resetMatch(window);
-	} else {
-		if (isMusicLoaded) music.pause();	
-	}
+	// Play music if it is not
+	if (isMusicLoaded && music.getStatus() != sf::SoundSource::Status::Playing) music.play();
+	// :::::::::::::::::::::::::::
+	// :::: DETECT COLLISIONS ::::
+	// :::::::::::::::::::::::::::
+	if (
+		ball->getCanBounce() && detectCollisionBallAndBlock() ||
+		ball->isCollisionDetected(panelL) ||
+		ball->isCollisionDetected(player) ||
+		ball->isCollisionDetected(panelR) ||
+		ball->isCollisionDetected(panelT)
+	) ball->setCanBounce( false );
+	else if (
+		!ball->getCanBounce() && !detectCollisionBallAndBlock() &&
+		!ball->isCollisionDetected(panelL) &&
+		!ball->isCollisionDetected(player) &&
+		!ball->isCollisionDetected(panelR) &&
+		!ball->isCollisionDetected(panelT)
+	) ball->setCanBounce( true );
+	player->isCollisionDetected(panelL); // detect / handle collision between the paddle and panel L
+	player->isCollisionDetected(panelR); // detect / handle collision between the paddle and panel R
+	detectCollisionPlayerAndPowerUp();
+	detectPowerUpOutOfBounds(window);
+	if (ball->isOutOfBounds(window)) resetMatch(window);
 }
 
 void Level0::render(Window& window) {
