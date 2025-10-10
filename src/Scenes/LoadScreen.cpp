@@ -116,6 +116,7 @@ void LoadScreen::initialize() {
 	blockTextureNames.push_back("block-gold1");   // id: 5
 	blockTextureNames.push_back("block-tnt1");    // id: 6
 	paddleTextureNames.push_back("paddle");       // id: 0
+	paddleTextureNames.push_back("paddle-grow");  // id: 1
 	levelTextureNames.push_back("level-top");     // id: 0
 	levelTextureNames.push_back("level-left");    // id: 1
 	levelTextureNames.push_back("level-right");   // id: 2

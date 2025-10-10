@@ -92,3 +92,23 @@ void Paddle::loadDefaultSettings() {
 	this->setTexture( &resource.getPaddleTexture(0) ); // Set default texture.
 	this->setShotAccuracy( 5 ); // The lower the value the more accurate the shot
 }
+
+void Paddle::resizeSmall() {
+	this->setSize( sf::Vector2f(96.f, 16.f) );
+	this->setTexture( &resource.getPaddleTexture(0) );
+	this->setTextureRect(sf::Rect<int>(
+		sf::Vector2i(0, 0),
+		sf::Vector2i(96, 16)
+	));
+	this->setOrigin( sf::Vector2f(this->getLocalBounds().size.x / 2, this->getLocalBounds().size.y / 2) );
+}
+
+void Paddle::resizeLarge() {
+	this->setSize( sf::Vector2f(192.f, 16.f) );
+	this->setTexture( &resource.getPaddleTexture(1) );
+	this->setTextureRect(sf::Rect<int>(
+		sf::Vector2i(0, 0),
+		sf::Vector2i(192, 16)
+	));
+	this->setOrigin( sf::Vector2f(this->getLocalBounds().size.x / 2, this->getLocalBounds().size.y / 2) );
+}

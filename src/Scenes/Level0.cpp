@@ -154,8 +154,8 @@ void Level0::updatePowerUp() {
 	} else ball->setDamage( 1 );
 
 	if (player->getActivePowerUp() == PowerUp::TypeID::GrowPaddle) {
-		player->setScale(sf::Vector2f(2.0f, 1.0f));
-	} else player->setScale(sf::Vector2f(1.0, 1.0));
+		player->resizeLarge();
+	} else player->resizeSmall();
 }
 
 void Level0::loadBackground(Window &window) {

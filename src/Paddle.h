@@ -39,6 +39,9 @@ public:
 	bool getCanMoveRight();
 	void setCanMoveRight(bool newBoolean);
 
+	void resizeLarge();
+	void resizeSmall();
+
 	bool isCollisionDetected(GameObject *otherGameObject);
 
 private:
