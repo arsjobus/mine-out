@@ -77,10 +77,10 @@ void Level0::update(Window &window) {
 			!ball->isCollisionDetected(topPanel)
 		) ball->setCanBounce( true );
 
-		// Detect and handle collision between the player and the left panel.
-		detectCollisionPlayerAndLeftPanel();
-		// Detect and handle collision between the player and the right panel.
-		detectCollisionPlayerAndRightPanel();
+		// Handle Player Collision with Panels
+		player->isCollisionDetected(leftPanel);
+		player->isCollisionDetected(rightPanel);
+
 		// Detect and handle collision between the player and a powerup.
 		detectCollisionPlayerAndPowerUp();
 		// Detect and handle the powerup going out of bounds.
@@ -131,34 +131,6 @@ bool Level0::detectCollisionBallAndBlock() {
 		}
 	}
 	return false;
-}
-
-void Level0::detectCollisionPlayerAndLeftPanel() {
-	if (player->getCanMoveLeft() &&
-		leftPanel->getPosition().x < player->getPosition().x && 
-		player->getGlobalBounds().findIntersection( leftPanel->getGlobalBounds() ) ) {
-		player->setCanMoveLeft( false );
-		player->setXVelocity( 0.f );
-	}
-	else if (player->getCanMoveRight() &&
-		rightPanel->getPosition().x > player->getPosition().x &&
-		player->getGlobalBounds().findIntersection( rightPanel->getGlobalBounds() ) ) {
-		player->setCanMoveRight( false );
-		player->setXVelocity( 0.f );
-	}
-}
-
-void Level0::detectCollisionPlayerAndRightPanel() {
-	if ( ( !player->getCanMoveLeft() ) && 
-		leftPanel->getPosition().x < player->getPosition().x &&
-		( !player->getGlobalBounds().findIntersection( leftPanel->getGlobalBounds() ) ) ) {
-		player->setCanMoveLeft( true );
-    }
-    else if ( ( !player->getCanMoveRight() ) && 
-		rightPanel->getPosition().x > player->getPosition().x && 
-		( !player->getGlobalBounds().findIntersection( rightPanel->getGlobalBounds() ) ) ) {
-        player->setCanMoveRight( true );
-    }
 }
 
 /**

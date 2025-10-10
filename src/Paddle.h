@@ -39,9 +39,13 @@ public:
 	bool getCanMoveRight();
 	void setCanMoveRight(bool newBoolean);
 
+	bool isCollisionDetected(GameObject *otherGameObject);
+
 private:
 	// helpers
 	void loadDefaultSettings();
+	bool checkCollisionWithPanelL(GameObject *otherGameObject);
+	bool checkCollisionWithPanelR(GameObject *otherGameObject);
 
 private:
 	// private members

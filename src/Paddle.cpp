@@ -34,6 +34,36 @@ bool Paddle::getCanMoveRight() { return canMoveRight; }
 void Paddle::setCanMoveLeft( bool newBoolean ) { canMoveLeft = newBoolean; }
 void Paddle::setCanMoveRight( bool newBoolean ) { canMoveRight = newBoolean; }
 
+bool Paddle::isCollisionDetected(GameObject *otherGameObject) {
+	if (otherGameObject->getLabel() == "panel-l") return checkCollisionWithPanelL(otherGameObject);
+	if (otherGameObject->getLabel() == "panel-r") return checkCollisionWithPanelR(otherGameObject);
+	return false;
+}
+
+bool Paddle::checkCollisionWithPanelL(GameObject *otherGameObject) {
+	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
+	if (getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds() )) {
+		setCanMoveLeft( false );
+		setXVelocity( 0.f );
+		return true;
+	} else {
+		setCanMoveLeft( true );
+		return false;
+	}
+}
+
+bool Paddle::checkCollisionWithPanelR(GameObject *otherGameObject) {
+    sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
+	if (getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds() )) {
+		setCanMoveRight( false );
+		setXVelocity( 0.f );
+		return true;
+	} else {
+		setCanMoveRight( true );
+		return false; 
+	}
+}
+
 void Paddle::loadDefaultSettings() {
 	sf::Vector2f defaultSize( 64.f, 32.f );
 	sf::Sound sndHit = sf::Sound(resource.getBufferedSound( 0 ));
