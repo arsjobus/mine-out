@@ -17,7 +17,7 @@ void StoneBlock::render(Window &window) { Block::render(window); }
 /**
 * Updates members of this object.
 */
-void StoneBlock::update(std::vector<Block *> block) {
+void StoneBlock::update(std::vector<Block *> block, bool isPaused) {
 	// Change textures before allowing Block to update.
 	if (this->getActive() && 
 		this->getTextureID() != 2 &&
@@ -27,7 +27,7 @@ void StoneBlock::update(std::vector<Block *> block) {
 		this->getTextureID() != 3 &&
 		this->getHitPoints() == 1)
 			this->setTextureID(3);
-	Block::update(block);
+	Block::update(block, isPaused);
 	// Make additional updates specific to this object here:
 }
 

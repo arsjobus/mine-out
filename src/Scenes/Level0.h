@@ -86,7 +86,6 @@ protected:
 	Paddle *player;
 	std::vector<Block *> blocks;
 	bool isPaused;
-	bool isPlaying;
 	int defaultBallSpeed;
 	std::string defaultDataDirectoryName;
 	int defaultPaddleSpeed;

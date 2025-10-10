@@ -2,8 +2,9 @@
 
 PowerUp::~PowerUp(void) { }
 
-void PowerUp::update() {
+void PowerUp::update(bool isPaused) {
 	sf::Time dt = this->deltaClock.restart();
+	if (isPaused) return;
 	if (this->getActive()) {
 		this->setPosition( sf::Vector2f(this->getPosition().x, this->getPosition().y + this->getSpeed() * dt.asSeconds()) );
 	}

@@ -15,8 +15,8 @@ TNTBlock::~TNTBlock( void ) { this->unloadTextures(); }
 /**
 * Updates members of this object.
 */
-void TNTBlock::update(std::vector<Block *> block) {
-	Block::update(block);
+void TNTBlock::update(std::vector<Block *> block, bool isPaused) {
+	Block::update(block, isPaused);
 	// Override Block updates here:
 	if ( !this->getActive() && !this->getHasExploded() ) {
 		dt += deltaClock.restart();

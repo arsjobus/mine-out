@@ -18,10 +18,11 @@ Ball::~Ball(void) { }
 /**
  * Updates members of this object.
  */
-void Ball::update() {
-	// Reset delta time at the beginning of each update phase.
+void Ball::update(bool isPaused) {
 	sf::Time dt = deltaClock.restart();
 
+	if (isPaused) return;
+	// Reset delta time at the beginning of each update phase.
 	// If the ball is returning a status of 'launching':
 	if (getStatus() == Ball::Status::LAUNCHING) {
 		setXVelocity(0);

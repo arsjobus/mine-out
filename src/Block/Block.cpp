@@ -36,7 +36,7 @@ void Block::randomizePowerUp() {
 /**
 * Updates members of this object.
 */
-void Block::update(std::vector<Block *> block) {
+void Block::update(std::vector<Block *> block, bool isPaused) {
 	if (this->getActive()) {
 		this->setTexture( &resource.getBlockTexture( this->getTextureID() ) );
 		this->powerup->setPosition(sf::Vector2f(this->getPosition().x, this->getPosition().y));
@@ -51,7 +51,7 @@ void Block::update(std::vector<Block *> block) {
 		this->setHasDroppedPowerUp( true );
 	}
 	else if (!this->getActive() && this->powerup->getActive() && this->getHasDroppedPowerUp())
-		powerup->update();
+		powerup->update(isPaused);
 }
 
 /**

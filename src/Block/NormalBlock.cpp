@@ -19,8 +19,8 @@ void NormalBlock::render(Window &window) { Block::render(window); }
 /**
 * Updates members of this object.
 */
-void NormalBlock::update(std::vector<Block *> block) {
-	Block::update(block);
+void NormalBlock::update(std::vector<Block *> block, bool isPaused) {
+	Block::update(block, isPaused);
 	// Override Block update here:
 }
 

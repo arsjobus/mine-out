@@ -20,7 +20,7 @@ public:
 	};
 
 	virtual ~Block( void );
-	virtual void update(std::vector<Block *> block);
+	virtual void update(std::vector<Block *> block, bool isPaused);
 	virtual void loadDefaultSettings();
 	virtual void render(Window &window);
 

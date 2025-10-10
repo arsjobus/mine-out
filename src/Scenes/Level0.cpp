@@ -22,21 +22,15 @@ void Level0::processEvents(Window &window) {
             auto key = keyEvent->scancode;
             if (
 				key == sf::Keyboard::Scancode::Space &&
-                ball->getStatus() == Ball::STUCK_TO_PLAYER &&
-                isPlaying &&
-                !isPaused
+                ball->getStatus() == Ball::STUCK_TO_PLAYER && !isPaused
 			) ball->setStatus(Ball::LAUNCHING);
             else if (
 				(key == sf::Keyboard::Scancode::A || key == sf::Keyboard::Scancode::Left) &&
-				player->getCanMoveLeft() &&
-				isPlaying &&
-				!isPaused
+				player->getCanMoveLeft() && !isPaused
 			) player->setXVelocity(-player->getSpeed());
             else if (
 				(key == sf::Keyboard::Scancode::D || key == sf::Keyboard::Scancode::Right) &&
-				player->getCanMoveRight() &&
-				isPlaying &&
-				!isPaused
+				player->getCanMoveRight() && !isPaused
 			) player->setXVelocity(player->getSpeed());
             else if (key == sf::Keyboard::Scancode::R) setNextState(GameState::State::STATE_LEVEL1);
             else if (key == sf::Keyboard::Scancode::P) isPaused = !isPaused;
@@ -56,20 +50,19 @@ void Level0::processEvents(Window &window) {
 }
 
 void Level0::update(Window &window) {
-	// If the game is playing and not paused
-	if (isPlaying && !isPaused) {
-		sf::Time dt = deltaClock.restart(); // Reset the delta time at the beginning of every update phase
-		// :::::::::::::::::
-		// :::: UPDATES ::::
-		// :::::::::::::::::
+	sf::Time dt = deltaClock.restart(); // Reset the delta time at the beginning of every update phase
+	// :::::::::::::::::
+	// :::: UPDATES ::::
+	// :::::::::::::::::
+	updateGameObjects(); // Update game objects
+	updateActiveBlockCount(); // Update active block count
+	updatePowerUp(); // Update the player's currently active powerup
+	ball->followPaddle(player); // The ball follows player's paddle until it is launched
 
+	// If the game is playing and not paused
+	if (!isPaused) {
 		// Play music if it is not
 		if (isMusicLoaded && music.getStatus() != sf::SoundSource::Status::Playing) music.play();
-
-		updateActiveBlockCount(); // Update active block count
-		updateGameObjects(); // Update game objects
-		updatePowerUp(); // Update the player's currently active powerup
-		ball->followPaddle(player); // The ball follows player's paddle until it is launched
 
 		// :::::::::::::::::::::::::::
 		// :::: DETECT COLLISIONS ::::
@@ -99,8 +92,7 @@ void Level0::update(Window &window) {
 		// Detect and handle the ball going out of bounds.
 		if (ball->isOutOfBounds(window)) resetMatch(window);
 	} else {
-		if (isMusicLoaded) music.pause();
-		updateActiveBlockCount();
+		if (isMusicLoaded) music.pause();	
 	}
 }
 
@@ -160,10 +152,10 @@ void Level0::updateActiveBlockCount() {
 }
 
 void Level0::updateGameObjects() {
-	player->update(); // Update the player object
-	ball->update();   // Update the ball object
+	player->update(isPaused); // Update the player object
+	ball->update(isPaused); // Update the ball object
 	for (int i = 0; i < blocks.size(); ++i)
-		blocks[i]->update(blocks); // Update every block object
+		blocks[i]->update(blocks, isPaused); // Update every block object
 }
 
 void Level0::updatePowerUp() {
@@ -199,7 +191,6 @@ void Level0::loadDefaultSettings() {
 	setDefaultDataDirectoryName("data"); // Set default data directory name
 	setLevelMargin(10.f); // Set the level margin to 10px
 	isPaused = false;
-	isPlaying = true;
 }
 
 void Level0::loadPanelL(int newWidth, int newHeight) {

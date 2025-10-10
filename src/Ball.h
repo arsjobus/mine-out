@@ -28,7 +28,7 @@ public:
 	Ball( float newRadius );
 	~Ball( void );
 
-	void update();
+	void update(bool isPaused);
 
 public:
 	// setters and getters

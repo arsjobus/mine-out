@@ -13,7 +13,7 @@ public:
 	~StoneBlock( void );
 
 	void render(Window &window);
-	void update(std::vector<Block *> block);
+	void update(std::vector<Block *> block, bool isPaused);
 
 private:
 	// helpers

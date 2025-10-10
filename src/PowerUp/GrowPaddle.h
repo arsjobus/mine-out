@@ -12,7 +12,7 @@ public:
 	GrowPaddle(void);
 	~GrowPaddle(void);
 
-	void update();
+	void update(bool isPaused);
 	void render(Window &window);
 
 private:

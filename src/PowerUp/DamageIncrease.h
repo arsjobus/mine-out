@@ -12,7 +12,7 @@ public:
 	DamageIncrease(void);
 	~DamageIncrease(void);
 
-	void update();
+	void update(bool isPaused);
 	void loadDefaultSettings();
 	void render(Window &window);
 };

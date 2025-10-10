@@ -20,7 +20,7 @@ public:
 	Paddle(int newWidth, int newHeight);
 	~Paddle(void);
 
-	void update();
+	void update(bool isPaused);
 
 public:
 	// setters and getters

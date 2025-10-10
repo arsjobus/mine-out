@@ -18,8 +18,9 @@ Paddle::~Paddle( void ) {
 /**
 * Updates members of this object.
 */
-void Paddle::update() {
+void Paddle::update(bool isPaused) {
 	sf::Time dt = deltaClock.restart();
+	if (isPaused) return;
 	setPosition( sf::Vector2f(getPosition().x + getVelocity().x * dt.asSeconds(), getPosition().y ) ); // Update the position of the player's paddle
 }
 
