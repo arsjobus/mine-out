@@ -201,14 +201,19 @@ void Level0::loadDefaultSettings() {
 	isPlaying = true;
 }
 
-void Level0::loadPanelL() {
-	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the left panel.."));
-	panelL = new PanelL();
-}
-
 void Level0::loadPanelL(int newWidth, int newHeight) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the left panel.."));
 	panelL = new PanelL(newWidth, newHeight);
+}
+
+void Level0::loadPanelR(int newWidth, int newHeight) {
+	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the right panel.."));
+	panelR = new PanelR(newWidth, newHeight);
+}
+
+void Level0::loadPanelT(int newWidth, int newHeight) {
+	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the top panel.."));
+	panelT = new PanelT(newWidth, newHeight);
 }
 
 void Level0::loadLevelDataFromFile(const char *filename) {
@@ -263,26 +268,6 @@ void Level0::loadObjects(Window &window) {
 	loadPanelL(panelT->getSize().y / 2, window.getScreenResolution().y - panelT->getSize().y);
 	loadBall(8);
 	loadPaddle(96, 16);
-}
-
-void Level0::loadPanelT() {
-	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the top panel.."));
-	panelT = new PanelT();
-}
-
-void Level0::loadPanelT(int newWidth, int newHeight) {
-	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the top panel.."));
-	panelT = new PanelT(newWidth, newHeight);
-}
-
-void Level0::loadPanelR() {
-	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the right panel.."));
-	panelR = new PanelR();
-}
-
-void Level0::loadPanelR(int newWidth, int newHeight) {
-	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading the right panel.."));
-	panelR = new PanelR(newWidth, newHeight);
 }
 
 void Level0::loadPaddle() {

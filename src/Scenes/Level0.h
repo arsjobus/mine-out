@@ -40,14 +40,9 @@ public:
 	void loadDefaultSettings();
 
 	void loadLevelDataFromFile(const char *filename);
-
-	void loadPanelL();
+	
 	void loadPanelL(int newWidth, int newHeight);
-
-	void loadPanelR();
 	void loadPanelR(int newWidth, int newHeight);
-
-	void loadPanelT();
 	void loadPanelT(int newWidth, int newHeight);
 
 	void loadObjects(Window &window);
