@@ -61,8 +61,6 @@ public:
 
 	void resetMatch(Window &window);
 
-	void stickBallToPlayer();
-
 public:
 	size_t getBlocksPerRow();
 	void setBlocksPerRow(int blockCount);
@@ -79,12 +77,6 @@ public:
 private:
 	void detectBallOutOfBounds(Window &window);
 	bool detectCollisionBallAndBlock();
-	bool detectCollisionBallAndLeftPanel();
-	bool detectCollisionBallAndPlayer();
-	bool detectCollisionBallAndRightPanel();
-	bool detectCollisionBallAndTopPanel();
-	void detectCollisionPlayerAndLeftPanel();
-	void detectCollisionPlayerAndRightPanel();
 	void detectCollisionPlayerAndPowerUp();
 	void detectPowerUpOutOfBounds(Window &window);
 	void updateActiveBlockCount();
