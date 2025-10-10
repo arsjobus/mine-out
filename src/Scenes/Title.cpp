@@ -46,12 +46,8 @@ void Title::loadBackground(Window &window) {
 
 void Title::loadDefaultFonts() {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading fonts.."));
-	if (getPrimaryFontName().isEmpty())
-		log.quickWrite(LOG_WARNING, std::string(getCurrentModeName() + log.getSeparator() + "A primary font name was not specified."));
-	else if (getFontDirectoryName().isEmpty())
-		log.quickWrite(LOG_WARNING, std::string(getCurrentModeName() + log.getSeparator() + "The font directory was not specified."));
-	else
-		setPrimaryFont(std::string(getFontDirectoryName() + "/" + getPrimaryFontName()));
+	setPrimaryFont(std::string(getFontDirectoryName() + "/" + getPrimaryFontName()));
+	setSecondaryFont(std::string(getFontDirectoryName() + "/" + getSecondaryFontName()));
 }
 
 void Title::loadDefaultSettings() {
@@ -69,9 +65,9 @@ void Title::loadTitle(Window &window) {
     txtMainTitle->setStyle(sf::Text::Bold);
     txtMainTitle->setOrigin(sf::Vector2f(txtMainTitle->getGlobalBounds().size.x / 2, txtMainTitle->getGlobalBounds().size.y / 2));
     txtMainTitle->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 3));
-	txtPlayInstruction = new sf::Text(getPrimaryFont(), "Press SPACE", 24);
+	txtPlayInstruction = new sf::Text(getSecondaryFont(), "PRESS <SPACE> TO PLAY", 24);
     txtPlayInstruction->setFillColor(getDefaultTextColor());
-    //txtPlayInstruction->setStyle(sf::Text::Bold);
+    txtPlayInstruction->setStyle(sf::Text::Bold);
     txtPlayInstruction->setOrigin(sf::Vector2f(txtPlayInstruction->getGlobalBounds().size.x / 2, txtPlayInstruction->getGlobalBounds().size.y / 2));
     txtPlayInstruction->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y - 100));
 }
