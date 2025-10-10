@@ -20,7 +20,7 @@ void PreloadResources::loadDefaultSettings() {
 	this->setLevelDirectoryName("levels");
 	this->setPowerupDirectoryName("powerups");
 	this->setTextureDirectoryName("images");
-	this->setSoundDirectoryName("sounds");
+	this->setSoundDirectoryName("sfx");
 	this->setSoundFileType(".wav");
 	this->setTextureFileType(".png");
 	this->setLoadPercentile( 0.f );
