@@ -4,6 +4,7 @@
 #include "Config.h"
 #include "GameState.h"
 #include "PreloadResources.h"
+#include "Scenes/Credits.h"
 #include "Scenes/LoadScreen.h"
 #include "Scenes/Title.h"
 #include "Scenes/LevelX.h"
@@ -47,7 +48,10 @@ void changeState(Window& window) {
                 currentState = std::make_unique<LevelX>(window, "level2.dat", GameState::State::STATE_LEVEL3);
                 break;
             case GameState::State::STATE_LEVEL3:
-                currentState = std::make_unique<LevelX>(window, "level3.dat", GameState::State::STATE_TITLE);
+                currentState = std::make_unique<LevelX>(window, "level3.dat", GameState::State::STATE_CREDITS);
+                break;
+            case GameState::State::STATE_CREDITS:
+                currentState = std::make_unique<Credits>(window);
                 break;
             case GameState::State::STATE_EXIT:
                 //PreloadResources::unloadResources();
