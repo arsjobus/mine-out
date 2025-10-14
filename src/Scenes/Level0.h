@@ -90,7 +90,7 @@ protected:
 	std::string defaultDataDirectoryName;
 	int defaultPaddleSpeed;
 	float levelMargin;
-	sf::Music music;
+	std::unique_ptr<sf::Sound> music;
 
 protected:
 	sf::Clock deltaClock;

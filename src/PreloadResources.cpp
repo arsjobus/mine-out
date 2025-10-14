@@ -15,6 +15,7 @@
 namespace fs = std::filesystem;
 
 // Static member definitions
+std::vector<sf::SoundBuffer> PreloadResources::music;
 std::vector<sf::SoundBuffer> PreloadResources::sound;
 std::vector<sf::Font> PreloadResources::fonts;
 std::vector<sf::Texture> PreloadResources::txtAnimation;
@@ -43,7 +44,10 @@ void PreloadResources::loadDefaultSettings() {
     this->setTextureDirectoryName("images");
     this->setFontDirectoryName("fonts");
     this->setSoundDirectoryName("sfx");
+    this->setMusicDirectoryName("music");
+    this->setMusicFileType(".ogg");
     this->setSoundFileType(".wav");
+    this->setFontFileType(".ttf");
     this->setTextureFileType(".png");
     this->setLoadPercentile(0.f);
     this->setLoadedResourceCount(0);
@@ -111,6 +115,10 @@ std::string PreloadResources::getExecutableBasePath() {
 
 // Relative paths for directories
 
+std::string PreloadResources::musicFilePath() {
+    return this->getMusicDirectoryName() + "/";
+}
+
 std::string PreloadResources::soundFilePath() {
     return this->getSoundDirectoryName() + "/";
 }
@@ -144,6 +152,20 @@ std::string PreloadResources::fontsFilePath() {
 }
 
 // Loading routines (sound, textures) — existing from your code…
+
+void PreloadResources::loadMusic(const char *filename) {
+    std::string rel = this->getMusicDirectoryName() + "/" + filename + this->getMusicFileType();
+    std::string fullpath = resolvePath(rel);
+    sf::SoundBuffer musicBuffer;
+    if (!musicBuffer.loadFromFile(fullpath)) {
+        std::cerr << "Could not load music: " << fullpath << std::endl;
+    } else {
+        std::cerr << "Loaded music: " << fullpath << std::endl;
+    }
+    music.push_back(musicBuffer);
+    this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
+    this->calculateLoadPercentile();
+}
 
 void PreloadResources::loadSound(const char *filename) {
     std::string rel = this->soundFilePath() + filename + this->getSoundFileType();
@@ -246,7 +268,7 @@ void PreloadResources::loadPowerupTexture(const char *filename) {
 // **Font loading method**
 
 void PreloadResources::loadFont(const char *filename) {
-    std::string rel = this->fontsFilePath() + filename + ".ttf";
+    std::string rel = this->fontsFilePath() + filename + this->getFontFileType();
     std::string fullpath = resolvePath(rel);
     sf::Font font;
     if (!font.openFromFile(fullpath)) {
@@ -273,6 +295,7 @@ void PreloadResources::calculateLoadPercentile() {
 }
 
 void PreloadResources::unloadResources() {
+    music.clear();
     sound.clear();
     fonts.clear();
     txtAnimation.clear();
@@ -287,6 +310,10 @@ void PreloadResources::unloadResources() {
 
 sf::SoundBuffer &PreloadResources::getBufferedSound(int index) {
     return sound.at(index);
+}
+
+sf::SoundBuffer &PreloadResources::getBufferedMusic(int index) {
+    return music.at(index);
 }
 
 sf::Font &PreloadResources::getFont(int index) {
@@ -343,12 +370,28 @@ void PreloadResources::setResourceCount(size_t rc) {
     resourceCount = rc;
 }
 
+std::string &PreloadResources::getMusicFileType() {
+    return musicFileType;
+}
+
 std::string &PreloadResources::getSoundFileType() {
     return soundFileType;
 }
 
+void PreloadResources::setFontFileType(const char *fft) {
+    fontFileType = fft;
+}
+
+std::string &PreloadResources::getFontFileType() {
+    return fontFileType;
+}
+
 void PreloadResources::setSoundFileType(const char *sft) {
     soundFileType = sft;
+}
+
+void PreloadResources::setMusicFileType(const char *mft) {
+    musicFileType = mft;
 }
 
 std::string &PreloadResources::getTextureFileType() {
@@ -405,6 +448,14 @@ std::string &PreloadResources::getPowerupDirectoryName() {
 
 void PreloadResources::setPowerupDirectoryName(const char *s) {
     powerupDirectoryName = s;
+}
+
+std::string &PreloadResources::getMusicDirectoryName() {
+    return musicDirectoryName;
+}
+
+void PreloadResources::setMusicDirectoryName(const char *s) {
+    musicDirectoryName = s;
 }
 
 std::string &PreloadResources::getSoundDirectoryName() {

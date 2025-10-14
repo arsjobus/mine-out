@@ -27,6 +27,7 @@ public:
     void loadLevelTexture(const char *filename);
     void loadPaddleTexture(const char *filename);
     void loadPowerupTexture(const char *filename);
+    void loadMusic(const char *filename);
     void loadSound(const char *filename);
 
     // Relative path inside resource directories
@@ -37,6 +38,7 @@ public:
     std::string levelTextureFilePath();
     std::string paddleTextureFilePath();
     std::string powerupTextureFilePath();
+    std::string musicFilePath();
     std::string soundFilePath();
 
     static void unloadResources();
@@ -51,11 +53,17 @@ public:
     size_t getLoadedResourceCount() const;
     void setLoadedResourceCount(size_t loadedResourceCount);
 
+    std::string &getMusicFileType();
+    void setMusicFileType(const char *musicFileType);
+
     std::string &getSoundFileType();
     void setSoundFileType(const char *soundFileType);
 
     std::string &getFontDirectoryName();
     void setFontDirectoryName(const char *fontDirectoryName);
+
+    std::string &getFontFileType();
+    void setFontFileType(const char *fontFileType);
 
     std::string &getTextureDirectoryName();
     void setTextureDirectoryName(const char *textureDirectoryName);
@@ -81,9 +89,13 @@ public:
     std::string &getPowerupDirectoryName();
     void setPowerupDirectoryName(const char *powerupDirectoryName);
 
+    std::string &getMusicDirectoryName();
+    void setMusicDirectoryName(const char *musicDirectoryName);
+
     std::string &getSoundDirectoryName();
     void setSoundDirectoryName(const char *soundDirectoryName);
 
+    sf::SoundBuffer &getBufferedMusic(int index);
     sf::SoundBuffer &getBufferedSound(int index);
     sf::Font &getFont(int index);
     sf::Texture &getAnimationTexture(int index);
@@ -108,6 +120,7 @@ private:
     size_t loadedResourceCount;
     size_t resourceCount;
 
+    static std::vector<sf::SoundBuffer> music;
     static std::vector<sf::SoundBuffer> sound;
     static std::vector<sf::Font> fonts;
     static std::vector<sf::Texture> txtAnimation;
@@ -125,6 +138,10 @@ private:
     std::string paddleDirectoryName;
     std::string powerupDirectoryName;
     std::string soundDirectoryName;
+    std::string musicDirectoryName;
+    std::string fontFileType;
+    std::string fontDirectoryName;
+    std::string musicFileType;
     std::string soundFileType;
     std::string textureDirectoryName;
     std::string textureFileType;

@@ -27,6 +27,7 @@ private:
 	bool levelsAreLoading;
 	bool paddlesAreLoading;
 	bool powerupsAreLoading;
+	bool musicsAreLoading;
 	bool soundsAreLoading;
 
 	size_t loadedAnimationsCount;
@@ -36,6 +37,7 @@ private:
 	size_t loadedLevelCount;
 	size_t loadedPaddlesCount;
 	size_t loadedPowerupCount;
+	size_t loadedMusicCount;
 	size_t loadedSoundCount;
 
 	std::vector<std::string> animationTextureNames;
@@ -45,6 +47,7 @@ private:
 	std::vector<std::string> levelTextureNames;
 	std::vector<std::string> paddleTextureNames;
 	std::vector<std::string> powerupTextureNames;
+	std::vector<std::string> musicNames;
 	std::vector<std::string> soundNames;
 
 	sf::RectangleShape rectLoadBar;

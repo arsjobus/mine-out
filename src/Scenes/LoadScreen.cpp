@@ -78,6 +78,13 @@ void LoadScreen::update(Window &window, sf::Time dt)
 			}
 			else resources.loadSound(soundNames[loadedSoundCount++].c_str());
 		}
+		else if (loadedMusicCount < musicNames.size()) {
+			if (loadedMusicCount == 0 && !musicsAreLoading) {
+				//textLoadingStatus->setString("Loading Music..");
+				musicsAreLoading = true;
+			}
+			else resources.loadMusic(musicNames[loadedMusicCount++].c_str());
+		}
 		// Update the appearance of the loading bar.
 		rectLoadBar.setSize(sf::Vector2f(resources.getLoadPercentile() / 100.f, 32));
 		rectLoadBar.setOrigin(sf::Vector2f(rectLoadBar.getGlobalBounds().size.x / 2, rectLoadBar.getGlobalBounds().size.y / 2));
@@ -115,6 +122,7 @@ void LoadScreen::initialize() {
 	paddlesAreLoading = false;
 	powerupsAreLoading = false;
 	soundsAreLoading = false;
+	musicsAreLoading = false;
 	fontsAreLoading = false;
 	loadedFontsCount = 0;
 	loadedAnimationsCount = 0;
@@ -124,6 +132,7 @@ void LoadScreen::initialize() {
 	loadedLevelCount = 0;
 	loadedPowerupCount = 0;
 	loadedSoundCount = 0;
+	loadedMusicCount = 0;
 
 	animationTextureNames.push_back("explosion1");   // id: 0
 	backgroundTextureNames.push_back("background1"); // id: 0
@@ -141,6 +150,7 @@ void LoadScreen::initialize() {
 	levelTextureNames.push_back("level-right");      // id: 2
 	powerupTextureNames.push_back("powerup-increased-damage"); // id: 0
 	powerupTextureNames.push_back("powerup-grow-paddle"); // id: 1
+	musicNames.push_back("crystalcave"); // id: 0
 	soundNames.push_back("paddle-hit"); // id: 0
 	soundNames.push_back("explosion");  // id: 1
 	fontNames.push_back("AbandoN"); // id: 0
@@ -152,7 +162,8 @@ void LoadScreen::initialize() {
 		paddleTextureNames.size() +
 		powerupTextureNames.size() +
 		levelTextureNames.size() +
-		soundNames.size() + 
+		soundNames.size() +
+		musicNames.size() + 
 		fontNames.size());
 }
 

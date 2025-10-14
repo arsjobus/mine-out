@@ -35,7 +35,8 @@ void Level0::processEvents(Window &window) {
             else if (key == sf::Keyboard::Scancode::R) setNextState(GameState::State::STATE_LEVEL1);
             else if (key == sf::Keyboard::Scancode::P) {
 				isPaused = !isPaused;
-				if (isPaused && isMusicLoaded) music.pause();	
+				if (isPaused) music->pause();
+				else music->play();
 			}
             else if (key == sf::Keyboard::Scancode::Escape) setNextState(GameState::State::STATE_EXIT);
         }
@@ -62,8 +63,6 @@ void Level0::update(Window &window, sf::Time dt) {
 	updateGameObjects(dt); // Update game objects
 	updatePowerUp(); // Update the player's currently active powerup
 	ball->followPaddle(player.get()); // The ball follows player's paddle until it is launched
-	// Play music if it is not
-	if (isMusicLoaded && music.getStatus() != sf::SoundSource::Status::Playing) music.play();
 	// :::::::::::::::::::::::::::
 	// :::: DETECT COLLISIONS ::::
 	// :::::::::::::::::::::::::::
@@ -177,8 +176,9 @@ void Level0::loadBall(float radius) {
 }
 
 void Level0::loadDefaultSettings() {
-	isMusicLoaded = music.openFromFile("music/crystalcave.ogg"); // Load music and play
-	if (isMusicLoaded) music.setLooping( true );
+	music = std::make_unique<sf::Sound>(resources.getBufferedMusic(0));
+	music->setLooping(true);
+	music->play();
 	activeBlocksCount = 0;
 	setBlocksPerRow(15); // Set the blocks per row to 15
 	setDefaultDataDirectoryName("data"); // Set default data directory name
