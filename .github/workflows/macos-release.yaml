@@ -1,0 +1,42 @@
+name: Build and Release macOS App
+
+on:
+  push:
+    tags:
+      - 'v*'  # e.g., v1.0.0
+
+jobs:
+  build:
+    name: Build and Release on macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Homebrew dependencies
+        run: |
+          brew update
+          brew install sfml cmake
+
+      - name: Create build directory
+        run: mkdir -p build
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Run macOS app bundle script
+        run: ./make-mac-app.sh
+        shell: bash
+
+      - name: Archive .app bundle
+        run: |
+          cd build
+          zip -r MineOut.app.zip MineOut.app
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/MineOut.app.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
