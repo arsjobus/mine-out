@@ -34,7 +34,7 @@ void Credits::processEvents(Window &window) {
 void Credits::update(Window &window, sf::Time dt) {
 	timeSinceStart += dt.asSeconds();
 
-	if (timeSinceStart >= 3.0f) {
+	if (timeSinceStart >= 5.0f) {
 		setNextState(STATE_TITLE);
 	}
 }
