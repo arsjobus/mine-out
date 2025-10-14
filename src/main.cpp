@@ -48,7 +48,28 @@ void changeState(Window& window) {
                 currentState = std::make_unique<LevelX>(window, "level2.dat", GameState::State::STATE_LEVEL3);
                 break;
             case GameState::State::STATE_LEVEL3:
-                currentState = std::make_unique<LevelX>(window, "level3.dat", GameState::State::STATE_CREDITS);
+                currentState = std::make_unique<LevelX>(window, "level3.dat", GameState::State::STATE_LEVEL4);
+                break;
+            case GameState::State::STATE_LEVEL4:
+                currentState = std::make_unique<LevelX>(window, "level4.dat", GameState::State::STATE_LEVEL5);
+                break;
+            case GameState::State::STATE_LEVEL5:
+                currentState = std::make_unique<LevelX>(window, "level5.dat", GameState::State::STATE_LEVEL6);
+                break;
+            case GameState::State::STATE_LEVEL6:
+                currentState = std::make_unique<LevelX>(window, "level6.dat", GameState::State::STATE_LEVEL7);
+                break;
+            case GameState::State::STATE_LEVEL7:
+                currentState = std::make_unique<LevelX>(window, "level7.dat", GameState::State::STATE_LEVEL8);
+                break;
+            case GameState::State::STATE_LEVEL8:
+                currentState = std::make_unique<LevelX>(window, "level8.dat", GameState::State::STATE_LEVEL9);
+                break;
+            case GameState::State::STATE_LEVEL9:
+                currentState = std::make_unique<LevelX>(window, "level9.dat", GameState::State::STATE_LEVEL10);
+                break;
+            case GameState::State::STATE_LEVEL10:
+                currentState = std::make_unique<LevelX>(window, "level10.dat", GameState::State::STATE_CREDITS);
                 break;
             case GameState::State::STATE_CREDITS:
                 currentState = std::make_unique<Credits>(window);

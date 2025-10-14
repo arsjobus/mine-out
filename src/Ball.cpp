@@ -63,7 +63,11 @@ bool Ball::checkCollisionWithPanelL(GameObject *otherGameObject) {
 			otherRectShape->getGlobalBounds().position.x + otherRectShape->getGlobalBounds().size.x + getRadius(),
 			getPosition().y
 		));
-		setXVelocity(-std::abs(getVelocity().x));
+		float xVel = getVelocity().x;
+		if (std::abs(xVel) < 1e-2) {
+			xVel = getSpeed() * 0.5f; // Nudge right if stuck
+		}
+		setXVelocity(std::abs(xVel));
 		return true;
 	} else return false;
 }
@@ -76,7 +80,11 @@ bool Ball::checkCollisionWithPanelR(GameObject *otherGameObject) {
 			otherRectShape->getGlobalBounds().position.x - getRadius(),
 			getPosition().y
 		));
-		setXVelocity(std::abs(getVelocity().x));
+		float xVel = getVelocity().x;
+		if (std::abs(xVel) < 1e-2) {
+			xVel = -getSpeed() * 0.5f; // Nudge left if stuck
+		}
+		setXVelocity(-std::abs(xVel));
 		return true;
 	} else return false;
 }
@@ -105,7 +113,16 @@ bool Ball::checkCollisionWithPlayer(GameObject *otherGameObject) {
 		));
 		setYVelocity(-std::abs(getVelocity().y));
 		// Add some X velocity based on hit position
-		setXVelocity((getPosition().x - otherRectShape->getPosition().x) * 2);
+		float newXVel = (getPosition().x - otherRectShape->getPosition().x) * 2;
+		// If ball is flush against left panel, nudge right
+		if (newXVel == 0 && getPosition().x <= 0 + getRadius() + 1) {
+			newXVel = std::abs(getSpeed()) * 0.5f;
+		}
+		// If ball is flush against right panel, nudge left
+		if (newXVel == 0 && getPosition().x >= 1024 - getRadius() - 1) {
+			newXVel = -std::abs(getSpeed()) * 0.5f;
+		}
+		setXVelocity(newXVel);
 		return true;
 	} else return false;
 }
