@@ -105,14 +105,16 @@ public:
     sf::Texture &getPaddleTexture(int index);
     sf::Texture &getPowerupTexture(int index);
 
+    // Path resolution helpers
+    static std::string resolvePath(const std::string &relativePath);
+    static std::string getExecutableBasePath();
+
 private:
     // Internal helpers
     void calculateLoadPercentile();
     void loadDefaultSettings();
 
-    // Path resolution helpers
-    std::string resolvePath(const std::string &relativePath);
-    std::string getExecutableBasePath();
+
 
 private:
     // Member variables

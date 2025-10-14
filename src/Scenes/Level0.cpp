@@ -203,9 +203,10 @@ void Level0::loadPanelT(int newWidth, int newHeight) {
 
 void Level0::loadLevelDataFromFile(const char *filename) {
 	// Craft the file path
-	std::string strFilePath = (sf::String(getDefaultDataDirectoryName() + "/" + filename));
+	std::string rel = getDefaultDataDirectoryName() + "/" + filename;
+    std::string fullpath = PreloadResources::resolvePath(rel);
 	// Open the file by using the crafted file path
-	std::ifstream levelDataFile(strFilePath.c_str());
+	std::ifstream levelDataFile(fullpath.c_str());
 	// If the file cannot be open then stop the game until it is replaced
 	if (!levelDataFile.is_open()) {
 		log.quickWrite(LOG_ERROR, std::string(getCurrentModeName() + log.getSeparator() + "Unable to open level data file: " + filename));
