@@ -6,13 +6,9 @@ Ball::Ball(float newRadius) {
 	loadDefaultSettings();
 	// Override default settings here:
 	setRadius(newRadius);
-	// Set the origin again since the radius of the ball changed.
 	auto bounds = getLocalBounds();
 	setOrigin(sf::Vector2f(bounds.size.x / 2.f, bounds.size.y / 2.f));
 }
-/**
- * Destructor
- */
 Ball::~Ball(void) { }
 
 /**
@@ -61,8 +57,7 @@ bool Ball::isOutOfBounds(Window &window) {
 
 bool Ball::checkCollisionWithPanelL(GameObject *otherGameObject) {
 	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
-	if (getCanBounce() &&
-		getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds() ) ) {
+	if (getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds())) {
 		setXVelocity( -getVelocity().x );
 		return true;
 	} else return false;
@@ -70,7 +65,7 @@ bool Ball::checkCollisionWithPanelL(GameObject *otherGameObject) {
 
 bool Ball::checkCollisionWithPanelR(GameObject *otherGameObject) {
 	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
-	if (getCanBounce() && getGlobalBounds().findIntersection(otherRectShape->getGlobalBounds() ) ) {
+	if (getGlobalBounds().findIntersection(otherRectShape->getGlobalBounds())) {
 		setXVelocity( -getVelocity().x );
 		return true;
 	} else return false;
@@ -78,7 +73,7 @@ bool Ball::checkCollisionWithPanelR(GameObject *otherGameObject) {
 
 bool Ball::checkCollisionWithPanelT(GameObject *otherGameObject) {
 	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
-	if (getCanBounce() && getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds() ) ) {
+	if (getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds())) {
 		setYVelocity( -getVelocity().y );
 		return true;
 	} else return false;
@@ -86,7 +81,7 @@ bool Ball::checkCollisionWithPanelT(GameObject *otherGameObject) {
 
 bool Ball::checkCollisionWithPlayer(GameObject *otherGameObject) {
 	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
-	if (getCanBounce() && getGlobalBounds().findIntersection(otherRectShape->getGlobalBounds())) {
+	if (getGlobalBounds().findIntersection(otherRectShape->getGlobalBounds())) {
 		if (otherGameObject->getLabel() == "player") otherGameObject->playSound( 0 );
 		if (getPosition().y > otherRectShape->getGlobalBounds().position.y + otherRectShape->getGlobalBounds().size.y ||
 			getPosition().y < otherRectShape->getGlobalBounds().position.y) {
