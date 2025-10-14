@@ -138,11 +138,14 @@ void Level0::detectPowerUpOutOfBounds(Window &window) {
 }
 
 void Level0::updateActiveBlockCount() {
-	for (int i = 0; i < blocks.size(); ++i) if (blocks[i]->getActive()) activeBlocksCount++;
+	activeBlocksCount = 0;
+	for (int i = 0; i < blocks.size(); ++i) {
+		if (blocks[i]->getActive()) activeBlocksCount++;
+	}
 }
 
 void Level0::updateGameObjects(sf::Time dt) {
-	player->update(dt); // Update the player / paddle object
+	player->update(dt, panelL.get(), panelR.get());
 	ball->update(dt);   // Update the ball object
 	for (int i = 0; i < blocks.size(); ++i) blocks[i]->update(blocks, dt);
 }

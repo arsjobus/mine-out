@@ -17,9 +17,28 @@ Paddle::~Paddle( void ) {
 
 /**
 * Updates members of this object.
+ * @param panelL The left panel object.
+ * @param panelR The right panel object.
 */
-void Paddle::update(sf::Time dt) {
-	setPosition( sf::Vector2f(getPosition().x + getVelocity().x * dt.asSeconds(), getPosition().y ) ); // Update the position of the player's paddle
+void Paddle::update(sf::Time dt, const GameObject* panelL, const GameObject* panelR) {
+    setPosition( sf::Vector2f(getPosition().x + getVelocity().x * dt.asSeconds(), getPosition().y ) );
+
+    // Clamp paddle position using actual panel bounds
+    const sf::RectangleShape* leftPanelRect = dynamic_cast<const sf::RectangleShape*>(panelL);
+    const sf::RectangleShape* rightPanelRect = dynamic_cast<const sf::RectangleShape*>(panelR);
+    if (!leftPanelRect || !rightPanelRect) return;
+
+    float leftPanelEdge = leftPanelRect->getPosition().x + leftPanelRect->getSize().x / 2.f;
+    float rightPanelEdge = rightPanelRect->getPosition().x - rightPanelRect->getSize().x / 2.f;
+    float halfPaddle = getSize().x / 2.f;
+    float newX = getPosition().x;
+    if (newX - halfPaddle < leftPanelEdge) {
+        newX = leftPanelEdge + halfPaddle;
+    }
+    if (newX + halfPaddle > rightPanelEdge) {
+        newX = rightPanelEdge - halfPaddle;
+    }
+    setPosition(sf::Vector2f(newX, getPosition().y));
 }
 
 size_t Paddle::getActivePowerUp() { return this->activePowerUp; }

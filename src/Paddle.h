@@ -20,7 +20,7 @@ public:
 	Paddle(int newWidth, int newHeight);
 	~Paddle(void);
 
-	void update(sf::Time dt);
+	void update(sf::Time dt, const GameObject* panelL, const GameObject* panelR);
 
 public:
 	// setters and getters
