@@ -26,7 +26,7 @@ public:
 	// setters and getters
 	size_t getActivePowerUp();
 	void setActivePowerUp(int activePowerUp);
-	
+    
 	size_t getShotAccuracy();
 	void setShotAccuracy(int newAccuracy);
 
@@ -39,7 +39,7 @@ public:
 	bool getCanMoveRight();
 	void setCanMoveRight(bool newBoolean);
 
-	void resizeLarge();
+	void resizeLarge(const GameObject* panelL, const GameObject* panelR);
 	void resizeSmall();
 
 	bool isCollisionDetected(GameObject *otherGameObject);

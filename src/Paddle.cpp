@@ -103,7 +103,7 @@ void Paddle::resizeSmall() {
 	this->setOrigin( sf::Vector2f(this->getLocalBounds().size.x / 2, this->getLocalBounds().size.y / 2) );
 }
 
-void Paddle::resizeLarge() {
+void Paddle::resizeLarge(const GameObject* panelL, const GameObject* panelR) {
 	this->setSize( sf::Vector2f(192.f, 16.f) );
 	this->setTexture( &resource.getPaddleTexture(1) );
 	this->setTextureRect(sf::Rect<int>(
@@ -111,4 +111,22 @@ void Paddle::resizeLarge() {
 		sf::Vector2i(192, 16)
 	));
 	this->setOrigin( sf::Vector2f(this->getLocalBounds().size.x / 2, this->getLocalBounds().size.y / 2) );
+
+	// Cast to sf::RectangleShape to access position and size
+	const sf::RectangleShape* leftPanelRect = dynamic_cast<const sf::RectangleShape*>(panelL);
+	const sf::RectangleShape* rightPanelRect = dynamic_cast<const sf::RectangleShape*>(panelR);
+	if (!leftPanelRect || !rightPanelRect) return; // Safety check
+
+	float leftPanelEdge = leftPanelRect->getPosition().x + leftPanelRect->getSize().x / 2.f;
+	float rightPanelEdge = rightPanelRect->getPosition().x - rightPanelRect->getSize().x / 2.f;
+	float halfPaddle = getSize().x / 2.f;
+	float paddleY = getPosition().y;
+	float newX = getPosition().x;
+	if (newX - halfPaddle < leftPanelEdge) {
+		newX = leftPanelEdge + halfPaddle;
+	}
+	if (newX + halfPaddle > rightPanelEdge) {
+		newX = rightPanelEdge - halfPaddle;
+	}
+	setPosition(sf::Vector2f(newX, paddleY));
 }

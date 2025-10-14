@@ -154,7 +154,7 @@ void Level0::updatePowerUp() {
 	} else ball->setDamage( 1 );
 
 	if (player->getActivePowerUp() == PowerUp::TypeID::GrowPaddle) {
-		player->resizeLarge();
+	player->resizeLarge(panelL.get(), panelR.get());
 	} else player->resizeSmall();
 }
 
