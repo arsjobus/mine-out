@@ -27,7 +27,10 @@ void LevelX::render( Window &window, sf::Time dt ) {
 
 void LevelX::update( Window &window, sf::Time dt ) {
 	Level0::update( window, dt );
-	// Override default update here:
+	if (this->getActiveBlocksCount() <= 0)
+		setNextState( nextGameState );
+	else
+		this->setActiveBlocksCount( 0 );
 }
 
 void LevelX::loadBackground( Window &window ) {
