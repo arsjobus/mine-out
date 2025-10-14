@@ -88,11 +88,13 @@ std::string Log::intToString(int intNumber) {
 }
 
 void Log::open() {
+	if (!enabled) return;
 	if (exists())
 		logfileWriteable.open(filename.c_str(), std::fstream::out | std::fstream::app);
 }
 
 void Log::open(const char* customFilename) {
+	if (!enabled) return;
 	if (exists(customFilename))
 		logfileWriteable.open(customFilename, std::fstream::out | std::fstream::app);
 }
@@ -115,6 +117,7 @@ const char *Log::outputLogType(int logtype) {
 }
 
 void Log::quickWrite(const char* textToWrite) {
+	if (!enabled) return;
 	if (eventIsAllowedToLog(logtype::LOG_INFO) || eventIsAllowedToConsoleOutput(logtype::LOG_INFO)) {
 		open();
 		if (exists()) {
@@ -126,6 +129,7 @@ void Log::quickWrite(const char* textToWrite) {
 }
 
 void Log::quickWrite(std::string textToWrite) {
+	if (!enabled) return;
 	if (eventIsAllowedToLog(logtype::LOG_INFO) || eventIsAllowedToConsoleOutput(logtype::LOG_INFO)) {
 		open();
 		if (exists()) {
@@ -137,6 +141,7 @@ void Log::quickWrite(std::string textToWrite) {
 }
 
 void Log::quickWrite(int logtype, const char* textToWrite) {
+	if (!enabled) return;
 	if (eventIsAllowedToLog(logtype) || eventIsAllowedToConsoleOutput(logtype)) {
 		open();
 		if (exists()) {
@@ -148,6 +153,7 @@ void Log::quickWrite(int logtype, const char* textToWrite) {
 }
 
 void Log::quickWrite(int logtype, const std::string &textToWrite) {
+	if (!enabled) return;
 	if (eventIsAllowedToLog(logtype) || eventIsAllowedToConsoleOutput(logtype)) {
 		open();
 		if (exists()) {
@@ -169,6 +175,7 @@ void Log::setSeparator(const char *newSeparator) { separator = newSeparator; }
 std::string &Log::getSeparator() { return separator; }
 
 void Log::write(int logtype, const char* textToWrite) {
+	if (!enabled) return;
 	if (logfileWriteable.is_open()) {
 		// Output to console
 		if (eventIsAllowedToConsoleOutput(logtype))
@@ -180,6 +187,7 @@ void Log::write(int logtype, const char* textToWrite) {
 }
 
 void Log::write(int logtype, const std::string &textToWrite) {
+	if (!enabled) return;
 	if (logfileWriteable.is_open()) {
 		// Output to console
 		if (eventIsAllowedToConsoleOutput(logtype))

@@ -24,9 +24,12 @@ sf::String &Window::getDefaultWindowTitle() { return defaultWindowTitle; }
 */
 void Window::loadFromConfig() {
 	// Retrieve values for each of this objects qualifying members from the ini file
-	bFullScreen = config.getSettingAsBool("bFullScreen", "settings.ini");
-	uScreenResolution.x = config.getSettingAsUInt("uWindowWidth", "settings.ini");
-	uScreenResolution.y = config.getSettingAsUInt("uWindowHeight", "settings.ini");
+	//bFullScreen = config.getSettingAsBool("bFullScreen", "settings.ini");
+	//uScreenResolution.x = config.getSettingAsUInt("uWindowWidth", "settings.ini");
+	//uScreenResolution.y = config.getSettingAsUInt("uWindowHeight", "settings.ini");
+	bFullScreen = false;
+	uScreenResolution.x = 1024;
+	uScreenResolution.y = 768;
 	// Ensure that the window is not set too small in the ini file
 	if (uScreenResolution.x < uMinimumScreenResolution.x || uScreenResolution.y < uMinimumScreenResolution.y) {
 		uScreenResolution.x = uDefaultScreenResolution.x;

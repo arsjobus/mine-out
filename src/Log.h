@@ -51,13 +51,13 @@ public:
 
 	void setSeparator(const char *newSeparator);
 	std::string &getSeparator();
+	bool enabled = false;
 
 private:
 	bool exists();
 	bool exists(const char* customFilename);
 	bool eventIsAllowedToLog(int logtype);
 	bool eventIsAllowedToConsoleOutput(int logtype);
-
 	static std::string filename;
 	std::string infoLabel;
 	std::string warningLabel;
