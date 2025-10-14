@@ -57,8 +57,13 @@ bool Ball::isOutOfBounds(Window &window) {
 
 bool Ball::checkCollisionWithPanelL(GameObject *otherGameObject) {
 	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
-	if (getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds())) {
-		setXVelocity( -getVelocity().x );
+	if (getGlobalBounds().findIntersection(otherRectShape->getGlobalBounds())) {
+		// Move ball outside the panel
+		setPosition(sf::Vector2f(
+			otherRectShape->getGlobalBounds().position.x + otherRectShape->getGlobalBounds().size.x + getRadius(),
+			getPosition().y
+		));
+		setXVelocity(-std::abs(getVelocity().x));
 		return true;
 	} else return false;
 }
@@ -66,15 +71,25 @@ bool Ball::checkCollisionWithPanelL(GameObject *otherGameObject) {
 bool Ball::checkCollisionWithPanelR(GameObject *otherGameObject) {
 	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
 	if (getGlobalBounds().findIntersection(otherRectShape->getGlobalBounds())) {
-		setXVelocity( -getVelocity().x );
+		// Move ball outside the panel
+		setPosition(sf::Vector2f(
+			otherRectShape->getGlobalBounds().position.x - getRadius(),
+			getPosition().y
+		));
+		setXVelocity(std::abs(getVelocity().x));
 		return true;
 	} else return false;
 }
 
 bool Ball::checkCollisionWithPanelT(GameObject *otherGameObject) {
 	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
-	if (getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds())) {
-		setYVelocity( -getVelocity().y );
+	if (getGlobalBounds().findIntersection(otherRectShape->getGlobalBounds())) {
+		// Move ball below the panel
+		setPosition(sf::Vector2f(
+			getPosition().x,
+			otherRectShape->getGlobalBounds().position.y + otherRectShape->getGlobalBounds().size.y + getRadius()
+		));
+		setYVelocity(std::abs(getVelocity().y));
 		return true;
 	} else return false;
 }
@@ -82,15 +97,15 @@ bool Ball::checkCollisionWithPanelT(GameObject *otherGameObject) {
 bool Ball::checkCollisionWithPlayer(GameObject *otherGameObject) {
 	sf::RectangleShape *otherRectShape = dynamic_cast<sf::RectangleShape*>(otherGameObject);
 	if (getGlobalBounds().findIntersection(otherRectShape->getGlobalBounds())) {
-		if (otherGameObject->getLabel() == "player") otherGameObject->playSound( 0 );
-		if (getPosition().y > otherRectShape->getGlobalBounds().position.y + otherRectShape->getGlobalBounds().size.y ||
-			getPosition().y < otherRectShape->getGlobalBounds().position.y) {
-			if (getPosition().y < otherRectShape->getGlobalBounds().position.y) {
-				setYVelocity( -getVelocity().y );
-				setXVelocity((getPosition().x - otherRectShape->getPosition().x) * 2);
-			}
-		}
-		else setXVelocity( -getVelocity().x );
+		if (otherGameObject->getLabel() == "player") otherGameObject->playSound(0);
+		// Move ball above the paddle
+		setPosition(sf::Vector2f(
+			getPosition().x,
+			otherRectShape->getGlobalBounds().position.y - getRadius()
+		));
+		setYVelocity(-std::abs(getVelocity().y));
+		// Add some X velocity based on hit position
+		setXVelocity((getPosition().x - otherRectShape->getPosition().x) * 2);
 		return true;
 	} else return false;
 }
