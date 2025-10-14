@@ -14,7 +14,9 @@
 
 namespace fs = std::filesystem;
 
+// Static member definitions
 std::vector<sf::SoundBuffer> PreloadResources::sound;
+std::vector<sf::Font> PreloadResources::fonts;
 std::vector<sf::Texture> PreloadResources::txtAnimation;
 std::vector<sf::Texture> PreloadResources::txtBackground;
 std::vector<sf::Texture> PreloadResources::txtBlock;
@@ -22,12 +24,12 @@ std::vector<sf::Texture> PreloadResources::txtLevel;
 std::vector<sf::Texture> PreloadResources::txtPaddle;
 std::vector<sf::Texture> PreloadResources::txtPowerup;
 
-PreloadResources::PreloadResources(void) {
+PreloadResources::PreloadResources() {
     loadDefaultSettings();
-    // Override default settings here if needed
+    // You might want to initialize other state here
 }
 
-PreloadResources::~PreloadResources(void) {
+PreloadResources::~PreloadResources() {
     // cleanup if needed
 }
 
@@ -39,6 +41,7 @@ void PreloadResources::loadDefaultSettings() {
     this->setLevelDirectoryName("levels");
     this->setPowerupDirectoryName("powerups");
     this->setTextureDirectoryName("images");
+    this->setFontDirectoryName("fonts");
     this->setSoundDirectoryName("sfx");
     this->setSoundFileType(".wav");
     this->setTextureFileType(".png");
@@ -47,13 +50,10 @@ void PreloadResources::loadDefaultSettings() {
     this->setResourceCount(0);
 }
 
-/**
- * Returns a full path by resolving inside the .app’s Resources folder first (on macOS),
- * or falling back to executable base path or working directory.
- */
+// resolvePath and getExecutableBasePath as before
+
 std::string PreloadResources::resolvePath(const std::string &relativePath) {
 #ifdef __APPLE__
-    // get the bundle’s Resources directory
     static std::string bundleRes;
     if (bundleRes.empty()) {
         CFBundleRef mainBundle = CFBundleGetMainBundle();
@@ -65,7 +65,6 @@ std::string PreloadResources::resolvePath(const std::string &relativePath) {
                 CFRelease(resURL);
                 if (ok) {
                     bundleRes = std::string(reinterpret_cast<char*>(pathBuf));
-                    // make sure bundleRes ends with slash
                     if (!bundleRes.empty() && bundleRes.back() != '/') {
                         bundleRes.push_back('/');
                     }
@@ -78,12 +77,9 @@ std::string PreloadResources::resolvePath(const std::string &relativePath) {
         if (fs::exists(candidate)) {
             return candidate;
         }
-        // else fall through to fallback
     }
 #endif
 
-    // fallback: assume relativePath is correct against “base path”
-    // You must implement getExecutableBasePath to return path to resources folder or binary folder
     std::string base = getExecutableBasePath();
     if (!base.empty()) {
         std::string candidate2 = base + relativePath;
@@ -92,26 +88,16 @@ std::string PreloadResources::resolvePath(const std::string &relativePath) {
         }
     }
 
-    // last fallback: just try relative path as given
     return relativePath;
 }
 
-/**
- * On macOS, you might compute the base path (e.g. binary’s folder or Resources) for fallback.
- * You’ll need to adapt this depending on how you package & run the app.
- */
 std::string PreloadResources::getExecutableBasePath() {
 #ifdef __APPLE__
-    // We can get the path of the running executable
     char buf[PATH_MAX];
     uint32_t bufsize = sizeof(buf);
     if (_NSGetExecutablePath(buf, &bufsize) == 0) {
-        // buf is like: /.../YourApp.app/Contents/MacOS/YourAppExecutable
         fs::path exePath(buf);
-        // e.g. go up to Resources folder:
-        // exePath.parent_path() is Contents/MacOS
-        // so go up one to Contents, then into Resources
-        fs::path contentDir = exePath.parent_path().parent_path();  // Contents
+        fs::path contentDir = exePath.parent_path().parent_path();  // go up from MacOS to Contents
         fs::path resourcesDir = contentDir / "Resources";
         std::string s = resourcesDir.string();
         if (!s.empty() && s.back() != '/') {
@@ -120,35 +106,44 @@ std::string PreloadResources::getExecutableBasePath() {
         return s;
     }
 #endif
-    // fallback: empty, or working directory
     return std::string();
 }
 
-// Helpers to compute the relative sub‑directory paths:
+// Relative paths for directories
 
 std::string PreloadResources::soundFilePath() {
     return this->getSoundDirectoryName() + "/";
 }
+
 std::string PreloadResources::animationTextureFilePath() {
     return this->getTextureDirectoryName() + "/" + this->getAnimationDirectoryName() + "/";
 }
+
 std::string PreloadResources::backgroundTextureFilePath() {
     return this->getTextureDirectoryName() + "/" + this->getBackgroundDirectoryName() + "/";
 }
+
 std::string PreloadResources::blockTextureFilePath() {
     return this->getTextureDirectoryName() + "/" + this->getBlockDirectoryName() + "/";
 }
+
 std::string PreloadResources::levelTextureFilePath() {
     return this->getTextureDirectoryName() + "/" + this->getLevelDirectoryName() + "/";
 }
+
 std::string PreloadResources::paddleTextureFilePath() {
     return this->getTextureDirectoryName() + "/" + this->getPaddleDirectoryName() + "/";
 }
+
 std::string PreloadResources::powerupTextureFilePath() {
     return this->getTextureDirectoryName() + "/" + this->getPowerupDirectoryName() + "/";
 }
 
-// Loading routines (using resolvePath) —
+std::string PreloadResources::fontsFilePath() {
+    return this->getFontDirectoryName() + "/";
+}
+
+// Loading routines (sound, textures) — existing from your code…
 
 void PreloadResources::loadSound(const char *filename) {
     std::string rel = this->soundFilePath() + filename + this->getSoundFileType();
@@ -248,9 +243,27 @@ void PreloadResources::loadPowerupTexture(const char *filename) {
     this->calculateLoadPercentile();
 }
 
+// **Font loading method**
+
+void PreloadResources::loadFont(const char *filename) {
+    std::string rel = this->fontsFilePath() + filename + ".ttf";
+    std::string fullpath = resolvePath(rel);
+    sf::Font font;
+    if (!font.openFromFile(fullpath)) {
+        std::cerr << "Could not load font: " << fullpath << std::endl;
+    } else {
+        std::cerr << "Loaded font: " << fullpath << std::endl;
+        fonts.push_back(font);
+    }
+    this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
+    this->calculateLoadPercentile();
+}
+
+// calculateLoadPercentile, unloadResources, etc.
+
 void PreloadResources::calculateLoadPercentile() {
-    int loaded = this->getLoadedResourceCount();
-    int total = this->getResourceCount();
+    size_t loaded = this->getLoadedResourceCount();
+    size_t total = this->getResourceCount();
     if (total > 0) {
         float pct = (static_cast<float>(loaded) * 100.f) / static_cast<float>(total);
         this->setLoadPercentile(pct);
@@ -261,6 +274,7 @@ void PreloadResources::calculateLoadPercentile() {
 
 void PreloadResources::unloadResources() {
     sound.clear();
+    fonts.clear();
     txtAnimation.clear();
     txtBackground.clear();
     txtBlock.clear();
@@ -269,134 +283,151 @@ void PreloadResources::unloadResources() {
     txtPowerup.clear();
 }
 
+// Getters
+
 sf::SoundBuffer &PreloadResources::getBufferedSound(int index) {
-    return this->sound[index];
+    return sound.at(index);
+}
+
+sf::Font &PreloadResources::getFont(int index) {
+    return fonts.at(index);
 }
 
 sf::Texture &PreloadResources::getAnimationTexture(int index) {
-    return this->txtAnimation[index];
+    return txtAnimation.at(index);
 }
 
 sf::Texture &PreloadResources::getBackgroundTexture(int index) {
-    return this->txtBackground[index];
+    return txtBackground.at(index);
 }
 
 sf::Texture &PreloadResources::getBlockTexture(int index) {
-    return this->txtBlock[index];
+    return txtBlock.at(index);
 }
 
 sf::Texture &PreloadResources::getLevelTexture(int index) {
-    return this->txtLevel[index];
+    return txtLevel.at(index);
 }
 
 sf::Texture &PreloadResources::getPaddleTexture(int index) {
-    return this->txtPaddle[index];
+    return txtPaddle.at(index);
 }
 
 sf::Texture &PreloadResources::getPowerupTexture(int index) {
-    return this->txtPowerup[index];
+    return txtPowerup.at(index);
 }
 
+// Accessors / Mutators
+
 float PreloadResources::getLoadPercentile() const {
-    return this->loadPercentile;
+    return loadPercentile;
 }
 
 void PreloadResources::setLoadPercentile(float lp) {
-    this->loadPercentile = lp;
+    loadPercentile = lp;
 }
 
 size_t PreloadResources::getLoadedResourceCount() const {
-    return this->loadedResourceCount;
+    return loadedResourceCount;
 }
 
 void PreloadResources::setLoadedResourceCount(size_t lrc) {
-    this->loadedResourceCount = lrc;
+    loadedResourceCount = lrc;
 }
 
 size_t PreloadResources::getResourceCount() const {
-    return this->resourceCount;
+    return resourceCount;
 }
 
 void PreloadResources::setResourceCount(size_t rc) {
-    this->resourceCount = rc;
+    resourceCount = rc;
 }
 
 std::string &PreloadResources::getSoundFileType() {
-    return this->soundFileType;
+    return soundFileType;
 }
 
 void PreloadResources::setSoundFileType(const char *sft) {
-    this->soundFileType = sft;
+    soundFileType = sft;
 }
 
 std::string &PreloadResources::getTextureFileType() {
-    return this->textureFileType;
+    return textureFileType;
 }
 
 void PreloadResources::setTextureFileType(const char *tft) {
-    this->textureFileType = tft;
+    textureFileType = tft;
 }
 
 std::string &PreloadResources::getAnimationDirectoryName() {
-    return this->animationDirectoryName;
+    return animationDirectoryName;
 }
 
 void PreloadResources::setAnimationDirectoryName(const char *s) {
-    this->animationDirectoryName = s;
+    animationDirectoryName = s;
 }
 
 std::string &PreloadResources::getBackgroundDirectoryName() {
-    return this->backgroundDirectoryName;
+    return backgroundDirectoryName;
 }
 
 void PreloadResources::setBackgroundDirectoryName(const char *s) {
-    this->backgroundDirectoryName = s;
+    backgroundDirectoryName = s;
 }
 
 std::string &PreloadResources::getBlockDirectoryName() {
-    return this->blockDirectoryName;
+    return blockDirectoryName;
 }
 
 void PreloadResources::setBlockDirectoryName(const char *s) {
-    this->blockDirectoryName = s;
+    blockDirectoryName = s;
 }
 
 std::string &PreloadResources::getLevelDirectoryName() {
-    return this->levelDirectoryName;
+    return levelDirectoryName;
 }
 
 void PreloadResources::setLevelDirectoryName(const char *s) {
-    this->levelDirectoryName = s;
+    levelDirectoryName = s;
 }
 
 std::string &PreloadResources::getPaddleDirectoryName() {
-    return this->paddleDirectoryName;
+    return paddleDirectoryName;
 }
 
 void PreloadResources::setPaddleDirectoryName(const char *s) {
-    this->paddleDirectoryName = s;
+    paddleDirectoryName = s;
 }
 
 std::string &PreloadResources::getPowerupDirectoryName() {
-    return this->powerupDirectoryName;
+    return powerupDirectoryName;
 }
 
 void PreloadResources::setPowerupDirectoryName(const char *s) {
-    this->powerupDirectoryName = s;
+    powerupDirectoryName = s;
 }
 
 std::string &PreloadResources::getSoundDirectoryName() {
-    return this->soundDirectoryName;
+    return soundDirectoryName;
 }
 
 void PreloadResources::setSoundDirectoryName(const char *s) {
-    this->soundDirectoryName = s;
+    soundDirectoryName = s;
 }
 
-std::string &PreloadResources::getTextureDirectoryName(){
-    return this->textureDirectoryName;
+std::string &PreloadResources::getTextureDirectoryName() {
+    return textureDirectoryName;
 }
 
 void PreloadResources::setTextureDirectoryName(const char *s) {
-    this->textureDirectoryName = s;
+    textureDirectoryName = s;
 }
+
+std::string &PreloadResources::getFontDirectoryName() {
+    return fontsDirectoryName;
+}
+
+void PreloadResources::setFontDirectoryName(const char *s) {
+    fontsDirectoryName = s;
+}
+

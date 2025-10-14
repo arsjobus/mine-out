@@ -58,26 +58,21 @@ void Credits::loadBackground(Window &window) {
 
 void Credits::loadDefaultFonts() {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading fonts.."));
-	setPrimaryFont(std::string(getFontDirectoryName() + "/" + getPrimaryFontName()));
-	setSecondaryFont(std::string(getFontDirectoryName() + "/" + getSecondaryFontName()));
 }
 
 void Credits::loadDefaultSettings() {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading default settings.."));
-	setPrimaryFontName("abandon.ttf");
-	setSecondaryFontName("arial.ttf");
-	setFontDirectoryName("fonts");
 	setDefaultTextColor(sf::Color::Red);
 }
 
 void Credits::loadCredits(Window &window) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading Credits Texts.."));
-	txtThankYou = std::make_unique<sf::Text>(getPrimaryFont(), "Thanks for Playing", 48);
+	txtThankYou = std::make_unique<sf::Text>(resources.getFont(0), "Thanks for Playing", 48);
     txtThankYou->setFillColor(getDefaultTextColor());
     txtThankYou->setStyle(sf::Text::Bold);
     txtThankYou->setOrigin(sf::Vector2f(txtThankYou->getGlobalBounds().size.x / 2, txtThankYou->getGlobalBounds().size.y / 2));
     txtThankYou->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 3));
-	txtAuthorName = std::make_unique<sf::Text>(getSecondaryFont(), "By Alexander Shepherd", 24);
+	txtAuthorName = std::make_unique<sf::Text>(resources.getFont(1), "By Alexander Shepherd", 24);
     txtAuthorName->setFillColor(getDefaultTextColor());
     txtAuthorName->setStyle(sf::Text::Bold);
     txtAuthorName->setOrigin(sf::Vector2f(txtAuthorName->getGlobalBounds().size.x / 2, txtAuthorName->getGlobalBounds().size.y / 2));

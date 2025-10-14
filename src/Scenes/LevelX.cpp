@@ -19,19 +19,15 @@ LevelX::~LevelX(void) {
 void LevelX::render( Window &window, sf::Time dt ) {
 	Level0::render( window, dt );
 	float fps = 1.f / dt.asSeconds();
-	fpsText->setString("FPS: " + std::to_string(static_cast<int>(fps)));
+	//fpsText->setString("FPS: " + std::to_string(static_cast<int>(fps)));
 	// Add more objects to render here:
-	window.draw(*fpsText);
+	///window.draw(*fpsText);
 	window.display();
 }
 
 void LevelX::update( Window &window, sf::Time dt ) {
 	Level0::update( window, dt );
-	//If all blocks have been destoryed go to next level.
-	if (this->getActiveBlocksCount() <= 0)
-		setNextState( nextGameState );
-	else
-		this->setActiveBlocksCount( 0 );
+	// Override default update here:
 }
 
 void LevelX::loadBackground( Window &window ) {
@@ -47,11 +43,8 @@ void LevelX::loadObjects( Window &window ) {
 void LevelX::loadDefaultSettings() {
 	Level0::loadDefaultSettings();
 	// Override level 0 default settings here:
-	setPrimaryFontName("arial.ttf");
-	setFontDirectoryName("fonts");
-	setPrimaryFont(std::string(getFontDirectoryName() + "/" + getPrimaryFontName()));
-	fpsText = std::make_unique<sf::Text>(getPrimaryFont(), "", 10);
-    fpsText->setFillColor(sf::Color::White);
-    fpsText->setPosition(sf::Vector2f(10.f, 10.f));
+	// fpsText = std::make_unique<sf::Text>(resources.getFont(0), "", 10);
+    // fpsText->setFillColor(sf::Color::White);
+    // fpsText->setPosition(sf::Vector2f(10.f, 10.f));
 	setCurrentModeName( "Level X" );
 }

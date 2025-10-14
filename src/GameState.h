@@ -44,34 +44,16 @@ public:
 	void setDefaultTextColor(sf::Color newColor);
 
 	sf::Font &getPrimaryFont();
-	void setPrimaryFont(const std::string &pathToFile);
-
 	sf::Font &getSecondaryFont();
-	void setSecondaryFont(const std::string &pathToFile);
-
 	sf::RectangleShape &getRefToBackground();
 
 	sf::String &getCurrentModeName();
 	void setCurrentModeName(const char *newModeName);
 
-	sf::String &getFontDirectoryName();
-	void setFontDirectoryName(const char *newDirectoryName);
-
-	sf::String &getPrimaryFontName();
-	void setPrimaryFontName(const char *newFontName);
-
-	sf::String &getSecondaryFontName();
-	void setSecondaryFontName(const char *newFontName);
-
 private:
 	sf::Color defaultTextColor;
-	sf::Font fntPrimaryFont;
-	sf::Font fntSecondaryFont;
 	sf::RectangleShape rectBackground;
 	sf::String strCurrentModeName;
-	sf::String strFontDirectoryName;
-	sf::String strPrimaryFontName;
-	sf::String strSecondaryFontName;
 
 protected:
 	PreloadResources resources;
