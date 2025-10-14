@@ -23,7 +23,7 @@ jobs:
         run: mkdir -p build
 
       - name: Configure CMake
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
       - name: Run macOS app bundle script
         run: ./make_macos_app.sh
