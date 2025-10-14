@@ -6,17 +6,21 @@ BINARY=game
 BUILDDIR=build
 APPDIR="$BUILDDIR/$APPNAME.app"
 
-# Build the binary
-cmake --build $BUILDDIR
+# Build the binary (make sure to configure CMake with universal architectures)
+cmake --build "$BUILDDIR"
 
 # Create .app bundle structure
 mkdir -p "$APPDIR/Contents/MacOS"
 mkdir -p "$APPDIR/Contents/Resources"
 
-# Copy binary
+# Copy binary into the app bundle with the app name as executable
 cp "$BUILDDIR/$BINARY" "$APPDIR/Contents/MacOS/$APPNAME"
 
-# Copy resources
+# Verify binary architecture (for debugging)
+echo "Binary architecture info:"
+file "$APPDIR/Contents/MacOS/$APPNAME"
+
+# Copy resource files
 cp -R data fonts images music sfx settings.ini "$APPDIR/Contents/Resources/"
 
 # Create Info.plist if missing
@@ -42,5 +46,9 @@ cat > "$APPDIR/Contents/Info.plist" <<EOF
 </plist>
 EOF
 fi
+
+# Optional: Code sign the app (uncomment and replace with your signing identity if available)
+# echo "Signing app bundle..."
+# codesign --deep --force --verify --sign "Developer ID Application: Your Name (TeamID)" "$APPDIR"
 
 echo "App bundle created at $APPDIR"
