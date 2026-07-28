@@ -49,6 +49,19 @@ Before building, you need to install the following dependencies via Homebrew ([h
 
    `./build/game`
 
+### macOS: Intel, Apple Silicon, or Universal Binary
+
+- For Apple Silicon Macs:
+  `cmake -S . -B build -DCMAKE_OSX_ARCHITECTURES=arm64`
+
+- For older Intel Macs:
+  `cmake -S . -B build -DCMAKE_OSX_ARCHITECTURES=x86_64`
+
+- For a universal macOS binary (Intel + Apple Silicon), make sure SFML and its dependencies are also installed as universal libraries, then build with:
+  `cmake -S . -B build-universal -DCMAKE_OSX_ARCHITECTURES='x86_64;arm64' -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15`
+
+  `cmake --build build-universal`
+
 ---
 
 ## Notes
