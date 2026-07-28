@@ -64,21 +64,33 @@ jobs:
       - name: Archive .app bundle
         run: |
           cd "build-${{ matrix.arch }}"
-          zip -r "MineOut-macos-${{ matrix.artifact_suffix }}.zip" MineOut.app
+          zip -r "mine-out-macos-${{ matrix.artifact_suffix }}.zip" MineOut.app
 
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
           name: mineout-macos-${{ matrix.artifact_suffix }}
-          path: "build-${{ matrix.arch }}/MineOut-macos-${{ matrix.artifact_suffix }}.zip"
+          path: "build-${{ matrix.arch }}/mine-out-macos-${{ matrix.artifact_suffix }}.zip"
           retention-days: 7
 
   build-windows:
-    name: Build and Release on Windows
+    name: Build and Release on Windows (${{ matrix.name }})
     runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: x64
+            arch: x64
+            artifact_suffix: x64
+            vcpkg_triplet: x64-windows
+          - name: x86
+            arch: x86
+            artifact_suffix: x86
+            vcpkg_triplet: x86-windows
 
     env:
-      VCPKG_DEFAULT_TRIPLET: x64-windows
+      VCPKG_DEFAULT_TRIPLET: ${{ matrix.vcpkg_triplet }}
 
     steps:
       - name: Checkout code
@@ -86,6 +98,8 @@ jobs:
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
 
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
@@ -95,25 +109,25 @@ jobs:
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           .\vcpkg\bootstrap-vcpkg.bat
-          .\vcpkg\vcpkg.exe install sfml:x64-windows
+          .\vcpkg\vcpkg.exe install sfml:${{ matrix.vcpkg_triplet }}
 
       - name: Configure CMake for Windows
         shell: pwsh
         run: |
-          cmake -S . -B build -G Ninja `
+          cmake -S . -B "build-${{ matrix.artifact_suffix }}" -G Ninja `
             -DCMAKE_BUILD_TYPE=Release `
             -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake" `
-            -DVCPKG_TARGET_TRIPLET=x64-windows
+            -DVCPKG_TARGET_TRIPLET=${{ matrix.vcpkg_triplet }}
 
       - name: Build Windows executable
         shell: pwsh
         run: |
-          cmake --build build --config Release
+          cmake --build "build-${{ matrix.artifact_suffix }}" --config Release
 
       - name: Locate executable
         shell: pwsh
         run: |
-          $exe = Get-ChildItem build -Recurse -Filter *.exe |
+          $exe = Get-ChildItem "build-${{ matrix.artifact_suffix }}" -Recurse -Filter *.exe |
             Where-Object {
               $_.Name -notmatch "test|tests|cmake|uninstall"
             } |
@@ -121,7 +135,7 @@ jobs:
 
           if (-not $exe) {
             Write-Host "Contents of build directory:"
-            Get-ChildItem build -Recurse
+            Get-ChildItem "build-${{ matrix.artifact_suffix }}" -Recurse
             throw "No executable found."
           }
 
@@ -130,7 +144,7 @@ jobs:
       - name: Prepare Windows release bundle
         shell: pwsh
         run: |
-          $bundle = Join-Path $PWD "build/windows-dist"
+          $bundle = Join-Path $PWD "build-${{ matrix.artifact_suffix }}/windows-dist"
           New-Item -ItemType Directory -Force -Path $bundle | Out-Null
 
           Copy-Item $env:APP_EXE $bundle
@@ -141,7 +155,7 @@ jobs:
             }
           }
 
-          $dllDir = Join-Path $PWD "vcpkg\installed\x64-windows\bin"
+          $dllDir = Join-Path $PWD "vcpkg\installed\${{ matrix.vcpkg_triplet }}\bin"
 
           if (Test-Path $dllDir) {
             Get-ChildItem $dllDir -Filter *.dll |
@@ -150,14 +164,14 @@ jobs:
 
           Compress-Archive `
             -Path (Join-Path $bundle "*") `
-            -DestinationPath "MineOut-windows.zip" `
+            -DestinationPath "mine-out-windows-${{ matrix.artifact_suffix }}.zip" `
             -Force
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mineout-windows
-          path: MineOut-windows.zip
+          name: mine-out-windows-${{ matrix.artifact_suffix }}
+          path: mine-out-windows-${{ matrix.artifact_suffix }}.zip
           retention-days: 7
 
   release:
@@ -177,8 +191,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/mineout-macos-arm64/MineOut-macos-arm64.zip
-            dist/mineout-macos-x86_64/MineOut-macos-x86_64.zip
-            dist/mineout-windows/MineOut-windows.zip
+            dist/mineout-macos-arm64/mine-out-macos-arm64.zip
+            dist/mineout-macos-x86_64/mine-out-macos-x86_64.zip
+            dist/mineout-windows-x64/mine-out-windows-x64.zip
+            dist/mineout-windows-x86/mine-out-windows-x86.zip
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
