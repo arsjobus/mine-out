@@ -15,12 +15,20 @@ find_package(SFML 3 COMPONENTS Graphics Window System Audio REQUIRED)
 
 # Source files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
+file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS src/*.h)
 
 # Add executable
 add_executable(game ${SOURCES})
 
-# Include directories if needed (e.g., for headers in include/)
-target_include_directories(game PRIVATE ${PROJECT_SOURCE_DIR}/include)
+# Make headers in nested source folders visible to the compiler
+set(GAME_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src)
+foreach(header_file IN LISTS HEADER_FILES)
+    get_filename_component(header_dir "${header_file}" DIRECTORY)
+    list(APPEND GAME_INCLUDE_DIRS "${header_dir}")
+endforeach()
+list(REMOVE_DUPLICATES GAME_INCLUDE_DIRS)
+
+target_include_directories(game PRIVATE ${GAME_INCLUDE_DIRS})
 
 # Link SFML libraries
 target_link_libraries(game PRIVATE
