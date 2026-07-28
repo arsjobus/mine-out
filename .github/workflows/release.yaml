@@ -8,8 +8,18 @@ on:
 
 jobs:
   build-macos:
-    name: Build and Release on macOS
+    name: Build and Release on macOS (${{ matrix.name }})
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: apple-silicon
+            arch: arm64
+            artifact_suffix: arm64
+          - name: intel
+            arch: x86_64
+            artifact_suffix: x86_64
 
     steps:
       - name: Checkout code
@@ -21,25 +31,32 @@ jobs:
           brew install sfml cmake
 
       - name: Create build directory
-        run: mkdir -p build
+        run: mkdir -p "build-${{ matrix.arch }}"
 
       - name: Configure CMake
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64"
+        run: |
+          cmake -S . -B "build-${{ matrix.arch }}" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES="${{ matrix.arch }}" \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15
 
       - name: Run macOS app bundle script
+        env:
+          BUILDDIR: "build-${{ matrix.arch }}"
+          APPNAME: MineOut
         run: ./make_macos_app.sh
         shell: bash
 
       - name: Archive .app bundle
         run: |
-          cd build
-          zip -r MineOut-macos.zip MineOut.app
+          cd "build-${{ matrix.arch }}"
+          zip -r "MineOut-macos-${{ matrix.artifact_suffix }}.zip" MineOut.app
 
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mineout-macos
-          path: build/MineOut-macos.zip
+          name: mineout-macos-${{ matrix.artifact_suffix }}
+          path: "build-${{ matrix.arch }}/MineOut-macos-${{ matrix.artifact_suffix }}.zip"
           retention-days: 7
 
   build-windows:
@@ -146,7 +163,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/mineout-macos/MineOut-macos.zip
+            dist/mineout-macos-arm64/MineOut-macos-arm64.zip
+            dist/mineout-macos-x86_64/MineOut-macos-x86_64.zip
             dist/mineout-windows/MineOut-windows.zip
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}

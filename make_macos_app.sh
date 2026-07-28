@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-APPNAME=MineOut
-BINARY=game
-BUILDDIR=build
+APPNAME="${APPNAME:-MineOut}"
+BINARY="${BINARY:-game}"
+BUILDDIR="${BUILDDIR:-build}"
 APPDIR="$BUILDDIR/$APPNAME.app"
 
-# Build the binary (make sure to configure CMake with universal architectures)
+# Build the binary using the requested build directory
 cmake --build "$BUILDDIR"
 
 # Create .app bundle structure
