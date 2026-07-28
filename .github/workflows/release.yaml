@@ -172,7 +172,7 @@ jobs:
         with:
           files: |
             dist/mineout-macos-arm64/mine-out-macos-arm64.zip
-            dist/mineout-windows-x64/mine-out-windows-x64.zip
-            dist/mineout-windows-x86/mine-out-windows-x86.zip
+            dist/mine-out-windows-x64/mine-out-windows-x64.zip
+            dist/mine-out-windows-x86/mine-out-windows-x86.zip
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
