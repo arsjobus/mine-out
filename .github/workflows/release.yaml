@@ -59,15 +59,12 @@ jobs:
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
 
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgDirectory: ${{ github.workspace }}/vcpkg
-
-      - name: Install SFML dependencies
+      - name: Clone vcpkg
         shell: pwsh
         run: |
-          & "${{ github.workspace }}\vcpkg\vcpkg.exe" install sfml:x64-windows
+          git clone https://github.com/microsoft/vcpkg.git
+          .\vcpkg\bootstrap-vcpkg.bat
+          .\vcpkg\vcpkg.exe install sfml:x64-windows
 
       - name: Configure CMake for Windows
         shell: pwsh
