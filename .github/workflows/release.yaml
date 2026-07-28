@@ -9,21 +9,34 @@ on:
 jobs:
   build-macos:
     name: Build and Release on macOS (${{ matrix.name }})
-    runs-on: macos-latest
+    runs-on: ${{ matrix.runs-on }}
+    env:
+      HOMEBREW_PREFIX: ${{ matrix.brew_prefix }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - name: apple-silicon
+            runs-on: macos-latest
             arch: arm64
             artifact_suffix: arm64
+            brew_prefix: /opt/homebrew
           - name: intel
+            runs-on: macos-13
             arch: x86_64
             artifact_suffix: x86_64
+            brew_prefix: /usr/local
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Show build environment
+        run: |
+          echo "runner: ${{ matrix.runs-on }}"
+          echo "architecture: ${{ matrix.arch }}"
+          echo "homebrew prefix: $(brew --prefix)"
+          uname -m
 
       - name: Install Homebrew dependencies
         run: |
@@ -38,7 +51,8 @@ jobs:
           cmake -S . -B "build-${{ matrix.arch }}" \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_OSX_ARCHITECTURES="${{ matrix.arch }}" \
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15 \
+            -DCMAKE_PREFIX_PATH="${{ matrix.brew_prefix }}"
 
       - name: Run macOS app bundle script
         env:
