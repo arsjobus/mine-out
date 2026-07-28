@@ -4,6 +4,7 @@
 
 Window::Window(void) {
 	bFullScreen = false;
+	screenshotKeyHeld = false;
 	// The minimum possible screen resolution
 	uMinimumScreenResolution.x = 600;
 	uMinimumScreenResolution.y = 400;
@@ -24,24 +25,58 @@ sf::String &Window::getDefaultWindowTitle() { return defaultWindowTitle; }
 bool Window::handleScreenshotHotkey(const sf::Event& event) {
 	if (event.is<sf::Event::KeyPressed>()) {
 		const auto* keyEvent = event.getIf<sf::Event::KeyPressed>();
-		if (keyEvent) {
-			const auto key = keyEvent->code;
-			const auto scancode = keyEvent->scancode;
-			if (key == sf::Keyboard::Key::Add || key == sf::Keyboard::Key::Equal || key == sf::Keyboard::Key::F2 ||
-				scancode == sf::Keyboard::Scancode::Equal || scancode == sf::Keyboard::Scancode::NumpadEqual || scancode == sf::Keyboard::Scancode::F2) {
-				std::cout << "Screenshot hotkey detected" << std::endl;
-				saveScreenshot();
-				return true;
-			}
+		if (!keyEvent) {
+			return false;
+		}
+
+		const auto key = keyEvent->code;
+		const auto scancode = keyEvent->scancode;
+		const bool isHotkey =
+			key == sf::Keyboard::Key::Add ||
+			key == sf::Keyboard::Key::Equal ||
+			key == sf::Keyboard::Key::F2 ||
+			scancode == sf::Keyboard::Scancode::Equal ||
+			scancode == sf::Keyboard::Scancode::NumpadEqual ||
+			scancode == sf::Keyboard::Scancode::F2;
+
+		if (isHotkey && !screenshotKeyHeld) {
+			screenshotKeyHeld = true;
+			std::cout << "Screenshot hotkey detected" << std::endl;
+			saveScreenshot();
+			return true;
+		}
+	}
+
+	if (event.is<sf::Event::KeyReleased>()) {
+		const auto* keyEvent = event.getIf<sf::Event::KeyReleased>();
+		if (!keyEvent) {
+			return false;
+		}
+
+		const auto key = keyEvent->code;
+		const auto scancode = keyEvent->scancode;
+		const bool isHotkey =
+			key == sf::Keyboard::Key::Add ||
+			key == sf::Keyboard::Key::Equal ||
+			key == sf::Keyboard::Key::F2 ||
+			scancode == sf::Keyboard::Scancode::Equal ||
+			scancode == sf::Keyboard::Scancode::NumpadEqual ||
+			scancode == sf::Keyboard::Scancode::F2;
+
+		if (isHotkey) {
+			screenshotKeyHeld = false;
 		}
 	}
 
 	if (event.is<sf::Event::TextEntered>()) {
 		const auto* textEvent = event.getIf<sf::Event::TextEntered>();
 		if (textEvent && (textEvent->unicode == L'+' || textEvent->unicode == L'=')) {
-			std::cout << "Screenshot hotkey detected" << std::endl;
-			saveScreenshot();
-			return true;
+			if (!screenshotKeyHeld) {
+				screenshotKeyHeld = true;
+				std::cout << "Screenshot hotkey detected" << std::endl;
+				saveScreenshot();
+				return true;
+			}
 		}
 	}
 

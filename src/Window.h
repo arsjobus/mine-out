@@ -30,6 +30,7 @@ private:
 
 	Log log;
 	bool bFullScreen;
+	bool screenshotKeyHeld;
 
 private:
 	sf::Vector2u uMinimumScreenResolution;

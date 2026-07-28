@@ -112,8 +112,6 @@ int main() {
         : std::filesystem::current_path() / "screenshots";
     std::cout << "Screenshots will be saved to: " << screenshotsDir << std::endl;
 
-    bool screenshotKeyHeld = false;
-
     while (stateID != GameState::State::STATE_EXIT) {
         sf::Time dt = deltaClock.restart();
         // Game logic
@@ -122,16 +120,6 @@ int main() {
         changeState(window);
         currentState->render(window, dt);
 
-        const bool screenshotRequested =
-            sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Equal) ||
-            sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::NumpadEqual) ||
-            sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::F2);
-
-        if (screenshotRequested && !screenshotKeyHeld) {
-            std::cout << "Screenshot hotkey detected" << std::endl;
-            window.saveScreenshot();
-        }
-        screenshotKeyHeld = screenshotRequested;
     }
 
     log.quickWrite(LOG_INFO, "Exiting game loop...");
