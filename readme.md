@@ -1,7 +1,7 @@
 # Mine-Out Game (SFML C++)
 
 <p align="center">
-  <img src="images/project_screenshot.png" alt="Project Screenshot" width="600">
+  <img src="project_screenshot.png" alt="Project Screenshot" width="600">
 </p>
 
 This is a C++ game built using SFML 3.0.2 on macOS ARM architecture (Apple Silicon).
