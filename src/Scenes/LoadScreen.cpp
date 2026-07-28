@@ -14,6 +14,9 @@ LoadScreen::~LoadScreen(void) {
 
 void LoadScreen::processEvents(Window &window) {
 	while (std::optional<sf::Event> event = window.pollEvent()) {
+        if (window.handleScreenshotHotkey(*event)) {
+            continue;
+        }
         if (event->is<sf::Event::Closed>())
         	setNextState(STATE_EXIT);
 	}

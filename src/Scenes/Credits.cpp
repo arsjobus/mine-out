@@ -17,6 +17,9 @@ Credits::~Credits(void) {
 void Credits::processEvents(Window &window) {
 	while (std::optional<sf::Event> eventOpt = window.pollEvent()) {
 		sf::Event event = *eventOpt;
+		if (window.handleScreenshotHotkey(event)) {
+			continue;
+		}
 		if (event.is<sf::Event::Closed>()) {
 			setNextState(STATE_EXIT);
 		} else if (event.is<sf::Event::KeyPressed>()) {

@@ -14,6 +14,9 @@ void Level0::setActiveBlocksCount(int count) { this->activeBlocksCount = count; 
 
 void Level0::processEvents(Window &window) {
     while (std::optional<sf::Event> event = window.pollEvent()) {
+        if (window.handleScreenshotHotkey(*event)) {
+            continue;
+        }
         // Handle window close
         if (event->is<sf::Event::Closed>())
         	setNextState(GameState::State::STATE_EXIT);

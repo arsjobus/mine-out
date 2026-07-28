@@ -4,6 +4,12 @@
 #define WINDOW_H
 
 #include <SFML/Graphics.hpp>
+#include <chrono>
+#include <filesystem>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
 #include "Config.h"
 #include "Log.h"
 
@@ -16,6 +22,8 @@ public:
 	bool getFullScreen();
 	sf::String &getDefaultWindowTitle();
 	sf::Vector2u &getScreenResolution();
+	bool handleScreenshotHotkey(const sf::Event& event);
+	void saveScreenshot(const std::string& prefix = "screenshot");
 
 private:
 	void loadFromConfig();

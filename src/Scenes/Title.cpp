@@ -13,6 +13,9 @@ Title::~Title(void) { log.quickWrite(LOG_INFO, std::string(getCurrentModeName() 
 void Title::processEvents(Window &window) {
     while (std::optional<sf::Event> eventOpt = window.pollEvent()) {
         sf::Event event = *eventOpt; // unwrap optional
+        if (window.handleScreenshotHotkey(event)) {
+            continue;
+        }
         if (event.is<sf::Event::Closed>()) {
             setNextState(STATE_EXIT);
         } else if (event.is<sf::Event::KeyPressed>()) {

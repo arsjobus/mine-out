@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 #include "Window.h"
 
 Window::Window(void) {
@@ -18,6 +20,70 @@ Window::~Window(void) { }
 bool Window::getFullScreen() { return bFullScreen; }
 sf::Vector2u &Window::getScreenResolution() { return uScreenResolution; }
 sf::String &Window::getDefaultWindowTitle() { return defaultWindowTitle; }
+
+bool Window::handleScreenshotHotkey(const sf::Event& event) {
+	if (event.is<sf::Event::KeyPressed>()) {
+		const auto* keyEvent = event.getIf<sf::Event::KeyPressed>();
+		if (keyEvent) {
+			const auto key = keyEvent->code;
+			const auto scancode = keyEvent->scancode;
+			if (key == sf::Keyboard::Key::Add || key == sf::Keyboard::Key::Equal || key == sf::Keyboard::Key::F2 ||
+				scancode == sf::Keyboard::Scancode::Equal || scancode == sf::Keyboard::Scancode::NumpadEqual || scancode == sf::Keyboard::Scancode::F2) {
+				std::cout << "Screenshot hotkey detected" << std::endl;
+				saveScreenshot();
+				return true;
+			}
+		}
+	}
+
+	if (event.is<sf::Event::TextEntered>()) {
+		const auto* textEvent = event.getIf<sf::Event::TextEntered>();
+		if (textEvent && (textEvent->unicode == L'+' || textEvent->unicode == L'=')) {
+			std::cout << "Screenshot hotkey detected" << std::endl;
+			saveScreenshot();
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void Window::saveScreenshot(const std::string& prefix) {
+	const auto now = std::chrono::system_clock::now();
+	const auto time = std::chrono::system_clock::to_time_t(now);
+	std::tm localTime{};
+#if defined(_WIN32)
+	localtime_s(&localTime, &time);
+#else
+	localtime_r(&time, &localTime);
+#endif
+
+	const char* home = std::getenv("HOME");
+	std::filesystem::path outputDir = home
+		? std::filesystem::path(home) / "Pictures" / "MineOut-Screenshots"
+		: std::filesystem::current_path() / "screenshots";
+	std::filesystem::create_directories(outputDir);
+
+	std::ostringstream filename;
+	filename << prefix << "-" << std::put_time(&localTime, "%Y%m%d-%H%M%S") << ".png";
+
+	std::filesystem::path outputPath = outputDir / filename.str();
+
+	sf::Texture texture;
+	if (!texture.resize(sf::Vector2u(getSize().x, getSize().y))) {
+		std::cerr << "Failed to allocate screenshot texture" << std::endl;
+		return;
+	}
+	texture.update(*this);
+
+	sf::Image image = texture.copyToImage();
+	if (!image.saveToFile(outputPath)) {
+		std::cerr << "Failed to save screenshot: " << outputPath << std::endl;
+		return;
+	}
+
+	std::cout << "Saved screenshot to " << outputPath << std::endl;
+}
 
 /**
 * Load settings from settings.ini file into qualifying object members
