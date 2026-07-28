@@ -45,12 +45,16 @@ jobs:
   build-windows:
     name: Build and Release on Windows
     runs-on: windows-latest
+
     env:
       VCPKG_DEFAULT_TRIPLET: x64-windows
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install CMake and Ninja
         uses: lukka/get-cmake@latest
@@ -61,38 +65,65 @@ jobs:
           vcpkgDirectory: ${{ github.workspace }}/vcpkg
 
       - name: Install SFML dependencies
-        run: vcpkg install sfml --triplet x64-windows
         shell: pwsh
+        run: |
+          & "${{ github.workspace }}\vcpkg\vcpkg.exe" install sfml:x64-windows
 
       - name: Configure CMake for Windows
-        run: |
-          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release `
-            -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-            -DVCPKG_TARGET_TRIPLET=x64-windows
         shell: pwsh
+        run: |
+          cmake -S . -B build -G Ninja `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake" `
+            -DVCPKG_TARGET_TRIPLET=x64-windows
 
       - name: Build Windows executable
-        run: cmake --build build --config Release
         shell: pwsh
+        run: |
+          cmake --build build --config Release
+
+      - name: Locate executable
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem build -Recurse -Filter *.exe |
+            Where-Object {
+              $_.Name -notmatch "test|tests|cmake|uninstall"
+            } |
+            Select-Object -First 1
+
+          if (-not $exe) {
+            Write-Host "Contents of build directory:"
+            Get-ChildItem build -Recurse
+            throw "No executable found."
+          }
+
+          "APP_EXE=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Prepare Windows release bundle
+        shell: pwsh
         run: |
           $bundle = Join-Path $PWD "build/windows-dist"
           New-Item -ItemType Directory -Force -Path $bundle | Out-Null
-          Copy-Item build/game.exe $bundle
-          Copy-Item -Recurse data $bundle
-          Copy-Item -Recurse fonts $bundle
-          Copy-Item -Recurse images $bundle
-          Copy-Item -Recurse music $bundle
-          Copy-Item -Recurse sfx $bundle
 
-          $dllDir = Join-Path $PWD "vcpkg/installed/x64-windows/bin"
-          Get-ChildItem $dllDir | Where-Object { $_.Name -like "sfml*.dll" -or $_.Name -like "openal*.dll" } | ForEach-Object {
-            Copy-Item $_.FullName $bundle
+          Copy-Item $env:APP_EXE $bundle
+
+          foreach ($dir in @("data","fonts","images","music","sfx")) {
+            if (Test-Path $dir) {
+              Copy-Item $dir $bundle -Recurse
+            }
           }
 
-          Compress-Archive -Path (Join-Path $bundle "*") -DestinationPath "MineOut-windows.zip" -Force
-        shell: pwsh
+          $dllDir = Join-Path $PWD "vcpkg\installed\x64-windows\bin"
+
+          if (Test-Path $dllDir) {
+            Get-ChildItem $dllDir -Filter *.dll |
+              Copy-Item -Destination $bundle
+          }
+
+          Compress-Archive `
+            -Path (Join-Path $bundle "*") `
+            -DestinationPath "MineOut-windows.zip" `
+            -Force
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
