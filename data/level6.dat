@@ -1,1 +1,4 @@
-:blank:,:blank:,:blank:,:normal:,:normal:,:normal:,:blank:,:blank:,:blank:,:stone:,:stone:,:blank:,:blank:,:blank:,:gold:,:blank:,:blank:,:blank:,:normal:,:tnt:,:normal:,:blank:,:blank:,:blank:,:stone:,:stone:,:blank:,:blank:,:blank:,:gold:,:blank:,:blank:,:blank:,:normal:,:normal:,:normal:,:blank:,:blank:,:blank:,:tnt:,:blank:,:blank:,:blank:,:normal:,:normal:,:normal:,:blank:
+:none:,:none:,:none:,:dirt:,:dirt:,:dirt:,:none:,:none:,:none:,:rock:,:rock:,:none:,:none:,:none:,:gold:,
+:none:,:none:,:none:,:dirt:,:bomb:,:dirt:,:none:,:none:,:none:,:rock:,:rock:,:none:,:none:,:none:,:gold:,
+:none:,:none:,:none:,:dirt:,:dirt:,:dirt:,:none:,:none:,:none:,:bomb:,:none:,:none:,:none:,:dirt:,:dirt:,
+:dirt:,:none:,

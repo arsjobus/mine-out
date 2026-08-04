@@ -224,11 +224,16 @@ void Level0::loadLevelDataFromFile(const char *filename) {
 		while(!levelDataFile.eof()) {
 			// Read data into memory
 			std::getline(levelDataFile, strDataEntry, ',');
-			if (std::strcmp(strDataEntry.c_str(), ":normal:") == 0) {
+			// Trim leading/trailing whitespace and newlines so files with row-newlines work as CSV
+			auto first = strDataEntry.find_first_not_of(" \t\r\n");
+			if (first == std::string::npos) continue; // empty token
+			auto last = strDataEntry.find_last_not_of(" \t\r\n");
+			strDataEntry = strDataEntry.substr(first, last - first + 1);
+			if (std::strcmp(strDataEntry.c_str(), ":dirt:") == 0) {
 				ptrNormalBlock = std::make_shared<NormalBlock>();
 				blocks.push_back(ptrNormalBlock);
 			}
-			else if (std::strcmp(strDataEntry.c_str(), ":stone:") == 0) {
+			else if (std::strcmp(strDataEntry.c_str(), ":rock:") == 0) {
 				ptrStoneBlock = std::make_shared<StoneBlock>();
 				blocks.push_back(ptrStoneBlock);
 			}
@@ -236,11 +241,11 @@ void Level0::loadLevelDataFromFile(const char *filename) {
 				ptrGoldBlock = std::make_shared<GoldBlock>();
 				blocks.push_back(ptrGoldBlock);
 			}
-			else if (std::strcmp(strDataEntry.c_str(), ":tnt:" ) == 0) {
+			else if (std::strcmp(strDataEntry.c_str(), ":bomb:" ) == 0) {
 				ptrTNTBlock = std::make_shared<TNTBlock>();
 				blocks.push_back(ptrTNTBlock);
 			}
-			else if (std::strcmp(strDataEntry.c_str(), ":blank:" ) == 0) {
+			else if (std::strcmp(strDataEntry.c_str(), ":none:" ) == 0) {
 				ptrNormalBlock = std::make_shared<NormalBlock>();
 				ptrNormalBlock->setActive( false );
 				ptrNormalBlock->setHasDroppedPowerUp( true );
