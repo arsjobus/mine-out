@@ -184,7 +184,7 @@ void Level0::loadDefaultSettings() {
 	music->play();
 	activeBlocksCount = 0;
 	setBlocksPerRow(15); // Set the blocks per row to 15
-	setDefaultDataDirectoryName("data"); // Set default data directory name
+	setDefaultDataDirectoryName("assets/data"); // Set default data directory name
 	setLevelMargin(10.f); // Set the level margin to 10px
 	isPaused = false;
 }

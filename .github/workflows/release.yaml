@@ -129,7 +129,7 @@ jobs:
 
           Copy-Item $env:APP_EXE $bundle
 
-          foreach ($dir in @("data","fonts","images","music","sfx")) {
+          foreach ($dir in @("assets/data","assets/fonts","assets/images","assets/music","assets/sfx")) {
             if (Test-Path $dir) {
               Copy-Item $dir $bundle -Recurse
             }

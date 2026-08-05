@@ -21,7 +21,7 @@ echo "Binary architecture info:"
 file "$APPDIR/Contents/MacOS/$APPNAME"
 
 # Copy resource files
-cp -R data fonts images music sfx settings.ini "$APPDIR/Contents/Resources/"
+cp -R assets/data assets/fonts assets/images assets/music assets/sfx settings.ini "$APPDIR/Contents/Resources/"
 
 # Create Info.plist if missing
 if [ ! -f "$APPDIR/Contents/Info.plist" ]; then

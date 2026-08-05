@@ -41,10 +41,10 @@ void PreloadResources::loadDefaultSettings() {
     this->setPaddleDirectoryName("paddles");
     this->setLevelDirectoryName("levels");
     this->setPowerupDirectoryName("powerups");
-    this->setTextureDirectoryName("images");
-    this->setFontDirectoryName("fonts");
-    this->setSoundDirectoryName("sfx");
-    this->setMusicDirectoryName("music");
+    this->setTextureDirectoryName("assets/images");
+    this->setFontDirectoryName("assets/fonts");
+    this->setSoundDirectoryName("assets/sfx");
+    this->setMusicDirectoryName("assets/music");
     this->setMusicFileType(".ogg");
     this->setSoundFileType(".wav");
     this->setFontFileType(".ttf");
