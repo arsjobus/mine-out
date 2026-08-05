@@ -90,7 +90,12 @@ bool Paddle::checkCollisionWithPowerUp(GameObject *otherGameObject) {
 	PowerUp *powerup = dynamic_cast<PowerUp*>(otherGameObject);
 	if (getGlobalBounds().findIntersection( otherRectShape->getGlobalBounds() )) {
 		powerup->setActive( false );
-		setActivePowerUp( powerup->getPowerID() );
+		if (powerup->getPowerID() == PowerUp::TypeID::ExtraPaddle) {
+			setLivesRemaining(getLivesRemaining() + 1);
+			setActivePowerUp( PowerUp::TypeID::None );
+		} else {
+			setActivePowerUp( powerup->getPowerID() );
+		}
 		return true;
 	} return false;
 }

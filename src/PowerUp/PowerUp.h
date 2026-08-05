@@ -14,11 +14,11 @@ public:
 		None,
 		IncreasedDamage,
 		GrowPaddle,
+		ExtraPaddle,
 		LAST_VALUE,
 	};
 
-	~PowerUp(void);
-
+	virtual ~PowerUp(void);
 	virtual void update(sf::Time dt);
 	virtual void loadDefaultSettings();
 	virtual void render(Window &window);

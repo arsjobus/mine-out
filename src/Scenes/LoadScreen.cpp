@@ -153,6 +153,7 @@ void LoadScreen::initialize() {
 	levelTextureNames.push_back("level-right");      // id: 2
 	powerupTextureNames.push_back("powerup-increased-damage"); // id: 0
 	powerupTextureNames.push_back("powerup-grow-paddle"); // id: 1
+	powerupTextureNames.push_back("powerup-extra-paddle"); // id: 2
 	musicNames.push_back("crystalcave"); // id: 0
 	soundNames.push_back("paddle-hit"); // id: 0
 	soundNames.push_back("explosion");  // id: 1

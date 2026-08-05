@@ -9,6 +9,7 @@
 #include "../PowerUp/PowerUp.h"
 #include "../PowerUp/DamageIncrease.h"
 #include "../PowerUp/GrowPaddle.h"
+#include "../PowerUp/ExtraPaddle.h"
 #include "../Window.h"
 
 class Block: public GameObject, public sf::RectangleShape

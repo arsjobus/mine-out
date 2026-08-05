@@ -16,16 +16,16 @@ void Block::dropPowerUp() {
 }
 
 void Block::randomizePowerUp() {
-	size_t randomPowerupID = std::rand() % (PowerUp::TypeID::LAST_VALUE - 1) + 1;
-	switch (randomPowerupID)
-	{
-		case PowerUp::TypeID::IncreasedDamage:
-			powerup = std::make_unique<DamageIncrease>();
-			break;
-		case PowerUp::TypeID::GrowPaddle:
-			powerup = std::make_unique<GrowPaddle>();
-			break;
-	};
+	int randomNumber = std::rand() % 100 + 1;
+	if (randomNumber <= 5) {
+		powerup = std::make_unique<ExtraPaddle>();
+	}
+	else if (randomNumber <= 60) {
+		powerup = std::make_unique<GrowPaddle>();
+	}
+	else {
+		powerup = std::make_unique<DamageIncrease>();
+	}
 	this->powerup->setPosition(sf::Vector2f(this->getPosition().x, this->getPosition().y));
 }
 
