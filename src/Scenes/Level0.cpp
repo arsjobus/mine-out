@@ -87,7 +87,20 @@ void Level0::update(Window &window, sf::Time dt) {
 	player->isCollisionDetected(panelR.get()); // detect / handle collision between the paddle and panel R
 	detectCollisionPlayerAndPowerUp();
 	detectPowerUpOutOfBounds(window);
-	if (ball->isOutOfBounds(window)) resetMatch(window);
+	if (ball->isOutOfBounds(window)) {
+		if (player->getLivesRemaining() == 0) {
+			setNextState(GameState::State::STATE_GAMEOVER);
+			return;
+		}
+
+		player->setLivesRemaining(player->getLivesRemaining() - 1);
+		if (player->getLivesRemaining() == 0) {
+			setNextState(GameState::State::STATE_GAMEOVER);
+			return;
+		}
+
+		resetMatch(window);
+	}
 }
 
 void Level0::render(Window& window, sf::Time dt) {
@@ -101,6 +114,49 @@ void Level0::render(Window& window, sf::Time dt) {
 	window.draw(*panelR);
 	for (int i = 0; i < blocks.size(); ++i)
 		blocks[i]->render(window, dt);
+	renderLivesRemaining(window);
+}
+
+void Level0::renderLivesRemaining(Window &window) {
+	size_t lives = player->getLivesRemaining();
+	if (lives == 0) return;
+
+	const sf::Texture &paddleTexture = resources.getPaddleTexture(0);
+	sf::Sprite paddleIcon(paddleTexture);
+	const float iconTargetWidth = 64.f;
+	const float textureWidth = static_cast<float>(paddleTexture.getSize().x);
+	const float scale = (textureWidth > 0.f) ? iconTargetWidth / textureWidth : 1.f;
+	paddleIcon.setScale(sf::Vector2f(scale, scale));
+
+	const float topPadding = 10.f;
+	const float rightPadding = 10.f;
+	const float iconSpacing = 8.f;
+	const sf::Vector2u windowSize = window.getSize();
+
+	if (lives <= 3) {
+		float x = static_cast<float>(windowSize.x) - rightPadding - paddleIcon.getGlobalBounds().size.x;
+		for (size_t i = 0; i < lives; ++i) {
+			paddleIcon.setPosition(sf::Vector2f(x, topPadding));
+			window.draw(paddleIcon);
+			x -= paddleIcon.getGlobalBounds().size.x + iconSpacing;
+		}
+	} else {
+		paddleIcon.setPosition(sf::Vector2f(static_cast<float>(windowSize.x) - rightPadding - paddleIcon.getGlobalBounds().size.x, topPadding));
+		window.draw(paddleIcon);
+
+		std::string countString = "x" + std::to_string(lives);
+		sf::Text countText(resources.getFont(1), countString);
+		countText.setCharacterSize(24);
+		countText.setFillColor(sf::Color::White);
+		countText.setStyle(sf::Text::Bold);
+		countText.setPosition(
+			sf::Vector2f(
+				paddleIcon.getPosition().x - iconSpacing - countText.getGlobalBounds().size.x,
+				topPadding + (paddleIcon.getGlobalBounds().size.y - countText.getGlobalBounds().size.y) / 2.f
+			)
+		);
+		window.draw(countText);
+	}
 }
 
 bool Level0::detectCollisionBallAndBlock() {

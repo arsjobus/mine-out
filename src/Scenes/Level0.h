@@ -58,6 +58,7 @@ private:
 	void detectCollisionPlayerAndPowerUp();
 	void detectPowerUpOutOfBounds(Window &window);
 	void loadBall(float radius);
+	void renderLivesRemaining(Window &window);
 	void loadPaddle(int paddleWidth, int paddleHeight);
 	void loadPanelL(int newWidth, int newHeight);
 	void loadPanelR(int newWidth, int newHeight);

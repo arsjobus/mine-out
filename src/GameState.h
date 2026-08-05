@@ -28,14 +28,15 @@ public:
 		STATE_LEVEL8,
 		STATE_LEVEL9,
 		STATE_LEVEL10,
+		STATE_GAMEOVER,
 		STATE_CREDITS,
 		STATE_EXIT,
 	};
 
-    virtual void processEvents(Window &window) = 0;
-    virtual void update(Window &window, sf::Time dt) = 0;
-    virtual void render(Window &window, sf::Time dt) = 0;
-    virtual ~GameState() {};
+	virtual void processEvents(Window &window) = 0;
+	virtual void update(Window &window, sf::Time dt) = 0;
+	virtual void render(Window &window, sf::Time dt) = 0;
+	virtual ~GameState() {};
 
 public:
 	Log log;

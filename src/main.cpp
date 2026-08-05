@@ -5,6 +5,7 @@
 #include "GameState.h"
 #include "PreloadResources.h"
 #include "Scenes/Credits.h"
+#include "Scenes/GameOver.h"
 #include "Scenes/LoadScreen.h"
 #include "Scenes/Title.h"
 #include "Scenes/LevelX.h"
@@ -70,6 +71,9 @@ void changeState(Window& window) {
                 break;
             case GameState::State::STATE_LEVEL10:
                 currentState = std::make_unique<LevelX>(window, "level10.dat", GameState::State::STATE_CREDITS);
+                break;
+            case GameState::State::STATE_GAMEOVER:
+                currentState = std::make_unique<GameOver>(window);
                 break;
             case GameState::State::STATE_CREDITS:
                 currentState = std::make_unique<Credits>(window);

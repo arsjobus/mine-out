@@ -30,6 +30,9 @@ public:
 	size_t getShotAccuracy();
 	void setShotAccuracy(int newAccuracy);
 
+	size_t getLivesRemaining();
+	void setLivesRemaining(size_t newLivesRemaining);
+
 	size_t getStatus();
 	void setStatus(size_t newStatus);
 
@@ -56,6 +59,7 @@ private:
 	bool canMoveLeft;
 	bool canMoveRight;
 	size_t activePowerUp;
+	size_t livesRemaining;
 	size_t shotAccuracy;
 	size_t status;
 };
