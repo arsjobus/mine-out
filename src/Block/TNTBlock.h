@@ -13,6 +13,8 @@ public:
 	TNTBlock(float width, float height);
 	~TNTBlock(void);
 
+	virtual bool supportsShrinkDestruction() override { return false; }
+
 	void render(Window &window, sf::Time dt);
 	void update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt);
 

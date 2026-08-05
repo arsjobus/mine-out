@@ -23,6 +23,7 @@ public:
 	virtual void update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt);
 	virtual void loadDefaultSettings();
 	virtual void render(Window &window, sf::Time dt);
+	virtual bool supportsShrinkDestruction() { return true; }
 
 	void dropPowerUp();
 	void randomizePowerUp();
@@ -34,6 +35,9 @@ public:
 
 	bool getActive();
 	void setActive( bool active );
+
+	bool getShrinking();
+	void setShrinking(bool shrinking);
 
 	bool getHasDroppedPowerUp();
 	void setHasDroppedPowerUp(bool hasDroppedPowerUp);
@@ -56,6 +60,7 @@ protected:
 private:
 	// private members
 	bool active;
+	bool shrinking;
 	bool hasDroppedPowerUp;
 	int dropChance;
 	int hitPoints;

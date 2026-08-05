@@ -1,4 +1,5 @@
 #include "Block.h"
+#include <algorithm>
 
 Block::~Block(void) { }
 
@@ -36,14 +37,31 @@ void Block::update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time d
 		this->setTexture( &resource.getBlockTexture( this->getTextureID() ) );
 		this->powerup->setPosition(sf::Vector2f(this->getPosition().x, this->getPosition().y));
 	}
-	if ((this->getActive()) && (this->getHitPoints() <= 0)) {
-		this->setActive( false );
-		log.quickWrite(std::string( this->getLabel() + log.getSeparator() + "was set to inactive!" ));
+
+	if (this->getActive() && this->getHitPoints() <= 0) {
+		this->setActive(false);
+		if (supportsShrinkDestruction()) {
+			this->setShrinking(true);
+			this->setSize(sf::Vector2f(this->getSize().x, this->getSize().y));
+			log.quickWrite(std::string(this->getLabel() + log.getSeparator() + "has begun shrinking away!"));
+		}
+	}
+	else if (this->getShrinking()) {
+		float shrinkRate = 240.f; // pixels per second
+		float delta = shrinkRate * dt.asSeconds();
+		sf::Vector2f currentSize = this->getSize();
+		float newWidth = std::max(0.f, currentSize.x - delta);
+		float newHeight = std::max(0.f, currentSize.y - delta);
+		this->setSize(sf::Vector2f(newWidth, newHeight));
+		this->setOrigin(sf::Vector2f(newWidth / 2.f, newHeight / 2.f));
+		if (newWidth <= 0.f || newHeight <= 0.f) {
+			this->setShrinking(false);
+			log.quickWrite(std::string(this->getLabel() + log.getSeparator() + "has finished shrinking!"));
+		}
 	}
 	else if (!this->getActive() && !this->getHasDroppedPowerUp()) {
 		this->dropPowerUp();
-		// Set to true so that powerup will not drop from same block again.
-		this->setHasDroppedPowerUp( true );
+		this->setHasDroppedPowerUp(true);
 	}
 	else if (!this->getActive() && this->powerup->getActive() && this->getHasDroppedPowerUp())
 		powerup->update(dt);
@@ -55,6 +73,7 @@ void Block::update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time d
 void Block::loadDefaultSettings() {
 	sf::Vector2f defaultSize( 96.f, 32.f );
 	this->setActive( true );
+	this->setShrinking(false);
 	this->randomizePowerUp();
 	this->setHasDroppedPowerUp( false );
 	this->setLabel( "Block" );
@@ -67,7 +86,7 @@ void Block::loadDefaultSettings() {
 }
 
 void Block::render(Window &window, sf::Time dt) {
-	if (this->getActive())
+	if (this->getActive() || this->getShrinking())
 		window.draw( *this );
 	powerup->render(window);
 }
@@ -84,6 +103,8 @@ void Block::unloadTextures() {
 
 bool Block::getActive() { return this->active; }
 void Block::setActive( bool active ) { this->active = active; }
+bool Block::getShrinking() { return this->shrinking; }
+void Block::setShrinking(bool shrinking) { this->shrinking = shrinking; }
 bool Block::getHasDroppedPowerUp() { return this->hasDroppedPowerUp; }
 void Block::setHasDroppedPowerUp(bool hasDroppedPowerUp) { this->hasDroppedPowerUp = hasDroppedPowerUp; }
 int Block::getDropChance() { return this->dropChance; }
