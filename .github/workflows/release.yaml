@@ -129,10 +129,8 @@ jobs:
 
           Copy-Item $env:APP_EXE $bundle
 
-          foreach ($dir in @("assets/data","assets/fonts","assets/images","assets/music","assets/sfx")) {
-            if (Test-Path $dir) {
-              Copy-Item $dir $bundle -Recurse
-            }
+          if (Test-Path "assets") {
+            Copy-Item "assets" $bundle -Recurse
           }
 
           $dllDir = Join-Path $PWD "vcpkg\installed\${{ matrix.vcpkg_triplet }}\bin"
