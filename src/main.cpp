@@ -105,6 +105,10 @@ int main() {
         )
     ), window.getDefaultWindowTitle());
 
+    // Ensure the initial window contents are black to avoid a white flash on macOS
+    window.clear(sf::Color::Black);
+    window.display();
+
     // Initial state
     stateID = GameState::State::STATE_LOAD;
     currentState = std::make_unique<LoadScreen>(window);

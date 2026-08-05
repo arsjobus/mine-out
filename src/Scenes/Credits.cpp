@@ -65,7 +65,7 @@ void Credits::loadDefaultFonts() {
 
 void Credits::loadDefaultSettings() {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading default settings.."));
-	setDefaultTextColor(sf::Color::Red);
+	setDefaultTextColor(sf::Color::White);
 }
 
 void Credits::loadCredits(Window &window) {

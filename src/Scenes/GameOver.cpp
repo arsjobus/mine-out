@@ -63,7 +63,7 @@ void GameOver::loadDefaultFonts() {
 
 void GameOver::loadDefaultSettings() {
     log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading default settings.."));
-    setDefaultTextColor(sf::Color::Red);
+    setDefaultTextColor(sf::Color::White);
 }
 
 void GameOver::loadGameOverText(Window &window) {

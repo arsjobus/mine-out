@@ -4,6 +4,7 @@
 #define LOADSCREEN_H
 
 #include "../GameState.h"
+#include <SFML/System/Clock.hpp>
 
 class LoadScreen: public GameState
 {
@@ -53,6 +54,19 @@ private:
 	sf::RectangleShape rectLoadBar;
 	sf::RectangleShape rectLoadBarBackground;
 	std::unique_ptr<sf::Text> textLoadingStatus;
+
+	// Ensure the loading screen is visible for a minimum duration
+	sf::Clock loadClock;
+	float minDisplaySeconds = 1.5f;
+	bool resourcesFinished = false;
+
+	// Animated display percent for the loading bar (0..100)
+	float displayedPercent = 0.f;
+	// Animation-to-full state
+	bool animatingToFull = false;
+	float animationStartPercent = 0.f;
+	float animationStartTimeSec = 0.f;
+	float animationDurationSec = 0.f;
 };
 
 #endif

@@ -28,6 +28,8 @@ private:
 private:
 	std::unique_ptr<sf::Text> txtMainTitle;
 	std::unique_ptr<sf::Text> txtPlayInstruction;
+	std::unique_ptr<sf::Text> txtAuthorBy;
+	std::unique_ptr<sf::Text> txtAuthorName;
 };
 
 #endif

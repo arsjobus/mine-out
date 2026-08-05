@@ -1,4 +1,5 @@
 #include "LoadScreen.h"
+#include <algorithm>
 
 LoadScreen::LoadScreen(Window &window) {
 	setCurrentModeName("Loading Screen");
@@ -88,17 +89,74 @@ void LoadScreen::update(Window &window, sf::Time dt)
 			}
 			else resources.loadMusic(musicNames[loadedMusicCount++].c_str());
 		}
-		// Update the appearance of the loading bar.
-		rectLoadBar.setSize(sf::Vector2f(resources.getLoadPercentile() / 100.f, 32));
-		rectLoadBar.setOrigin(sf::Vector2f(rectLoadBar.getGlobalBounds().size.x / 2, rectLoadBar.getGlobalBounds().size.y / 2));
+		// Update displayed percent while resources are still loading.
+		float actualPercent = resources.getLoadPercentile();
+		float elapsed = loadClock.getElapsedTime().asSeconds();
+		// Allow the bar to grow at most proportionally to elapsed time so it doesn't instantly fill.
+		float allowedPercentByTime = std::min(100.f, (elapsed / minDisplaySeconds) * 100.f);
+		float targetPercent = std::min(actualPercent, allowedPercentByTime);
+		// Smoothly step displayedPercent towards targetPercent (avoid large jumps)
+		if (targetPercent > displayedPercent) {
+			// Increase with a small smoothing factor
+			displayedPercent = std::min(targetPercent, displayedPercent + (targetPercent - displayedPercent) * 0.5f + 0.5f);
+		} else {
+			displayedPercent = std::max(displayedPercent, targetPercent);
+		}
+
+		// Compute pixel width based on background width minus padding (3px each side).
+		float bgWidth = rectLoadBarBackground.getSize().x;
+		float padding = 6.f; // total horizontal padding inside the background
+		float usableWidth = std::max(0.f, bgWidth - padding);
+		float pct = displayedPercent / 100.f;
+		float barWidth = usableWidth * pct;
+		rectLoadBar.setSize(sf::Vector2f(barWidth, 32.f));
+		rectLoadBar.setOrigin(sf::Vector2f(rectLoadBar.getSize().x / 2.f, rectLoadBar.getSize().y / 2.f));
 		rectLoadBar.setPosition(
 			sf::Vector2f(
-				(rectLoadBarBackground.getPosition().x - rectLoadBarBackground.getOrigin().x) + rectLoadBar.getOrigin().x + 3, 
-				(rectLoadBarBackground.getPosition().y - rectLoadBarBackground.getOrigin().y) + rectLoadBar.getOrigin().y + 3
+				(rectLoadBarBackground.getPosition().x - rectLoadBarBackground.getOrigin().x) + rectLoadBar.getOrigin().x + 3.f,
+				(rectLoadBarBackground.getPosition().y - rectLoadBarBackground.getOrigin().y) + rectLoadBar.getOrigin().y + 3.f
 			)
 		);
 	}
-	else setNextState( STATE_TITLE );
+	else {
+		// Resources finished loading; ensure the loading screen remains
+		// visible for at least `minDisplaySeconds` before switching states.
+		if (!resourcesFinished) {
+			resourcesFinished = true;
+			// Prepare animation from current displayedPercent to 100 over remaining time
+			animatingToFull = false;
+		}
+		// Start or progress animation to full bar if needed
+		float elapsedTotal = loadClock.getElapsedTime().asSeconds();
+		if (!animatingToFull) {
+			animationStartPercent = displayedPercent;
+			animationStartTimeSec = elapsedTotal;
+			animationDurationSec = std::max(0.001f, minDisplaySeconds - elapsedTotal);
+			animatingToFull = true;
+		}
+		float t = (elapsedTotal - animationStartTimeSec) / animationDurationSec;
+		t = std::clamp(t, 0.f, 1.f);
+		displayedPercent = animationStartPercent + (100.f - animationStartPercent) * t;
+
+		// Update bar size from displayedPercent
+		float bgWidth = rectLoadBarBackground.getSize().x;
+		float padding = 6.f;
+		float usableWidth = std::max(0.f, bgWidth - padding);
+		float barWidth = usableWidth * (displayedPercent / 100.f);
+		rectLoadBar.setSize(sf::Vector2f(barWidth, 32.f));
+		rectLoadBar.setOrigin(sf::Vector2f(rectLoadBar.getSize().x / 2.f, rectLoadBar.getSize().y / 2.f));
+		rectLoadBar.setPosition(
+			sf::Vector2f(
+				(rectLoadBarBackground.getPosition().x - rectLoadBarBackground.getOrigin().x) + rectLoadBar.getOrigin().x + 3.f,
+				(rectLoadBarBackground.getPosition().y - rectLoadBarBackground.getOrigin().y) + rectLoadBar.getOrigin().y + 3.f
+			)
+		);
+
+		// If the animated bar has visually reached full, transition immediately.
+		if (displayedPercent >= 99.9f) {
+			setNextState( STATE_TITLE );
+		}
+	}
 	// textLoadingStatus->setOrigin(sf::Vector2f(textLoadingStatus->getGlobalBounds().size.x / 2, textLoadingStatus->getGlobalBounds().size.y / 2));
 	// textLoadingStatus->setPosition(
 	// 	sf::Vector2f(
@@ -169,13 +227,18 @@ void LoadScreen::initialize() {
 		soundNames.size() +
 		musicNames.size() + 
 		fontNames.size());
+
+	// Start timing the loading screen display
+	loadClock.restart();
+	resourcesFinished = false;
 }
 
 void LoadScreen::initilizeBackground(Window &window) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading background.."));
 	sf::Vector2f screenResolution(window.getScreenResolution().x, window.getScreenResolution().y);
 	getRefToBackground().setSize(sf::Vector2f(screenResolution.x, screenResolution.y));
-    getRefToBackground().setFillColor(sf::Color(224, 224, 224));
+	// Use black background to avoid a visible light flash on startup
+	getRefToBackground().setFillColor(sf::Color::Black);
     getRefToBackground().setOrigin(sf::Vector2f(getRefToBackground().getGlobalBounds().size.x / 2, getRefToBackground().getGlobalBounds().size.y / 2));
 	getRefToBackground().setPosition(sf::Vector2f(screenResolution.x / 2, screenResolution.y / 2));
 }
