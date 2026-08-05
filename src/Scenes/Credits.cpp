@@ -74,12 +74,12 @@ void Credits::loadCredits(Window &window) {
     txtThankYou->setFillColor(getDefaultTextColor());
     txtThankYou->setStyle(sf::Text::Bold);
     txtThankYou->setOrigin(sf::Vector2f(txtThankYou->getGlobalBounds().size.x / 2, txtThankYou->getGlobalBounds().size.y / 2));
-    txtThankYou->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 3));
+    txtThankYou->setPosition(sf::Vector2f(static_cast<float>(window.getScreenResolution().x) / 2.f, static_cast<float>(window.getScreenResolution().y) / 3.f));
 	txtAuthorName = std::make_unique<sf::Text>(resources.getFont(1), "By Alexander Shepherd", 24);
     txtAuthorName->setFillColor(getDefaultTextColor());
     txtAuthorName->setStyle(sf::Text::Bold);
     txtAuthorName->setOrigin(sf::Vector2f(txtAuthorName->getGlobalBounds().size.x / 2, txtAuthorName->getGlobalBounds().size.y / 2));
-    txtAuthorName->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2));
+    txtAuthorName->setPosition(sf::Vector2f(static_cast<float>(window.getScreenResolution().x) / 2.f, static_cast<float>(window.getScreenResolution().y) / 2.f));
 }
 
 

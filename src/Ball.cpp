@@ -48,9 +48,9 @@ bool Ball::isCollisionDetected(GameObject *otherGameObject) {
 
 bool Ball::isOutOfBounds(Window &window) {
 	return (
-		getPosition().y > window.getSize().y ||
+		getPosition().y > static_cast<float>(window.getScreenResolution().y) ||
 		getPosition().y < 0 ||
-		getPosition().x > window.getSize().x ||
+		getPosition().x > static_cast<float>(window.getScreenResolution().x) ||
 		getPosition().x < 0
 	);
 }

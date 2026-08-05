@@ -131,7 +131,7 @@ void Level0::renderLivesRemaining(Window &window) {
 	const float topPadding = 10.f;
 	const float rightPadding = 10.f;
 	const float iconSpacing = 8.f;
-	const sf::Vector2u windowSize = window.getSize();
+	const sf::Vector2u windowSize(window.getScreenResolution().x, window.getScreenResolution().y);
 
 	if (lives <= 3) {
 		float x = static_cast<float>(windowSize.x) - rightPadding - paddleIcon.getGlobalBounds().size.x;
@@ -358,7 +358,7 @@ void Level0::resetBlocks(Window &window) {
 	float padding = 2;
 	int xPosition = panelL->getSize().x + getLevelMargin();
 	int yPosition = panelT->getSize().y + getLevelMargin();
-	float blockWidth = ((window.getSize().x - (panelL->getSize().x + (getLevelMargin() * 2.f) + panelR->getSize().x)) / (getBlocksPerRow()) - padding);
+	float blockWidth = ((window.getScreenResolution().x - (panelL->getSize().x + (getLevelMargin() * 2.f) + panelR->getSize().x)) / static_cast<float>(getBlocksPerRow()) - padding);
 	float blockHeight = 32.f;
 	for (int i = 0; i < blocks.size(); ++i) {
 		blocks[i]->setSize(sf::Vector2f(blockWidth, blockHeight));
@@ -379,7 +379,7 @@ void Level0::resetPanelL(Window &window) {
 	// Dependent on the top panel
 	sf::Vector2f position(
 		panelL->getOrigin().x,
-		window.getScreenResolution().y / 2 + panelT->getOrigin().y
+		static_cast<float>(window.getScreenResolution().y) / 2.f + panelT->getOrigin().y
 	);
 	std::string strXPosition = log.floatToString(position.x);
 	std::string strYPosition = log.floatToString(position.y);
@@ -388,7 +388,7 @@ void Level0::resetPanelL(Window &window) {
 }
 
 void Level0::resetPanelT(Window &window) {
-	sf::Vector2f position(window.getScreenResolution().x / 2, panelT->getSize().y - panelT->getOrigin().y);
+	sf::Vector2f position(static_cast<float>(window.getScreenResolution().x) / 2.f, panelT->getSize().y - panelT->getOrigin().y);
 	std::string strXPosition = log.floatToString(position.x);
 	std::string strYPosition = log.floatToString(position.y);
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Resetting position of the top panel: " + "X = " + strXPosition + "; Y = " + strYPosition ));
@@ -398,8 +398,8 @@ void Level0::resetPanelT(Window &window) {
 void Level0::resetPanelR(Window &window) {
 	// Dependent on the top panel
 	sf::Vector2f position(
-		window.getScreenResolution().x - panelR->getOrigin().x,
-		window.getScreenResolution().y / 2 + panelT->getOrigin().y
+		static_cast<float>(window.getScreenResolution().x) - panelR->getOrigin().x,
+		static_cast<float>(window.getScreenResolution().y) / 2.f + panelT->getOrigin().y
 	);
 	std::string strXPosition = log.floatToString(position.x);
 	std::string strYPosition = log.floatToString(position.y);
@@ -409,7 +409,7 @@ void Level0::resetPanelR(Window &window) {
 
 void Level0::resetPlayer(Window &window) {
 	// Dependent on the position of the bottom panel
-	sf::Vector2f position(window.getScreenResolution().x / 2, window.getScreenResolution().y - player->getOrigin().y - 16);
+	sf::Vector2f position(static_cast<float>(window.getScreenResolution().x) / 2.f, static_cast<float>(window.getScreenResolution().y) - player->getOrigin().y - 16.f);
 	std::string strXPosition = log.floatToString(position.x);
 	std::string strYPosition = log.floatToString(position.y);
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Resetting position of the paddle: " + "X = " + strXPosition + "; Y = " + strYPosition ));

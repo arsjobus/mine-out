@@ -26,7 +26,7 @@ void PowerUp::render(Window &window) {
 
 bool PowerUp::detectOutOfBounds(Window &window) {
 	if (this->getActive() &&
-		this->getPosition().y > window.getSize().y) {
+		this->getPosition().y > static_cast<float>(window.getScreenResolution().y)) {
 		this->setActive( false );
 		return true;
 	}

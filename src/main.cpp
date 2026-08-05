@@ -104,6 +104,7 @@ int main() {
             window.getScreenResolution().y
         )
     ), window.getDefaultWindowTitle());
+    window.updateLetterboxView(window.getSize().x, window.getSize().y);
 
     // Ensure the initial window contents are black to avoid a white flash on macOS
     window.clear(sf::Color::Black);

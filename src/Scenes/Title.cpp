@@ -61,7 +61,7 @@ void Title::loadDefaultSettings() {
 void Title::loadTitle(Window &window) {
 	log.quickWrite(LOG_INFO, std::string(getCurrentModeName() + log.getSeparator() + "Loading title.."));
     // Responsive title size based on window height, capped for large screens
-    unsigned int titleSize = static_cast<unsigned int>(std::min<float>(static_cast<float>(window.getSize().y) / 5.0f, 120.f));
+    unsigned int titleSize = static_cast<unsigned int>(std::min<float>(static_cast<float>(window.getScreenResolution().y) / 5.0f, 120.f));
     txtMainTitle = std::make_unique<sf::Text>(resources.getFont(0), window.getDefaultWindowTitle(), titleSize);
     txtMainTitle->setFillColor(getDefaultTextColor());
     txtMainTitle->setStyle(sf::Text::Bold);
@@ -71,8 +71,8 @@ void Title::loadTitle(Window &window) {
     sf::FloatRect mainBounds = txtMainTitle->getGlobalBounds();
     txtMainTitle->setOrigin(sf::Vector2f(mainBounds.size.x / 2.f, mainBounds.size.y / 2.f));
     // Position slightly higher than one third for better visual balance
-    float mainY = window.getSize().y * 0.28f;
-    txtMainTitle->setPosition(sf::Vector2f(window.getSize().x / 2.f, mainY));
+    float mainY = static_cast<float>(window.getScreenResolution().y) * 0.28f;
+    txtMainTitle->setPosition(sf::Vector2f(static_cast<float>(window.getScreenResolution().x) / 2.f, mainY));
 
     // Author text below the title using two lines: 'by' and the name
     unsigned int authorSize = titleSize / 6;
@@ -98,8 +98,8 @@ void Title::loadTitle(Window &window) {
     float topOfBlock = authorBlockCenterY - (combinedHeight / 2.f);
     float byY = topOfBlock + (byGlobal.size.y / 2.f);
     float nameY = topOfBlock + byGlobal.size.y + gapBetweenAuthorLines + (nameGlobal.size.y / 2.f);
-    txtAuthorBy->setPosition(sf::Vector2f(window.getSize().x / 2.f, byY));
-    txtAuthorName->setPosition(sf::Vector2f(window.getSize().x / 2.f, nameY));
+    txtAuthorBy->setPosition(sf::Vector2f(static_cast<float>(window.getScreenResolution().x) / 2.f, byY));
+    txtAuthorName->setPosition(sf::Vector2f(static_cast<float>(window.getScreenResolution().x) / 2.f, nameY));
 
     // Play instruction smaller and positioned towards the bottom
     unsigned int instrSize = static_cast<unsigned int>(std::max<int>(18, titleSize / 5));
@@ -108,7 +108,7 @@ void Title::loadTitle(Window &window) {
     txtPlayInstruction->setStyle(sf::Text::Bold);
     sf::FloatRect instrGlobal = txtPlayInstruction->getGlobalBounds();
     txtPlayInstruction->setOrigin(sf::Vector2f(instrGlobal.size.x / 2.f, instrGlobal.size.y / 2.f));
-    txtPlayInstruction->setPosition(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y - 100.f));
+    txtPlayInstruction->setPosition(sf::Vector2f(static_cast<float>(window.getScreenResolution().x) / 2.f, static_cast<float>(window.getScreenResolution().y) - 100.f));
 }
 
 

@@ -72,11 +72,11 @@ void GameOver::loadGameOverText(Window &window) {
     txtGameOver->setFillColor(getDefaultTextColor());
     txtGameOver->setStyle(sf::Text::Bold);
     txtGameOver->setOrigin(sf::Vector2f(txtGameOver->getGlobalBounds().size.x / 2, txtGameOver->getGlobalBounds().size.y / 2));
-    txtGameOver->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 3));
+    txtGameOver->setPosition(sf::Vector2f(static_cast<float>(window.getScreenResolution().x) / 2.f, static_cast<float>(window.getScreenResolution().y) / 3.f));
 
     txtReturn = std::make_unique<sf::Text>(resources.getFont(1), "PRESS <SPACE> TO RETURN", 24);
     txtReturn->setFillColor(getDefaultTextColor());
     txtReturn->setStyle(sf::Text::Bold);
     txtReturn->setOrigin(sf::Vector2f(txtReturn->getGlobalBounds().size.x / 2, txtReturn->getGlobalBounds().size.y / 2));
-    txtReturn->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2));
+    txtReturn->setPosition(sf::Vector2f(static_cast<float>(window.getScreenResolution().x) / 2.f, static_cast<float>(window.getScreenResolution().y) / 2.f));
 }

@@ -247,7 +247,7 @@ void LoadScreen::initilizeObjects(Window &window) {
 	rectLoadBarBackground.setFillColor(sf::Color::Black);
 	rectLoadBarBackground.setSize(sf::Vector2f(106, 38));
 	rectLoadBarBackground.setOrigin(sf::Vector2f(rectLoadBarBackground.getGlobalBounds().size.x / 2, rectLoadBarBackground.getGlobalBounds().size.y / 2));
-	rectLoadBarBackground.setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2));
+	rectLoadBarBackground.setPosition(sf::Vector2f(static_cast<float>(window.getScreenResolution().x) / 2.f, static_cast<float>(window.getScreenResolution().y) / 2.f));
 
 	// textLoadingStatus = std::make_unique<sf::Text>(getPrimaryFont(), "");
 	// textLoadingStatus->setFont(getPrimaryFont());

@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <iomanip>
 #include <iostream>
+#include <optional>
 #include <sstream>
 #include <string>
 #include "Config.h"
@@ -24,6 +25,9 @@ public:
 	sf::Vector2u &getScreenResolution();
 	bool handleScreenshotHotkey(const sf::Event& event);
 	void saveScreenshot(const std::string& prefix = "screenshot");
+
+	std::optional<sf::Event> pollEvent();
+	void updateLetterboxView(unsigned int windowWidth, unsigned int windowHeight);
 
 private:
 	void loadFromConfig();

@@ -18,6 +18,33 @@ Window::Window(void) {
 }
 Window::~Window(void) { }
 
+std::optional<sf::Event> Window::pollEvent() {
+	auto eventOpt = sf::RenderWindow::pollEvent();
+	if (eventOpt) {
+		if (const auto* resized = eventOpt->getIf<sf::Event::Resized>()) {
+			updateLetterboxView(resized->size.x, resized->size.y);
+		}
+	}
+	return eventOpt;
+}
+
+void Window::updateLetterboxView(unsigned int windowWidth, unsigned int windowHeight) {
+	const float targetRatio = static_cast<float>(uScreenResolution.x) / static_cast<float>(uScreenResolution.y);
+	const float windowRatio = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
+
+	sf::View view(sf::FloatRect(sf::Vector2f(0.f, 0.f), sf::Vector2f(static_cast<float>(uScreenResolution.x), static_cast<float>(uScreenResolution.y))));
+
+	if (windowRatio > targetRatio) {
+		float width = targetRatio / windowRatio;
+		view.setViewport(sf::FloatRect(sf::Vector2f((1.f - width) / 2.f, 0.f), sf::Vector2f(width, 1.f)));
+	} else {
+		float height = windowRatio / targetRatio;
+		view.setViewport(sf::FloatRect(sf::Vector2f(0.f, (1.f - height) / 2.f), sf::Vector2f(1.f, height)));
+	}
+
+	setView(view);
+}
+
 bool Window::getFullScreen() { return bFullScreen; }
 sf::Vector2u &Window::getScreenResolution() { return uScreenResolution; }
 sf::String &Window::getDefaultWindowTitle() { return defaultWindowTitle; }
