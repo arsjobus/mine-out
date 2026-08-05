@@ -27,7 +27,12 @@ void LevelX::render( Window &window, sf::Time dt ) {
 
 void LevelX::update( Window &window, sf::Time dt ) {
 	Level0::update( window, dt );
-	if (this->getActiveBlocksCount() <= 0)
+	int activeGoldBlocks = 0;
+	for (const auto &block : this->blocks) {
+		if (block->getActive() && dynamic_cast<GoldBlock*>(block.get()) != nullptr)
+			activeGoldBlocks++;
+	}
+	if (activeGoldBlocks <= 0)
 		setNextState( nextGameState );
 	else
 		this->setActiveBlocksCount( 0 );
