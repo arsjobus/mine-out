@@ -1,6 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include "Config.h"
 #include "GameState.h"
 #include "PreloadResources.h"
@@ -92,13 +95,36 @@ void changeState(Window& window) {
     }
 }
 
+#ifdef __EMSCRIPTEN__
+static void gameLoop(void* arg) {
+    Window* window = static_cast<Window*>(arg);
+    static sf::Clock deltaClock;
+
+    sf::Time dt = deltaClock.restart();
+    currentState->processEvents(*window);
+    currentState->update(*window, dt);
+    changeState(*window);
+    currentState->render(*window, dt);
+
+    if (stateID == GameState::State::STATE_EXIT) {
+        emscripten_cancel_main_loop();
+        currentState.reset();
+        PreloadResources::unloadResources();
+    }
+}
+#endif
+
 int main() {
     sf::Clock randomTime;
     sf::Clock deltaClock;
     std::srand(randomTime.restart().asMicroseconds());
 
     Log log;
+#ifdef __EMSCRIPTEN__
+    static Window window;
+#else
     Window window;
+#endif
 
     window.create(sf::VideoMode(
         sf::Vector2u(
@@ -117,6 +143,7 @@ int main() {
     currentState = std::make_unique<LoadScreen>(window);
 
     log.quickWrite(LOG_INFO, "Entering game loop...");
+#ifndef __EMSCRIPTEN__
     const char* home = std::getenv("HOME");
     const std::filesystem::path screenshotsDir = home
         ? std::filesystem::path(home) / "Pictures" / "MineOut-Screenshots"
@@ -136,6 +163,10 @@ int main() {
     log.quickWrite(LOG_INFO, "Exiting game loop...");
     currentState.reset();
     PreloadResources::unloadResources();
+#else
+    std::cout << "Web build: screenshot saving and native filesystem access are disabled." << std::endl;
+    emscripten_set_main_loop_arg(gameLoop, &window, 0, 1);
+#endif
 
     return 0;
 }

@@ -5,12 +5,14 @@ Config::~Config(void) { }
 
 void Config::openFileInReadOnlyMode(const char *filename) {
 	fileSettings.open(filename, std::ios::in);
+#if !defined(__EMSCRIPTEN__)
 	// If not found, try Resources directory (for macOS .app bundle)
 	if (!fileSettings.is_open()) {
 		std::string resourcePath = "../Resources/";
 		resourcePath += filename;
 		fileSettings.open(resourcePath.c_str(), std::ios::in);
 	}
+#endif
 }
 
 void Config::openFileInWriteMode(const char *filename) {

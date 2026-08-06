@@ -2,7 +2,7 @@
 
 #include "PreloadResources.h"
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__EMSCRIPTEN__)
 #include <CoreFoundation/CoreFoundation.h>
 #include <limits.h>
 #include <unistd.h>
@@ -92,11 +92,17 @@ std::string PreloadResources::resolvePath(const std::string &relativePath) {
         }
     }
 
+#ifdef __EMSCRIPTEN__
+    if (!relativePath.empty() && relativePath.front() != '/') {
+        return std::string("/") + relativePath;
+    }
+#endif
+
     return relativePath;
 }
 
 std::string PreloadResources::getExecutableBasePath() {
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__EMSCRIPTEN__)
     char buf[PATH_MAX];
     uint32_t bufsize = sizeof(buf);
     if (_NSGetExecutablePath(buf, &bufsize) == 0) {
@@ -160,7 +166,7 @@ void PreloadResources::loadMusic(const char *filename) {
     if (!musicBuffer.loadFromFile(fullpath)) {
         std::cerr << "Could not load music: " << fullpath << std::endl;
     } else {
-        std::cerr << "Loaded music: " << fullpath << std::endl;
+        std::cout << "Loaded music: " << fullpath << std::endl;
     }
     music.push_back(musicBuffer);
     this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
@@ -174,7 +180,7 @@ void PreloadResources::loadSound(const char *filename) {
     if (!soundBuffer.loadFromFile(fullpath)) {
         std::cerr << "Could not load sound: " << fullpath << std::endl;
     } else {
-        std::cerr << "Loaded sound: " << fullpath << std::endl;
+        std::cout << "Loaded sound: " << fullpath << std::endl;
     }
     sound.push_back(soundBuffer);
     this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
@@ -188,7 +194,7 @@ void PreloadResources::loadAnimationTexture(const char *filename) {
     if (!texture.loadFromFile(fullpath)) {
         std::cerr << "Could not load animation texture: " << fullpath << std::endl;
     } else {
-        std::cerr << "Loaded animation texture: " << fullpath << std::endl;
+        std::cout << "Loaded animation texture: " << fullpath << std::endl;
     }
     txtAnimation.push_back(texture);
     this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
@@ -202,7 +208,7 @@ void PreloadResources::loadBackgroundTexture(const char *filename) {
     if (!texture.loadFromFile(fullpath)) {
         std::cerr << "Could not load background texture: " << fullpath << std::endl;
     } else {
-        std::cerr << "Loaded background texture: " << fullpath << std::endl;
+        std::cout << "Loaded background texture: " << fullpath << std::endl;
     }
     txtBackground.push_back(texture);
     this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
@@ -216,7 +222,7 @@ void PreloadResources::loadBlockTexture(const char *filename) {
     if (!texture.loadFromFile(fullpath)) {
         std::cerr << "Could not load block texture: " << fullpath << std::endl;
     } else {
-        std::cerr << "Loaded block texture: " << fullpath << std::endl;
+        std::cout << "Loaded block texture: " << fullpath << std::endl;
     }
     txtBlock.push_back(texture);
     this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
@@ -230,7 +236,7 @@ void PreloadResources::loadLevelTexture(const char *filename) {
     if (!texture.loadFromFile(fullpath)) {
         std::cerr << "Could not load level texture: " << fullpath << std::endl;
     } else {
-        std::cerr << "Loaded level texture: " << fullpath << std::endl;
+        std::cout << "Loaded level texture: " << fullpath << std::endl;
     }
     txtLevel.push_back(texture);
     this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
@@ -244,7 +250,7 @@ void PreloadResources::loadPaddleTexture(const char *filename) {
     if (!texture.loadFromFile(fullpath)) {
         std::cerr << "Could not load paddle texture: " << fullpath << std::endl;
     } else {
-        std::cerr << "Loaded paddle texture: " << fullpath << std::endl;
+        std::cout << "Loaded paddle texture: " << fullpath << std::endl;
     }
     txtPaddle.push_back(texture);
     this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
@@ -258,7 +264,7 @@ void PreloadResources::loadPowerupTexture(const char *filename) {
     if (!texture.loadFromFile(fullpath)) {
         std::cerr << "Could not load powerup texture: " << fullpath << std::endl;
     } else {
-        std::cerr << "Loaded powerup texture: " << fullpath << std::endl;
+        std::cout << "Loaded powerup texture: " << fullpath << std::endl;
     }
     txtPowerup.push_back(texture);
     this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);
@@ -274,7 +280,7 @@ void PreloadResources::loadFont(const char *filename) {
     if (!font.openFromFile(fullpath)) {
         std::cerr << "Could not load font: " << fullpath << std::endl;
     } else {
-        std::cerr << "Loaded font: " << fullpath << std::endl;
+        std::cout << "Loaded font: " << fullpath << std::endl;
         fonts.push_back(font);
     }
     this->setLoadedResourceCount(this->getLoadedResourceCount() + 1);

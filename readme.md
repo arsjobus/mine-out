@@ -18,16 +18,20 @@ Before building, you need to install the following dependencies via Homebrew ([h
 * SFML (Simple and Fast Multimedia Library)
 * Freetype (Font rendering library)
 * libvorbis (Audio codec library)
+* Emscripten (for WebAssembly/browser builds)
 
 ---
 
 ## Installing Dependencies on macOS (Apple Silicon)
 
 1. Install Homebrew (if you haven’t already) by running this command in your terminal:
-   `/bin/bash -c "$(curl -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh))"`
+   `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
 
 2. Install SFML and dependencies by running:
    `brew install sfml freetype libvorbis`
+
+3. Install Emscripten if you want to build the web version:
+   `brew install emscripten`
 
 ---
 
@@ -52,6 +56,49 @@ Before building, you need to install the following dependencies via Homebrew ([h
 6. Run the game:
 
    `./build/game`
+
+### WebAssembly support
+
+This repository can now be built for the web using an Emscripten-capable SFML fork. The current desktop code path is still native SFML, but the build system has been updated to allow a browser target with the proper SFML package.
+
+### Web build setup
+
+1. Clone the Emscripten SFML fork and build it locally:
+   ```bash
+   cd /tmp
+   rm -rf sfml-emcc-fork
+   git clone --depth 1 --branch 3.1.0-EMCC https://github.com/Zombieschannel/SFML.git sfml-emcc-fork
+   cd sfml-emcc-fork
+   rm -rf build-emscripten
+   emcmake cmake -S . -B build-emscripten -DCMAKE_BUILD_TYPE=Release
+   cmake --build build-emscripten --config Release
+   cmake --install build-emscripten --prefix /tmp/sfml-emcc-fork/build-emscripten/install
+   ```
+
+2. Build `mine-out` for the web:
+   ```bash
+   cd /Users/mypc/Documents/GitHub/mine-out
+   rm -rf build-web
+   emcmake cmake -S . -B build-web -DCMAKE_BUILD_TYPE=Release \
+     -DWASM_BUILD=ON \
+     -DSFML_DIR=/tmp/sfml-emcc-fork/build-emscripten/install/lib/cmake/SFML \
+     -DSFML_STATIC_LIBRARIES=ON \
+     -DCMAKE_FIND_FRAMEWORK=NEVER
+   cmake --build build-web --config Release
+   ```
+
+3. The generated browser target files will be in `build-web/`, including:
+   * `game.html`
+   * `game.js`
+   * `game.wasm`
+
+4. Serve `build-web/` from a local HTTP server to run it in a browser.
+   Example:
+   ```bash
+   cd build-web
+   python3 -m http.server 8000
+   open http://localhost:8000/game.html
+   ```
 
 ### macOS: Intel, Apple Silicon, or Universal Binary
 

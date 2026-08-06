@@ -111,6 +111,10 @@ bool Window::handleScreenshotHotkey(const sf::Event& event) {
 }
 
 void Window::saveScreenshot(const std::string& prefix) {
+#if defined(__EMSCRIPTEN__)
+	std::cout << "Screenshot saving is disabled in browser builds." << std::endl;
+	return;
+#else
 	const auto now = std::chrono::system_clock::now();
 	const auto time = std::chrono::system_clock::to_time_t(now);
 	std::tm localTime{};
@@ -145,6 +149,7 @@ void Window::saveScreenshot(const std::string& prefix) {
 	}
 
 	std::cout << "Saved screenshot to " << outputPath << std::endl;
+#endif
 }
 
 /**
