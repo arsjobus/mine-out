@@ -1,7 +1,7 @@
 Music assets in this folder are in the Public Domain.
 
 Sources:
-- Crystal Cave by cynicmusic <https://pixelsphere.org>
+- Crystal Cave by cynicmusic <https://pixelsphere.org><br>
   https://opengameart.org/content/crystal-cave-song18
 
 License:
