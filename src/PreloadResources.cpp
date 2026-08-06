@@ -47,7 +47,7 @@ void PreloadResources::loadDefaultSettings() {
     this->setMusicDirectoryName("assets/music");
     this->setMusicFileType(".ogg");
     this->setSoundFileType(".wav");
-    this->setFontFileType(".ttf");
+    this->setFontFileType(".otf");
     this->setTextureFileType(".png");
     this->setLoadPercentile(0.f);
     this->setLoadedResourceCount(0);
