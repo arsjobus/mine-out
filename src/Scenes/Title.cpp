@@ -78,8 +78,8 @@ void Title::loadTitle(Window &window) {
     unsigned int authorSize = titleSize / 6;
     if (authorSize < 12) authorSize = 12;
     unsigned int bySize = std::max<unsigned int>(10, static_cast<unsigned int>(authorSize * 0.75f));
-    txtAuthorBy = std::make_unique<sf::Text>(resources.getFont(1), "by", bySize);
-    txtAuthorName = std::make_unique<sf::Text>(resources.getFont(1), "Alexander Shepherd", authorSize);
+    txtAuthorBy = std::make_unique<sf::Text>(resources.getFont(1), "", bySize);
+    txtAuthorName = std::make_unique<sf::Text>(resources.getFont(1), "", authorSize);
     txtAuthorBy->setFillColor(sf::Color(200, 200, 200));
     txtAuthorName->setFillColor(sf::Color(200, 200, 200));
 

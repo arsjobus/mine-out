@@ -215,7 +215,7 @@ void LoadScreen::initialize() {
 	musicNames.push_back("crystalcave"); // id: 0
 	soundNames.push_back("paddle-hit"); // id: 0
 	soundNames.push_back("explosion");  // id: 1
-	fontNames.push_back("AbandoN"); // id: 0
+	fontNames.push_back("quadrangle"); // id: 0
 	fontNames.push_back("arial"); // id: 1
 	resources.setResourceCount(resources.getResourceCount() + 
 		blockTextureNames.size() + 
