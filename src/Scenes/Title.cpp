@@ -103,7 +103,7 @@ void Title::loadTitle(Window &window) {
 
     // Play instruction smaller and positioned towards the bottom
     unsigned int instrSize = static_cast<unsigned int>(std::max<int>(18, titleSize / 5));
-    txtPlayInstruction = std::make_unique<sf::Text>(resources.getFont(1), "PRESS <SPACE> TO PLAY", instrSize);
+    txtPlayInstruction = std::make_unique<sf::Text>(resources.getFont(1), "PRESS <SPACE>", instrSize);
     txtPlayInstruction->setFillColor(getDefaultTextColor());
     txtPlayInstruction->setStyle(sf::Text::Bold);
     sf::FloatRect instrGlobal = txtPlayInstruction->getGlobalBounds();

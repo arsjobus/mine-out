@@ -195,28 +195,28 @@ void LoadScreen::initialize() {
 	loadedSoundCount = 0;
 	loadedMusicCount = 0;
 
-	animationTextureNames.push_back("explosion1");   // id: 0
-	backgroundTextureNames.push_back("background1"); // id: 0
-	blockTextureNames.push_back("block-default");    // id: 0
-	blockTextureNames.push_back("block-stone1");     // id: 1
-	blockTextureNames.push_back("block-stone2");     // id: 2
-	blockTextureNames.push_back("block-stone3");     // id: 3
-	blockTextureNames.push_back("block-normal1");    // id: 4
-	blockTextureNames.push_back("block-gold1");      // id: 5
-	blockTextureNames.push_back("block-tnt1");       // id: 6
-	paddleTextureNames.push_back("paddle");          // id: 0
-	paddleTextureNames.push_back("paddle-grow");     // id: 1
-	levelTextureNames.push_back("level-top");        // id: 0
-	levelTextureNames.push_back("level-left");       // id: 1
-	levelTextureNames.push_back("level-right");      // id: 2
-	powerupTextureNames.push_back("powerup-increased-damage"); // id: 0
-	powerupTextureNames.push_back("powerup-grow-paddle"); // id: 1
-	powerupTextureNames.push_back("powerup-extra-paddle"); // id: 2
-	musicNames.push_back("crystalcave"); // id: 0
-	soundNames.push_back("paddle-hit"); // id: 0
-	soundNames.push_back("explosion");  // id: 1
-	fontNames.push_back("quadrangle"); // id: 0
-	fontNames.push_back("liberation-sans"); // id: 1
+	animationTextureNames.push_back("spr_explosion");   // id: 0
+	backgroundTextureNames.push_back("spr_background"); // id: 0
+	blockTextureNames.push_back("spr_block_default");   // id: 0
+	blockTextureNames.push_back("spr_block_rock01");    // id: 1
+	blockTextureNames.push_back("spr_block_rock02");    // id: 2
+	blockTextureNames.push_back("spr_block_rock03");    // id: 3
+	blockTextureNames.push_back("spr_block_dirt");      // id: 4
+	blockTextureNames.push_back("spr_block_gold");      // id: 5
+	blockTextureNames.push_back("spr_block_bomb");      // id: 6
+	paddleTextureNames.push_back("spr_paddle_sm");      // id: 0
+	paddleTextureNames.push_back("spr_paddle_lg");      // id: 1
+	levelTextureNames.push_back("spr_level_top");       // id: 0
+	levelTextureNames.push_back("spr_level_left");      // id: 1
+	levelTextureNames.push_back("spr_level_right");     // id: 2
+	powerupTextureNames.push_back("spr_powerup_increased_damage"); // id: 0
+	powerupTextureNames.push_back("spr_powerup_grow_paddle"); // id: 1
+	powerupTextureNames.push_back("spr_powerup_extra_paddle"); // id: 2
+	musicNames.push_back("bgm_crystal_cave"); // id: 0
+	soundNames.push_back("sfx_paddle_hit"); // id: 0
+	soundNames.push_back("sfx_explosion");  // id: 1
+	fontNames.push_back("fnt_quadrangle"); // id: 0
+	fontNames.push_back("fnt_liberation_sans"); // id: 1
 	resources.setResourceCount(resources.getResourceCount() + 
 		blockTextureNames.size() + 
 		animationTextureNames.size() +
