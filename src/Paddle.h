@@ -5,6 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "GameObject.h"
+#include "GameSession.h"
 #include "PowerUp/PowerUp.h"
 #include "StaticObject.h"
 

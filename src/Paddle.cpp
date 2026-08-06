@@ -46,7 +46,10 @@ void Paddle::setActivePowerUp(int activePowerUp) { this->activePowerUp = activeP
 size_t Paddle::getShotAccuracy() { return shotAccuracy; }
 void Paddle::setShotAccuracy(int newAccuracy) { shotAccuracy = newAccuracy; }
 size_t Paddle::getLivesRemaining() { return livesRemaining; }
-void Paddle::setLivesRemaining(size_t newLivesRemaining) { livesRemaining = newLivesRemaining; }
+void Paddle::setLivesRemaining(size_t newLivesRemaining) {
+	livesRemaining = newLivesRemaining;
+	GameSession::instance().setLivesRemaining(newLivesRemaining);
+}
 size_t Paddle::getStatus() { return status; }
 void Paddle::setStatus( size_t newStatus ) { status = newStatus; }
 bool Paddle::getCanMoveLeft() { return canMoveLeft; }
@@ -108,7 +111,7 @@ void Paddle::loadDefaultSettings() {
 	this->setActivePowerUp( 0 );
 	this->setLabel( "player" );
 	this->setStatus( Paddle::Status::NULL_STATUS );
-	this->setLivesRemaining( 3 );
+	this->setLivesRemaining( GameSession::instance().getLivesRemaining() );
 	this->setSpeed( 500.f );
 	this->setXVelocity( 0.f );
 	this->setYVelocity( 0.f );

@@ -40,9 +40,11 @@ void changeState(Window& window) {
                 currentState = std::make_unique<LoadScreen>(window);
                 break;
             case GameState::State::STATE_TITLE:
+                GameSession::instance().reset();
                 currentState = std::make_unique<Title>(window);
                 break;
             case GameState::State::STATE_LEVEL1:
+                GameSession::instance().reset();
                 currentState = std::make_unique<LevelX>(window, "level1.dat", GameState::State::STATE_LEVEL2);
                 break;
             case GameState::State::STATE_LEVEL2:
