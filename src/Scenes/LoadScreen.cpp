@@ -216,7 +216,7 @@ void LoadScreen::initialize() {
 	soundNames.push_back("paddle-hit"); // id: 0
 	soundNames.push_back("explosion");  // id: 1
 	fontNames.push_back("quadrangle"); // id: 0
-	fontNames.push_back("arial"); // id: 1
+	fontNames.push_back("liberation-sans"); // id: 1
 	resources.setResourceCount(resources.getResourceCount() + 
 		blockTextureNames.size() + 
 		animationTextureNames.size() +
