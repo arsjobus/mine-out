@@ -19,18 +19,18 @@ bool Explosion::detectCollisionWithBlocks(Block &block) {
 
 bool Explosion::nextFrame(sf::Time dt) {
     animationTimer += dt;
-    sf::Vector2i frameSize(256, 256);
-    if (animationTimer.asMilliseconds() >= sf::milliseconds(20).asMilliseconds()) {
+    sf::Vector2i frameSize(128, 128);
+    if (animationTimer.asMilliseconds() >= sf::milliseconds(10).asMilliseconds()) {
         if (++currentFrame.x < totalFrames.x)
             this->setTextureRect(sf::Rect<int>(
                 sf::Vector2i(currentFrame.x * frameSize.x, currentFrame.y * frameSize.y),
-                sf::Vector2i(256, 256)));
+                sf::Vector2i(128, 128)));
         else {
             currentFrame.x = 0;
             if (++currentFrame.y <= totalFrames.y)
                 this->setTextureRect(sf::Rect<int>(
 					sf::Vector2i(this->currentFrame.x * frameSize.x, this->currentFrame.y * frameSize.y),
-					sf::Vector2i(256, 256)));
+					sf::Vector2i(128, 128)));
             else {
                 this->currentFrame.x = 0;
                 this->currentFrame.y = 0;
@@ -52,9 +52,9 @@ void Explosion::loadDefaultSettings() {
     this->currentFrame.x = 0;
     this->currentFrame.y = 0;
     this->totalFrames.x  = 8;
-    this->totalFrames.y  = 6;
+    this->totalFrames.y  = 8;
     this->setTextureRect(
-        sf::Rect<int>(sf::Vector2i(this->currentFrame.x, this->currentFrame.y), sf::Vector2i(256, 256))
+        sf::Rect<int>(sf::Vector2i(this->currentFrame.x, this->currentFrame.y), sf::Vector2i(128, 128))
     );
     this->setOrigin(sf::Vector2f(this->getGlobalBounds().size.x / 2, this->getGlobalBounds().size.y / 2));
 }
