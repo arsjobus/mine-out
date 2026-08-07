@@ -4,10 +4,9 @@
   <img src="project_screenshot.png" alt="Project Screenshot" width="600">
 </p>
 
-This is a C++ game built using SFML 3.0.2 on macOS ARM architecture (Apple Silicon).
-The project uses C++17 standard and links SFML dynamically, relying on system-installed libraries.
-Historically, I created this project over 15 years ago to learn to make video games, so the source
-code has been upgraded to be compatible with v3 of SFML.
+This is an open-source C++ game built using SFML 3.0.x. The project uses the C++17 standard and supports multiple platforms, including macOS on ARM architecture (Apple Silicon) as well as Windows builds for both x86 and x64 architectures. SFML is linked dynamically and relies on system-installed libraries.
+
+The project was originally created more than 15 years ago as a personal learning exercise in game development. Over the years, the source code has been maintained, modernized, and upgraded to remain compatible with SFML version 3 while continuing to serve as an open-source example of a C++ game project.
 
 ---
 
@@ -81,16 +80,4 @@ For Intel Macs, run:
 export PATH="/usr/local/bin:$PATH"
 
 * You can clean build files by running:
-  make clean
-
----
-
-## Troubleshooting
-
-* Library not loaded errors: Make sure SFML and its dependencies are installed with Homebrew.
-* Wrong architecture: Confirm you’re building on an ARM Mac or use the correct Homebrew prefix for your architecture.
-* Permissions or sandbox issues: Run your terminal with appropriate permissions or disable system security temporarily for testing.
-
----
-
-Enjoy playing and modifying the game! Feel free to submit issues or pull requests.
+  `make clean`
