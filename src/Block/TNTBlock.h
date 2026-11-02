@@ -15,8 +15,8 @@ public:
 
 	virtual bool supportsShrinkDestruction() override { return false; }
 
-	void render(Window &window, sf::Time dt);
-	void update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt);
+	void render(Window &window, sf::Time dt) override;
+	void update(const std::vector<std::shared_ptr<Block>>& blocks, sf::Time dt) override;
 
 	Explosion *getExplosion();
 
@@ -30,7 +30,7 @@ private:
 	// helpers
 	bool hasExploded;
 	std::unique_ptr<Explosion> explosion;
-	void loadDefaultSettings();
+	void loadDefaultSettings() override;
 	float explosiveRadius;
 	sf::Time explosionTimer;
 };
