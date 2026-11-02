@@ -108,9 +108,10 @@ migrated.
 #### Implementation plan
 
 The application cannot move to a browser loop independently of its renderer:
-game objects, scenes, resources, and events currently use SFML types directly.
-Make the migration in these slices, keeping the existing native SFML build
-working throughout:
+game objects, scenes, resources, and events currently use SFML types directly
+across most of `src/`. Avoid a repository-wide rewrite or a generic abstraction
+designed before it is exercised. Keep the native SFML build working, and prove
+the boundary with a small end-to-end slice before expanding it:
 
 1. **[x] Validate the SDL2 backend before changing game code.**
    - Extend the spike to test the rendering operations the game needs
@@ -124,59 +125,83 @@ working throughout:
      rather than after migrating gameplay.
    - **Checkpoint:** the pinned toolchain builds and serves the feature spike;
      the native SFML build remains unchanged.
-2. **Create a backend boundary.**
-   - Introduce game-facing window, event, time, drawing, resource, and audio
-     interfaces without SFML types in gameplay headers.
-   - Implement the current native behavior behind an SFML adapter first and
-     keep native window creation, controls, and rendering working.
-   - Replace SFML shape inheritance and direct `window.draw(...)` calls with
-     backend-neutral game objects/draw operations. Migrate resources and
-     audio through the same boundary instead of adding SDL calls throughout
-     gameplay.
-   - **Checkpoint:** the native game builds and its title, levels, transitions,
-     audio, and controls behave as before; gameplay code no longer depends
-     directly on SFML.
-3. **Implement and exercise the SDL2 backend.**
-   - Add an SDL2 implementation for the interfaces and enable it only for the
-     web target; leave the native SFML target and its dependencies intact.
-   - Render into a fixed 1024 × 768 logical view, scaling and letterboxing it
-     in the canvas on resize. Keep input coordinates consistent with that view.
-   - Run a browser title-screen slice first, then migrate and verify gameplay,
-     scene transitions, restart/game-over, and pause/resume.
-   - **Checkpoint:** a browser build starts and plays through the game using
-     the SDL2 backend, with no SFML dependency in the web target.
-4. **Move lifecycle and input onto the browser loop.**
-   - Replace the blocking web loop with Emscripten's main-loop callback while
-     retaining the native loop. Ensure state transitions and cleanup remain
-     valid when the callback is cancelled or the game exits.
-   - Use elapsed frame time with a bounded delta; do not advance gameplay
-     while the page is hidden or focus is lost, and reset timing on resume to
-     avoid a large catch-up step.
-   - Map keyboard events to the existing controls, prevent browser scrolling
-     for gameplay keys while the canvas is active, and handle focus changes.
-     Add pointer input only if an existing control requires it.
-   - **Checkpoint:** verify title, gameplay, state changes, and pause/resume in
-     a browser; resizing preserves the 4:3 view and browser UI remains
-     responsive.
+2. **Define the smallest useful backend seam and prove it on native.**
+   - Inventory the SFML use by responsibility (window/events/time, drawing,
+     resources, audio); use this to guide migration, not to create a parallel
+     SFML-shaped API.
+   - Treat startup as part of the vertical slice: the current title is reached
+     through an SFML `LoadScreen`, inherits an SFML-based `GameState`, and
+     loads fonts through SFML-backed `PreloadResources`. Porting only
+     `Title.cpp` would not produce a runnable or backend-independent title.
+     Prefer a shared title scene and a small bootstrap that loads only its
+     required resources: the native `Title` state delegates to that scene
+     after the existing loader, while the web entry point starts the same
+     scene directly. This avoids migrating the all-assets loader prematurely
+     and avoids duplicating the title UI.
+   - Introduce game-owned types and operations only for the first vertical
+     slice: window lifecycle, frame time, keyboard/close/focus/resize events,
+     4:3 view, text, textures, and filled shapes. Keep SFML conversions inside
+     the native adapter.
+   - Migrate the shared title scene and both adapters to that seam. Keep the
+     existing native executable as the reference implementation and verify
+     the title, controls, resize, resource loading, and clean shutdown still
+     work.
+   - **Checkpoint:** the title slice builds and runs natively through the new
+     boundary; no SFML types leak from that slice into its game-facing headers.
+3. **Port the title slice to SDL2 before migrating the whole game.**
+   - Add an SDL2 adapter used only by the web target; do not disturb native
+     target dependencies or behavior.
+   - Run the browser loop with a bounded frame delta, focus/visibility pause,
+     timing reset on resume, canvas resize/fullscreen handling, and keyboard
+     input. Preserve the 1024 × 768 logical view and 4:3 letterboxing.
+   - Package only the selected startup path and title slice's required assets
+     for this checkpoint. Verify resource loading, title, text, input, resize,
+     focus recovery, and shutdown over HTTP in a browser before generalizing
+     the interface.
+   - **Checkpoint:** a real game title screen runs in the browser without
+     linking SFML; the native title screen remains functional.
+4. **Migrate gameplay in independently verifiable slices.**
+   - Move drawing and shape inheritance out of game objects, then migrate
+     gameplay types in dependency order: shared objects and collision
+     geometry; paddle and ball; blocks and power-ups; level and other scenes.
+   - Route resource loading and audio through the backend at the point each
+     slice needs them. Keep SDL-specific calls in the adapter and preserve
+     stable resource handles/lifetimes across scene changes.
+   - After each slice, build both targets and verify the affected gameplay
+     behavior; do not defer all native verification until the end.
+   - **Checkpoint:** title, all levels, transitions, restart/game-over, and
+     audio work in both targets; no game-facing source depends on SFML.
+5. **Finish browser lifecycle and input behavior.**
+   - Ensure callback cancellation, state transitions, and resource cleanup
+     remain valid on exit. Prevent page scrolling for gameplay keys while the
+     canvas is active; add pointer input only if a game control requires it.
+   - **Checkpoint:** verify gameplay, state changes, pause/resume, responsive
+     browser UI, and 4:3 resizing in a browser.
 
 **Exit criteria:** title screen, gameplay, state changes, and pause/resume work
 in a browser without blocking the browser UI.
 
-**Current status:** implementation-plan step 1 is complete: the SDL2 feature
-spike builds, serves, and passes its browser capability checks, and the native
-SFML build still succeeds. The game itself still requires SFML 3 and cannot
-configure with the pinned Emscripten toolchain. Continue with the backend
-boundary in step 2; do not mark this phase complete until all four
-implementation checkpoints and the exit criteria pass. The native loop's
-long-frame clamp and focus-loss pause are useful safeguards, but do not
-satisfy the browser criteria.
+**Current status (2026-11-02):** step 1 is complete: the SDL2 feature spike
+builds, serves, and passes its browser capability checks, and the native SFML
+build succeeds. The game itself still requires SFML 3 and cannot configure
+with the pinned Emscripten toolchain. Step 2 is in progress: shared title
+presentation and start/exit decisions now live in `TitleScene`, with the
+existing native `Window` providing an SFML renderer adapter. This is only the
+first slice; `Title` still uses SFML for its state/event lifecycle, and startup
+still enters through the SFML `LoadScreen` and loads all resources. Next,
+extract the title slice's event/frame contract and a focused resource bootstrap
+so the same title scene can be started by native and web entry points. Do not
+mark the checkpoint or later phases complete until both native and browser
+startup paths are verified; gameplay has not yet been migrated.
 
 ### 3. Make assets, audio, and browser-only behavior work
 
 - [ ] Package `assets/` into the browser virtual filesystem (or use the
   backend's equivalent asset loader); make resource and level paths resolve
   consistently instead of relying on native executable paths or the host's
-  current working directory.
+  current working directory. Phase 2 may package only the title slice's
+  required files for its browser checkpoint; complete and verify the full
+  asset set here.
 - [ ] Verify all level data, textures, fonts, sound effects, and music load in
   the web build. Fail visibly for missing required assets.
 - [ ] Start or resume audio only after a user gesture, as required by browser

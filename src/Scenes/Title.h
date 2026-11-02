@@ -4,6 +4,7 @@
 #define TITLE_H
 
 #include <SFML/Graphics.hpp>
+#include "../TitleScene.h"
 #include "../GameState.h"
 #include "../Window.h"
 
@@ -13,23 +14,13 @@ public:
 	Title(Window &window);
 	~Title(void);
 
-	void loadBackground(Window &window);
-	void loadTitle(Window &window);
-
 public:
 	void processEvents(Window &window);
     void update(Window &window, sf::Time dt);
     void render(Window &window, sf::Time dt);
 
 private:
-	void loadDefaultFonts();
-	void loadDefaultSettings();
-
-private:
-	std::unique_ptr<sf::Text> txtMainTitle;
-	std::unique_ptr<sf::Text> txtPlayInstruction;
-	std::unique_ptr<sf::Text> txtAuthorBy;
-	std::unique_ptr<sf::Text> txtAuthorName;
+	TitleScene titleScene;
 };
 
 #endif

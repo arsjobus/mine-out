@@ -13,8 +13,9 @@
 #include <string>
 #include "Config.h"
 #include "Log.h"
+#include "TitleScene.h"
 
-class Window: public sf::RenderWindow
+class Window: public sf::RenderWindow, public TitleSceneRenderer
 {
 public:
 	Window(void);
@@ -29,6 +30,21 @@ public:
 
 	std::optional<sf::Event> pollEvent();
 	void updateLetterboxView(unsigned int windowWidth, unsigned int windowHeight);
+
+	void beginFrame() override;
+	void drawCenteredText(
+		const std::string& value,
+		TitleSceneRenderer::Font font,
+		unsigned int characterSize,
+		unsigned char red,
+		unsigned char green,
+		unsigned char blue,
+		float x,
+		float y,
+		bool bold,
+		float outlineThickness
+	) override;
+	void present() override;
 
 private:
 	void loadFromConfig();

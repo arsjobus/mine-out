@@ -1,6 +1,7 @@
 #include <cstdlib>
 
 #include "Window.h"
+#include "PreloadResources.h"
 
 Window::Window(void) {
 	bFullScreen = false;
@@ -52,6 +53,43 @@ void Window::updateLetterboxView(unsigned int windowWidth, unsigned int windowHe
 	}
 
 	setView(view);
+}
+
+void Window::beginFrame() {
+	sf::RenderWindow::clear(sf::Color::Black);
+}
+
+void Window::drawCenteredText(
+	const std::string& value,
+	TitleSceneRenderer::Font font,
+	unsigned int characterSize,
+	unsigned char red,
+	unsigned char green,
+	unsigned char blue,
+	float x,
+	float y,
+	bool bold,
+	float outlineThickness
+) {
+	static PreloadResources resources;
+	const int fontIndex = font == TitleSceneRenderer::Font::Display ? 0 : 1;
+	sf::Text text(resources.getFont(fontIndex), value, characterSize);
+	text.setFillColor(sf::Color(red, green, blue));
+	if (bold) {
+		text.setStyle(sf::Text::Bold);
+	}
+	if (outlineThickness > 0.f) {
+		text.setOutlineColor(sf::Color::Black);
+		text.setOutlineThickness(outlineThickness);
+	}
+	const sf::FloatRect bounds = text.getGlobalBounds();
+	text.setOrigin(sf::Vector2f(bounds.size.x / 2.f, bounds.size.y / 2.f));
+	text.setPosition(sf::Vector2f(x, y));
+	sf::RenderWindow::draw(text);
+}
+
+void Window::present() {
+	sf::RenderWindow::display();
 }
 
 bool Window::getFullScreen() { return bFullScreen; }
