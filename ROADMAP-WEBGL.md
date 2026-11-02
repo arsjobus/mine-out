@@ -65,6 +65,35 @@ Verified over HTTP in Firefox: the HTML and `.wasm` return 200, WebGL 2
 initializes, and both frame callbacks run repeatedly. Emscripten 6.0.13
 retrieved and built its SDL2 2.32.10 port for the SDL2 proof.
 
+The `sdl2-capabilities` target extends that proof with an SDL renderer using a
+1024 × 768 logical size, a PNG texture, OTF text, filled rectangles, alpha
+blending, resize/focus/keyboard event handling, and OGG/WAV playback initiated
+by a key press. It packages `assets/` into the Emscripten virtual filesystem.
+Build and serve it with:
+
+```sh
+cmake --build build/web-spike --target sdl2-capabilities
+python3 -m http.server 8000 --directory build/web-spike
+```
+
+Open `http://localhost:8000/sdl2-capabilities.html`;
+`window.sdl2Capabilities` reports resource-load readiness, frame timing, and
+keyboard/focus/resize state. Press a key to unlock music and press E to play
+the WAV effect. The implementation uses SDL_Renderer logical sizing/drawing,
+SDL_image PNG (`SDL2_IMAGE_FORMATS=["png"]` is required), SDL_ttf with the
+SDK's FreeType/Harfbuzz ports, and SDL_mixer with its OGG, Vorbis, and WAV
+support. The pinned SDK successfully compiled and linked this target,
+retrieving SDL_image 2.6.0, SDL_ttf 2.20.2, SDL_mixer 2.8.0, FreeType,
+Harfbuzz, Ogg, and Vorbis ports. In Firefox 159 over HTTP, all four real game
+assets loaded and rendered; a keyboard action started OGG music and the WAV
+effect; browser blur/refocus paused and resumed its frame timer; gameplay
+arrow-key defaults were prevented; and resizing the browser resized the
+canvas to a 4:3 size and produced SDL resize events. The observed frame delta
+remained bounded at 100 ms. The generated HTML, JavaScript, WebAssembly, and
+preloaded asset data all returned HTTP 200. These lifecycle checks are still
+only the capability spike; the application loop and input have not yet been
+migrated.
+
 ### 2. Adapt the application lifecycle and window
 
 - [ ] Replace or wrap the `while` loop in `src/main.cpp` with the selected
@@ -83,7 +112,7 @@ game objects, scenes, resources, and events currently use SFML types directly.
 Make the migration in these slices, keeping the existing native SFML build
 working throughout:
 
-1. **Validate the SDL2 backend before changing game code.**
+1. **[x] Validate the SDL2 backend before changing game code.**
    - Extend the spike to test the rendering operations the game needs
      (textures, filled shapes, text, alpha blending, and a 1024 × 768 logical
      canvas), plus keyboard/focus/resize events.
@@ -133,14 +162,14 @@ working throughout:
 **Exit criteria:** title screen, gameplay, state changes, and pause/resume work
 in a browser without blocking the browser UI.
 
-**Current status:** phase blocked at implementation-plan step 1. The existing
-SDL2 spike proves only window/context creation and frame callbacks; it does
-not yet prove the game-required rendering, font, image, or audio capabilities.
-The application still requires SFML 3 and cannot configure with the pinned
-Emscripten toolchain. Do not mark this phase complete until all four
-checkpoints and the exit criteria pass. The native loop's long-frame clamp and
-focus-loss pause are useful safeguards, but do not satisfy the browser
-criteria.
+**Current status:** implementation-plan step 1 is complete: the SDL2 feature
+spike builds, serves, and passes its browser capability checks, and the native
+SFML build still succeeds. The game itself still requires SFML 3 and cannot
+configure with the pinned Emscripten toolchain. Continue with the backend
+boundary in step 2; do not mark this phase complete until all four
+implementation checkpoints and the exit criteria pass. The native loop's
+long-frame clamp and focus-loss pause are useful safeguards, but do not
+satisfy the browser criteria.
 
 ### 3. Make assets, audio, and browser-only behavior work
 

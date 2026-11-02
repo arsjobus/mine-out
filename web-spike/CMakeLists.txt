@@ -20,3 +20,26 @@ target_link_options(sdl2-spike PRIVATE
     "-sMAX_WEBGL_VERSION=2"
     "-sASSERTIONS=1"
 )
+
+add_executable(sdl2-capabilities sdl2-capabilities.cpp)
+set_target_properties(sdl2-capabilities PROPERTIES SUFFIX ".html")
+target_compile_options(sdl2-capabilities PRIVATE
+    "-sUSE_SDL=2"
+    "-sUSE_SDL_IMAGE=2"
+    "-sUSE_SDL_TTF=2"
+    "-sUSE_SDL_MIXER=2"
+)
+target_link_options(sdl2-capabilities PRIVATE
+    "-sENVIRONMENT=web"
+    "-sUSE_SDL=2"
+    "-sUSE_SDL_IMAGE=2"
+    "-sUSE_SDL_TTF=2"
+    "-sUSE_SDL_MIXER=2"
+    "-sSDL2_IMAGE_FORMATS=[\"png\"]"
+    "-sUSE_VORBIS=1"
+    "-sUSE_OGG=1"
+    "-sMIN_WEBGL_VERSION=2"
+    "-sMAX_WEBGL_VERSION=2"
+    "-sASSERTIONS=1"
+    "--preload-file=${CMAKE_CURRENT_SOURCE_DIR}/../assets@/assets"
+)
