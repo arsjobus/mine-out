@@ -77,7 +77,7 @@ adapter. Install and activate that SDK with `emsdk`, then source its
 ./scripts/build_web.sh
 ```
 
-This creates `mine-out-html5.zip` in the project root. Upload that ZIP to
+This creates `dist/mine-out-html5.zip`. Upload that ZIP to
 itch.io as an HTML game; it contains `index.html` and the required runtime
 files at the archive root. To try the browser build locally, serve
 `build/web/` over HTTP (not `file://`):

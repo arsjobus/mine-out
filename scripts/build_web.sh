@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 BUILD_DIR="${BUILD_DIR:-$ROOT_DIR/build/web}"
 PACKAGE_DIR="$BUILD_DIR/itchio"
-ZIP_PATH="${ZIP_PATH:-$ROOT_DIR/mine-out-webgl.zip}"
+ZIP_PATH="${ZIP_PATH:-$ROOT_DIR/dist/mine-out-webgl.zip}"
 
 if ! command -v emcmake >/dev/null 2>&1 || ! command -v emcc >/dev/null 2>&1; then
     echo "Emscripten 6.0.13 is required. Install/activate it with emsdk, then source emsdk_env.sh." >&2
@@ -31,6 +31,7 @@ cmake -E rm -rf "$PACKAGE_DIR"
 cmake -E make_directory "$PACKAGE_DIR"
 cp "$BUILD_DIR/game.html" "$PACKAGE_DIR/index.html"
 cp "$BUILD_DIR/game.js" "$BUILD_DIR/game.wasm" "$BUILD_DIR/game.data" "$PACKAGE_DIR/"
+mkdir -p "$(dirname "$ZIP_PATH")"
 cmake -E rm -f "$ZIP_PATH"
 python3 - "$ZIP_PATH" "$PACKAGE_DIR" <<'PY'
 import pathlib

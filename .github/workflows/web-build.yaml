@@ -26,7 +26,7 @@ jobs:
       - name: Upload itch.io package
         uses: actions/upload-artifact@v4
         with:
-          name: mine-out-html5
-          path: mine-out-html5.zip
+          name: mine-out-webgl
+          path: dist/mine-out-webgl.zip
           if-no-files-found: error
           retention-days: 14
