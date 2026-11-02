@@ -65,6 +65,7 @@ void setNextState(int newState) {
  */
 void changeState(Window& window) {
     if (nextState != GameState::State::STATE_NULL) {
+        currentState.reset();
         // Change the state
         switch (nextState) {
             case GameState::State::STATE_LOAD:
