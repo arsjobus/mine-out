@@ -25,7 +25,7 @@
 class Level0: public GameState
 {
 public:
-	virtual ~Level0(void) {};
+	virtual ~Level0(void) { if (music) music->stop(); }
 
 	void processEvents(Window &window);
 	void update(Window &window, sf::Time dt);
