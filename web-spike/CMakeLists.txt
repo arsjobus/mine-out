@@ -43,3 +43,26 @@ target_link_options(sdl2-capabilities PRIVATE
     "-sASSERTIONS=1"
     "--preload-file=${CMAKE_CURRENT_SOURCE_DIR}/../assets@/assets"
 )
+
+add_executable(title-screen title-screen.cpp)
+set_target_properties(title-screen PROPERTIES SUFFIX ".html")
+target_compile_options(title-screen PRIVATE
+    "-sUSE_SDL=2"
+    "-sUSE_SDL_IMAGE=2"
+    "-sUSE_SDL_TTF=2"
+    "-sUSE_SDL_MIXER=2"
+)
+target_link_options(title-screen PRIVATE
+    "-sENVIRONMENT=web"
+    "-sUSE_SDL=2"
+    "-sUSE_SDL_IMAGE=2"
+    "-sUSE_SDL_TTF=2"
+    "-sUSE_SDL_MIXER=2"
+    "-sSDL2_IMAGE_FORMATS=[\"png\"]"
+    "-sUSE_VORBIS=1"
+    "-sUSE_OGG=1"
+    "-sMIN_WEBGL_VERSION=2"
+    "-sMAX_WEBGL_VERSION=2"
+    "-sASSERTIONS=1"
+    "--preload-file=${CMAKE_CURRENT_SOURCE_DIR}/../assets@/assets"
+)
