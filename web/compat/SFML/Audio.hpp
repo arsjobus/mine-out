@@ -33,6 +33,13 @@ public:
 	void setLooping(bool value) { loops = value; }
 	void play() {
 		if (!buffer || !buffer->native()) return;
+		if (channel >= 0 && Mix_GetChunk(channel) == buffer->native()) {
+			if (Mix_Paused(channel)) {
+				Mix_Resume(channel);
+				return;
+			}
+			if (Mix_Playing(channel)) return;
+		}
 		channel = Mix_PlayChannel(-1, buffer->native(), loops ? -1 : 0);
 	}
 	void pause() { if (channel >= 0) Mix_Pause(channel); }

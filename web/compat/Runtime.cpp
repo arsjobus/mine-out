@@ -13,6 +13,8 @@
 
 namespace {
 
+bool audioUnlockedByInput = false;
+
 sf::Keyboard::Key mapKey(SDL_Keycode key) {
 	switch (key) {
 		case SDLK_SPACE: return sf::Keyboard::Key::Space;
@@ -153,8 +155,11 @@ std::optional<Event> RenderWindow::pollEvent() {
 				}
 				break;
 			case SDL_KEYDOWN:
-				Mix_ResumeMusic();
-				Mix_Resume(-1);
+				if (!audioUnlockedByInput) {
+					Mix_ResumeMusic();
+					Mix_Resume(-1);
+					audioUnlockedByInput = true;
+				}
 				event.type = Event::Type::KeyPressed;
 				event.keyPressed = {mapKey(source.key.keysym.sym), mapScancode(source.key.keysym.scancode)};
 				return event;
