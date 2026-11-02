@@ -20,6 +20,21 @@ void Level0::processEvents(Window &window) {
         // Handle window close
         if (event->is<sf::Event::Closed>())
         	setNextState(GameState::State::STATE_EXIT);
+        else if (event->is<sf::Event::FocusLost>()) {
+			player->setXVelocity(0.f);
+			if (!isPaused) {
+				pausedByFocus = true;
+				isPaused = true;
+				music->pause();
+			}
+		}
+		else if (event->is<sf::Event::FocusGained>()) {
+			if (pausedByFocus) {
+				isPaused = false;
+				pausedByFocus = false;
+				music->play();
+			}
+		}
         // Handle key press
         else if (const auto* keyEvent = event->getIf<sf::Event::KeyPressed>()) {
             auto key = keyEvent->scancode;
@@ -243,6 +258,7 @@ void Level0::loadDefaultSettings() {
 	setDefaultDataDirectoryName("assets/data"); // Set default data directory name
 	setLevelMargin(10.f); // Set the level margin to 10px
 	isPaused = false;
+	pausedByFocus = false;
 }
 
 void Level0::loadPanelL(int newWidth, int newHeight) {

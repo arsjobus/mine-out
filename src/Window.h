@@ -21,6 +21,7 @@ public:
 	~Window(void);
 
 	bool getFullScreen();
+	bool hasFocus() const;
 	sf::String &getDefaultWindowTitle();
 	sf::Vector2u &getScreenResolution();
 	bool handleScreenshotHotkey(const sf::Event& event);
@@ -35,6 +36,7 @@ private:
 	Log log;
 	bool bFullScreen;
 	bool screenshotKeyHeld;
+	bool focused;
 
 private:
 	sf::Vector2u uMinimumScreenResolution;

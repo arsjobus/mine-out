@@ -79,6 +79,15 @@ retrieved and built its SDL2 2.32.10 port for the SDL2 proof.
 **Exit criteria:** title screen, gameplay, state changes, and pause/resume work
 in a browser without blocking the browser UI.
 
+**Current blocker:** the game still derives `Window` from SFML's
+`sf::RenderWindow`, and all scenes render through SFML. The pinned Emscripten
+toolchain cannot configure the application because SFML 3 is unavailable for
+that target; the SDL2 spike is not an application backend. Migrate the
+window/rendering interface to SDL2 before marking this phase complete or
+adding browser-only lifecycle and input behavior. The native loop now clamps
+long frames and pauses gameplay on focus loss; those safeguards do not satisfy
+the browser exit criteria.
+
 ### 3. Make assets, audio, and browser-only behavior work
 
 - [ ] Package `assets/` into the browser virtual filesystem (or use the

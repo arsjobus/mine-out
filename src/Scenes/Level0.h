@@ -87,6 +87,7 @@ protected:
 	std::unique_ptr<Paddle> player;
 	std::vector<std::shared_ptr<Block>> blocks;
 	bool isPaused;
+	bool pausedByFocus;
 	int defaultBallSpeed;
 	std::string defaultDataDirectoryName;
 	int defaultPaddleSpeed;

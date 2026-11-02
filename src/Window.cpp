@@ -5,6 +5,7 @@
 Window::Window(void) {
 	bFullScreen = false;
 	screenshotKeyHeld = false;
+	focused = true;
 	// The minimum possible screen resolution
 	uMinimumScreenResolution.x = 600;
 	uMinimumScreenResolution.y = 400;
@@ -24,11 +25,19 @@ std::optional<sf::Event> Window::pollEvent() {
 		if (const auto* resized = eventOpt->getIf<sf::Event::Resized>()) {
 			updateLetterboxView(resized->size.x, resized->size.y);
 		}
+		if (eventOpt->is<sf::Event::FocusLost>()) {
+			focused = false;
+		} else if (eventOpt->is<sf::Event::FocusGained>()) {
+			focused = true;
+		}
 	}
 	return eventOpt;
 }
 
 void Window::updateLetterboxView(unsigned int windowWidth, unsigned int windowHeight) {
+	if (windowWidth == 0 || windowHeight == 0) {
+		return;
+	}
 	const float targetRatio = static_cast<float>(uScreenResolution.x) / static_cast<float>(uScreenResolution.y);
 	const float windowRatio = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
 
@@ -46,6 +55,7 @@ void Window::updateLetterboxView(unsigned int windowWidth, unsigned int windowHe
 }
 
 bool Window::getFullScreen() { return bFullScreen; }
+bool Window::hasFocus() const { return focused; }
 sf::Vector2u &Window::getScreenResolution() { return uScreenResolution; }
 sf::String &Window::getDefaultWindowTitle() { return defaultWindowTitle; }
 

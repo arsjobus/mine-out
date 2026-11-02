@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include "Config.h"
@@ -125,6 +126,11 @@ int main() {
 
     while (stateID != GameState::State::STATE_EXIT) {
         sf::Time dt = deltaClock.restart();
+		if (!window.hasFocus()) {
+			dt = sf::Time::Zero;
+		} else {
+			dt = std::min(dt, sf::seconds(0.1f));
+		}
         // Game logic
         currentState->processEvents(window);
         currentState->update(window, dt);
