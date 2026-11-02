@@ -7,36 +7,63 @@ the existing C++ game and assets reused where practical. The game uses a fixed
 1024 × 768 (4:3) play area; the browser canvas should scale to fit while
 preserving that aspect ratio.
 
-This is a plan, not a claim that the current native build already supports the
-web. The repository currently builds against native SFML 3 and has no
-Emscripten target or browser deployment workflow.
+This roadmap tracks the browser port; the native build remains unchanged.
 
 ## Recommended approach
 
-Use Emscripten to compile to WebAssembly and render through WebGL. First verify
-whether the selected, pinned SFML 3 release can build and run with Emscripten,
-including its window, graphics, and audio backends. Do not assume native SFML
-3 or the existing CMake configuration is browser-compatible.
-
-If that compatibility spike fails, choose an explicit fallback before porting
-gameplay: either a maintained Emscripten-compatible SFML port, or a small
-platform/render/audio layer backed by SDL2/WebGL while retaining the existing
-gameplay code where feasible. Record the decision and any trade-offs here.
-Avoid a renderer rewrite until the spike demonstrates it is necessary.
+Use Emscripten to compile to WebAssembly and render through WebGL. The
+compatibility spike found that the pinned SFML 3 release does not support
+Emscripten. The selected fallback is Emscripten's SDL2 port with WebGL; add a
+small platform/render/audio adapter and retain gameplay logic where feasible.
+Do not assume the existing SFML code can be recompiled unchanged, and avoid a
+renderer rewrite until the port demonstrates it is necessary.
 
 ## Phases
 
 ### 1. Prove the toolchain and graphics backend
 
-- [ ] Pin an Emscripten SDK version and identify a compatible SFML 3 (or
+- [x] Pin an Emscripten SDK version and identify a compatible SFML 3 (or
   fallback backend) version.
-- [ ] Build a minimal browser target that opens a canvas, clears it using
+- [x] Build a minimal browser target that opens a canvas, clears it using
   WebGL, and runs its frame callback without a blocking native loop.
-- [ ] Confirm the target runs locally in a browser and that its generated
+- [x] Confirm the target runs locally in a browser and that its generated
   `.wasm`, JavaScript, and asset files can be served over HTTP.
-- [ ] Decide and document the backend based on this test before proceeding.
+- [x] Decide and document the backend based on this test before proceeding.
 
 **Exit criteria:** a reproducible minimal browser build and a backend decision.
+
+**Decision record (2026-11-02):** Pin Emscripten SDK 6.0.13 and SFML 3.0.2
+for the compatibility result. Configuring SFML 3.0.2 with Emscripten fails
+in its platform detection with “Unsupported operating system or environment”;
+its CMake platform list does not include Emscripten. Use the SDL2 2.32.10 port
+bundled with the pinned Emscripten SDK as the fallback, with WebGL rendering
+and an adapter for platform, rendering, and audio APIs. Gameplay migration
+still needs to verify which existing logic can be retained.
+
+The standalone proof targets are in `web-spike/`. Install and activate the
+pinned SDK from an emsdk checkout:
+
+```sh
+./emsdk install 6.0.13
+./emsdk activate 6.0.13
+source ./emsdk_env.sh
+```
+
+Then, from the project root:
+
+```sh
+emcmake cmake -S web-spike -B build/web-spike
+cmake --build build/web-spike
+python3 -m http.server 8000 --directory build/web-spike
+```
+
+Open `http://localhost:8000/webgl-spike.html` or
+`http://localhost:8000/sdl2-spike.html` in a browser. The first target creates
+a WebGL 2 context directly; the second creates an SDL2 window and WebGL 2
+context. Both clear the canvas on Emscripten's non-blocking browser main loop.
+Verified over HTTP in Firefox: the HTML and `.wasm` return 200, WebGL 2
+initializes, and both frame callbacks run repeatedly. Emscripten 6.0.13
+retrieved and built its SDL2 2.32.10 port for the SDL2 proof.
 
 ### 2. Adapt the application lifecycle and window
 
