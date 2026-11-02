@@ -1,4 +1,4 @@
-#include "log.h"
+#include "Log.h"
 
 std::string Log::filename = "log.txt";
 
@@ -10,15 +10,21 @@ Log::Log(void) {
 	setSeparator(": ");
 	setFilename("log.txt");
 	// Clear log
+#ifndef __EMSCRIPTEN__
 	clear();
+#endif
 }
 
 Log::~Log(void) { logfileWriteable.close(); }
 
 void Log::clear() {
+#ifdef __EMSCRIPTEN__
+	return;
+#else
 	// Clear the contents of the log file
 	logfileWriteable.open(filename, std::ofstream::out | std::ofstream::trunc);
 	logfileWriteable.close();
+#endif
 }
 
 bool Log::eventIsAllowedToConsoleOutput(int logtype) {
@@ -118,6 +124,9 @@ const char *Log::outputLogType(int logtype) {
 
 void Log::quickWrite(const char* textToWrite) {
 	if (!enabled) return;
+#ifdef __EMSCRIPTEN__
+	if (eventIsAllowedToConsoleOutput(logtype::LOG_INFO)) std::cout << outputLogType(logtype::LOG_INFO) << textToWrite << std::endl;
+#else
 	if (eventIsAllowedToLog(logtype::LOG_INFO) || eventIsAllowedToConsoleOutput(logtype::LOG_INFO)) {
 		open();
 		if (exists()) {
@@ -126,10 +135,14 @@ void Log::quickWrite(const char* textToWrite) {
 		}
 		else throw "failed to write to log file.";
 	}
+#endif
 }
 
 void Log::quickWrite(std::string textToWrite) {
 	if (!enabled) return;
+#ifdef __EMSCRIPTEN__
+	if (eventIsAllowedToConsoleOutput(logtype::LOG_INFO)) std::cout << outputLogType(logtype::LOG_INFO) << textToWrite << std::endl;
+#else
 	if (eventIsAllowedToLog(logtype::LOG_INFO) || eventIsAllowedToConsoleOutput(logtype::LOG_INFO)) {
 		open();
 		if (exists()) {
@@ -138,10 +151,14 @@ void Log::quickWrite(std::string textToWrite) {
 		}
 		else throw "failed to write to log file.";
 	}
+#endif
 }
 
 void Log::quickWrite(int logtype, const char* textToWrite) {
 	if (!enabled) return;
+#ifdef __EMSCRIPTEN__
+	if (eventIsAllowedToConsoleOutput(logtype)) std::cout << outputLogType(logtype) << textToWrite << std::endl;
+#else
 	if (eventIsAllowedToLog(logtype) || eventIsAllowedToConsoleOutput(logtype)) {
 		open();
 		if (exists()) {
@@ -150,10 +167,14 @@ void Log::quickWrite(int logtype, const char* textToWrite) {
 		}
 		else throw "failed to write to log file.";
 	}
+#endif
 }
 
 void Log::quickWrite(int logtype, const std::string &textToWrite) {
 	if (!enabled) return;
+#ifdef __EMSCRIPTEN__
+	if (eventIsAllowedToConsoleOutput(logtype)) std::cout << outputLogType(logtype) << textToWrite << std::endl;
+#else
 	if (eventIsAllowedToLog(logtype) || eventIsAllowedToConsoleOutput(logtype)) {
 		open();
 		if (exists()) {
@@ -162,6 +183,7 @@ void Log::quickWrite(int logtype, const std::string &textToWrite) {
 		}
 		else throw "failed to write to log file.";
 	}
+#endif
 }
 
 void Log::setFilename(const char* newFilename) {

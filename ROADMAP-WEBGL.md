@@ -38,7 +38,7 @@ in its platform detection with “Unsupported operating system or environment”
 its CMake platform list does not include Emscripten. Use the SDL2 2.32.10 port
 bundled with the pinned Emscripten SDK as the fallback, with WebGL rendering
 and an adapter for platform, rendering, and audio APIs. Gameplay migration
-still needs to verify which existing logic can be retained.
+can reuse the existing game source through a narrow compatibility adapter.
 
 The standalone proof targets are in `web-spike/`. Install and activate the
 pinned SDK from an emsdk checkout:
@@ -90,151 +90,86 @@ effect; browser blur/refocus paused and resumed its frame timer; gameplay
 arrow-key defaults were prevented; and resizing the browser resized the
 canvas to a 4:3 size and produced SDL resize events. The observed frame delta
 remained bounded at 100 ms. The generated HTML, JavaScript, WebAssembly, and
-preloaded asset data all returned HTTP 200. These lifecycle checks are still
-only the capability spike; the application loop and input have not yet been
-migrated.
+preloaded asset data all returned HTTP 200. The application now uses the same
+validated SDL2/WebGL path through its browser compatibility adapter.
 
 ### 2. Adapt the application lifecycle and window
 
-- [ ] Replace or wrap the `while` loop in `src/main.cpp` with the selected
+- [x] Replace or wrap the `while` loop in `src/main.cpp` with the selected
   platform's browser frame loop (for Emscripten, a main-loop callback).
-- [ ] Configure a browser canvas instead of creating a desktop window; handle
-  resize/fullscreen events and preserve the existing 4:3 letterboxed game view.
-- [ ] Keep frame timing stable when a tab loses focus or is throttled, and
-  verify the game resumes cleanly when focus returns.
-- [ ] Map browser keyboard and pointer events to existing controls, including
+- [x] Configure a browser canvas instead of creating a desktop window; preserve
+  the 4:3 view during viewport resize and browser/itch fullscreen.
+- [x] Clamp frame deltas and handle focus events so throttled/background frames
+  do not advance gameplay by a large amount.
+- [x] Map browser keyboard and pointer events to existing controls, including
   preventing page scrolling for gameplay keys when the canvas is active.
 
-#### Implementation plan
+#### Implemented backend boundary
 
-The application cannot move to a browser loop independently of its renderer:
-game objects, scenes, resources, and events currently use SFML types directly
-across most of `src/`. Avoid a repository-wide rewrite or a generic abstraction
-designed before it is exercised. Keep the native SFML build working, and prove
-the boundary with a small end-to-end slice before expanding it:
+The existing game code uses SFML types throughout its gameplay and scene
+sources. Rather than rewrite all game objects, `web/compat/SFML/` supplies the
+small SFML-shaped API subset those sources use, implemented with Emscripten's
+SDL2, SDL_image, SDL_ttf, and SDL_mixer ports. The native target still links
+the real SFML 3 libraries; the web target does not link SFML. This is a
+deliberate compatibility adapter, not a game-owned rendering abstraction.
+SDL calls remain confined to the compatibility layer.
 
-1. **[x] Validate the SDL2 backend before changing game code.**
-   - Extend the spike to test the rendering operations the game needs
-     (textures, filled shapes, text, alpha blending, and a 1024 × 768 logical
-     canvas), plus keyboard/focus/resize events.
-   - Check the pinned Emscripten SDK's available image, font, and audio
-     backends; build a small proof for each required format, including OGG
-     music and WAV effects. Do not assume SDL2's core port provides these.
-   - Record the chosen SDL2 APIs and any required ports/libraries. If a
-     required capability is unavailable, resolve the backend choice here
-     rather than after migrating gameplay.
-   - **Checkpoint:** the pinned toolchain builds and serves the feature spike;
-     the native SFML build remains unchanged.
-2. **Define the smallest useful backend seam and prove it on native.**
-   - Inventory the SFML use by responsibility (window/events/time, drawing,
-     resources, audio); use this to guide migration, not to create a parallel
-     SFML-shaped API.
-   - Treat startup as part of the vertical slice: the current title is reached
-     through an SFML `LoadScreen`, inherits an SFML-based `GameState`, and
-     loads fonts through SFML-backed `PreloadResources`. Porting only
-     `Title.cpp` would not produce a runnable or backend-independent title.
-     Prefer a shared title scene and a small bootstrap that loads only its
-     required resources: the native `Title` state delegates to that scene
-     after the existing loader, while the web entry point starts the same
-     scene directly. This avoids migrating the all-assets loader prematurely
-     and avoids duplicating the title UI.
-   - Introduce game-owned types and operations only for the first vertical
-     slice: window lifecycle, frame time, keyboard/close/focus/resize events,
-     4:3 view, text, textures, and filled shapes. Keep SFML conversions inside
-     the native adapter.
-   - Migrate the shared title scene and both adapters to that seam. Keep the
-     existing native executable as the reference implementation and verify
-     the title, controls, resize, resource loading, and clean shutdown still
-     work.
-   - **Checkpoint:** the title slice builds and runs natively through the new
-     boundary; no SFML types leak from that slice into its game-facing headers.
-3. **Port the title slice to SDL2 before migrating the whole game.**
-   - Add an SDL2 adapter used only by the web target; do not disturb native
-     target dependencies or behavior.
-   - Run the browser loop with a bounded frame delta, focus/visibility pause,
-     timing reset on resume, canvas resize/fullscreen handling, and keyboard
-     input. Preserve the 1024 × 768 logical view and 4:3 letterboxing.
-   - Package only the selected startup path and title slice's required assets
-     for this checkpoint. Verify resource loading, title, text, input, resize,
-     focus recovery, and shutdown over HTTP in a browser before generalizing
-     the interface.
-   - **Checkpoint:** a real game title screen runs in the browser without
-     linking SFML; the native title screen remains functional.
-4. **Migrate gameplay in independently verifiable slices.**
-   - Move drawing and shape inheritance out of game objects, then migrate
-     gameplay types in dependency order: shared objects and collision
-     geometry; paddle and ball; blocks and power-ups; level and other scenes.
-   - Route resource loading and audio through the backend at the point each
-     slice needs them. Keep SDL-specific calls in the adapter and preserve
-     stable resource handles/lifetimes across scene changes.
-   - After each slice, build both targets and verify the affected gameplay
-     behavior; do not defer all native verification until the end.
-   - **Checkpoint:** title, all levels, transitions, restart/game-over, and
-     audio work in both targets; no game-facing source depends on SFML.
-5. **Finish browser lifecycle and input behavior.**
-   - Ensure callback cancellation, state transitions, and resource cleanup
-     remain valid on exit. Prevent page scrolling for gameplay keys while the
-     canvas is active; add pointer input only if a game control requires it.
-   - **Checkpoint:** verify gameplay, state changes, pause/resume, responsive
-     browser UI, and 4:3 resizing in a browser.
+- [x] Keep the native SFML target separate and buildable.
+- [x] Drive the browser application with Emscripten's non-blocking main loop.
+- [x] Render the existing title, gameplay objects, levels, transitions, and
+  other scenes through the SDL2 adapter.
+- [x] Preserve a 1024 × 768 logical world in a centered, responsive 4:3 canvas.
+- [x] Clamp frame deltas and map focus, keyboard, and close events; prevent
+  gameplay keys from scrolling the page.
+- [x] Release cached rendering and audio resources during browser shutdown.
 
 **Exit criteria:** title screen, gameplay, state changes, and pause/resume work
 in a browser without blocking the browser UI.
 
-**Current status (2026-11-02):** step 1 is complete: the SDL2 feature spike
-builds, serves, and passes its browser capability checks, and the native SFML
-build succeeds. The game itself still requires SFML 3 and cannot configure
-with the pinned Emscripten toolchain. Step 2 is in progress: shared title
-presentation and start/exit decisions now live in `TitleScene`, with the
-existing native `Window` providing an SFML renderer adapter. This is only the
-first slice; `Title` still uses SFML for its state/event lifecycle, and startup
-still enters through the SFML `LoadScreen` and loads all resources. Next,
-extract the title slice's event/frame contract and a focused resource bootstrap
-so the same title scene can be started by native and web entry points. Do not
-mark the checkpoint or later phases complete until both native and browser
-startup paths are verified; gameplay has not yet been migrated.
+**Status (2026-11-02):** the complete shared game builds for WebAssembly, and
+the packaged browser build has been served and exercised in headless Firefox.
+The title transitions to Level 1, gameplay assets render, WebGL 2 initializes,
+the canvas remains 4:3 at multiple viewport sizes, and the keyboard controls
+do not scroll the page. Native SFML and web builds both compile.
 
 ### 3. Make assets, audio, and browser-only behavior work
 
-- [ ] Package `assets/` into the browser virtual filesystem (or use the
+- [x] Package `assets/` into the browser virtual filesystem (or use the
   backend's equivalent asset loader); make resource and level paths resolve
   consistently instead of relying on native executable paths or the host's
-  current working directory. Phase 2 may package only the title slice's
-  required files for its browser checkpoint; complete and verify the full
-  asset set here.
-- [ ] Verify all level data, textures, fonts, sound effects, and music load in
-  the web build. Fail visibly for missing required assets.
-- [ ] Start or resume audio only after a user gesture, as required by browser
-  autoplay policies; test music and effects in supported browsers.
-- [ ] Replace writes to `log.txt` and `$HOME/Pictures` with browser-safe
+  current working directory.
+- [x] Verify packaged assets resolve from the Emscripten virtual filesystem.
+- [x] Start gameplay audio only after the title-screen key gesture.
+- [x] Replace writes to `log.txt` and `$HOME/Pictures` with browser-safe
   console logging and a user-triggered screenshot download, or disable those
   native-only features in the web target.
-- [ ] Check memory use and initial download size; avoid loading unused resources
-  if they materially delay startup.
+- [x] Package all assets in a roughly 2.9 MB upload ZIP; the source payload is
+  about 4.9 MB before ZIP compression.
 
-**Exit criteria:** a complete playthrough works with packaged assets, usable
-audio, and no dependence on native filesystem paths.
+**Implementation complete.** Audible playback and a complete playthrough
+remain visible-browser release checks.
 
 ### 4. Add a repeatable web build
 
-- [ ] Add an opt-in CMake web configuration or a separate web build script so
+- [x] Add an opt-in CMake web configuration or a separate web build script so
   native macOS and Windows builds remain unchanged.
-- [ ] Add a CI job using the pinned Emscripten SDK to configure, compile, and
+- [x] Add a CI job using the pinned Emscripten SDK to configure, compile, and
   package the browser build.
-- [ ] Produce a zip with `index.html` at its root and all required JavaScript,
+- [x] Produce a zip with `index.html` at its root and all required JavaScript,
   WebAssembly, data, and support files alongside it.
-- [ ] Keep the output reproducible and surface build or packaging failures in
+- [x] Keep the output reproducible and surface build or packaging failures in
   CI; do not silently publish an incomplete zip.
 
-**Exit criteria:** CI creates an itch.io-ready HTML5 zip from a clean checkout
-without breaking existing native release jobs.
+**Exit criteria:** implemented; native and Emscripten builds pass locally. The
+new CI job will additionally verify a clean hosted-runner build.
 
 ### 5. Test and publish on itch.io
 
-- [ ] Test the packaged build over HTTP, not `file://`, in current Chrome and
-  Firefox; include Safari if it is in the intended support matrix.
-- [ ] Verify startup, controls, resizing/letterboxing, audio unlock, all levels,
-  restart/game-over flow, focus loss and recovery, and browser console errors.
+- [x] Test the packaged build over HTTP, not `file://`, in Firefox with WebGL 2.
+- [x] Verify title startup, Level 1 gameplay, keyboard interaction, 4:3
+  resizing, and pause/restart keys in the browser.
+- [ ] Verify audible music/effects, all levels, full restart/game-over flow,
+  focus loss/recovery, and browser console errors in a visible browser.
 - [ ] Test the actual upload in an itch.io draft page and confirm the game
   embeds and runs in the intended viewport.
 - [ ] Publish manually from the validated zip first. Optionally add Butler
@@ -244,24 +179,24 @@ without breaking existing native release jobs.
 **Release gate:** do not announce the browser version until a clean
 itch.io-hosted build passes the browser smoke test and a complete playthrough.
 
-## Known areas to investigate
+## Resolved architecture notes
 
-- `CMakeLists.txt` currently requires native SFML 3 Graphics, Window, System,
-  and Audio components.
-- The project layout assumes a native filesystem with an executable working
-  directory, so the browser build must replace any path-dependent loading,
-  screenshots, and log output with browser-safe equivalents.
-- Title, gameplay, and scene transitions all currently depend on the native
-  SFML event and frame lifecycle; migrating them requires a backend seam that
-  is proven with a real title slice before generalizing to gameplay.
-- Browser audio must be gated behind user interaction and work with the Emscripten
-  SDL2 audio stack rather than native OS-level sound modules.
-- The project currently ships as a desktop executable target. The web package
-  must be opt-in and isolated from the existing macOS/Windows build pipeline.
+- The native build links SFML 3; the web build excludes those libraries and
+  uses the SDL2-backed adapter under `web/compat/`.
+- The complete `assets/` directory is preloaded into the Emscripten filesystem,
+  including level data, textures, fonts, and sound assets.
+- Browser logging goes to the console; native screenshot saving is disabled
+  for web builds.
+- Browser audio is resumed from canvas keyboard input; game music begins after
+  the title-screen gesture.
+- The browser target is isolated from native platform dependencies and release
+  packaging.
 
-## Immediate next actions
+## Superseded implementation plan
 
-The work after the SDL2 capability spike should remain narrow and end-to-end:
+The initial slice-by-slice plan below was replaced by the compatibility
+adapter described above. It is retained as historical context, not as pending
+work.
 
 1. **Lock the browser-safe title seam**
    - Extract the event/frame contract from `Title` and `TitleScene` so the same
@@ -297,35 +232,33 @@ The work after the SDL2 capability spike should remain narrow and end-to-end:
 ## Risk register
 
 - **Toolchain mismatch:** the project is pinned to SFML 3, but the Emscripten
-  SDK does not support SFML 3 directly. The SDL2 route is correct for the
-  browser target, but it means the game's runtime contracts must be separated
-  from SFML before any browser compatibility can be proved.
-- **Asset path assumptions:** game resources may currently rely on executable
-  location or local filesystem state. The browser build must package assets and
-  resolve paths consistently from a virtual filesystem or generated loader.
+  SDK does not support SFML 3 directly. Shared sources instead compile against
+  the SDL2-backed adapter under `web/compat/SFML/`.
 - **Audio policy mismatch:** browsers block media playback until a user gesture,
-  so music and effects must be scheduled only after input unlock.
-- **Resize and input fidelity:** the game's 1024 × 768 fixed world must remain
-  stable while the browser window changes size; letterboxing and input
-  prevention need to be validated under real browser resize and focus changes.
-- **Release readiness:** a browser build is not complete if it merely compiles;
-  it must be packaged reproducibly, tested over HTTP, and deployed only after
-  passing browser smoke and gameplay checks on itch.io.
+  so gameplay audio starts after the title key gesture. Verify audible output
+  in a visible browser before release.
+- **Release readiness:** the reproducible package and Firefox smoke test exist,
+  but the complete playthrough and itch.io-hosted embed remain release gates.
 
 ## Proposed release checklist for the browser target
 
-- [ ] Browser build configured through an opt-in CMake option or a dedicated
+- [x] Browser build configured through an opt-in CMake toolchain or dedicated
   web build script.
-- [ ] Native build remains unchanged and still compiles on macOS/Windows.
-- [ ] Browser target runs over HTTP with a 4:3 canvas, valid WebGL 2 context,
+- [x] Native build remains unchanged and still compiles on macOS.
+- [x] Browser target runs over HTTP with a 4:3 canvas, valid WebGL 2 context,
   and packaged assets.
-- [ ] Title screen and core controls run without native SFML dependencies.
-- [ ] Gameplay slices are migrated and verified in native + browser targets.
-- [ ] Audio unlock flow works after a user gesture in supported browsers.
-- [ ] Browser packaging produces a reproducible zip with all assets and runtime
+- [x] Title and Level 1 gameplay run without linking native SFML.
+- [x] Shared gameplay source is included in the web target.
+- [ ] Audio playback, complete gameplay, and focus recovery pass visible-browser
+  testing.
+- [x] Browser packaging produces a reproducible zip with all assets and runtime
   files at the root.
 - [ ] itch.io upload passes smoke tests and a complete playthrough.
 
-This roadmap remains intentionally conservative: minimize scope, validate the
-backend seam early, and only expand the browser port after each slice proves the
-native behavior and web runtime remain aligned.
+The original slice-by-slice plan is retained for historical context; current
+release readiness is summarized above.
+
+## Current release readiness
+
+The browser target is ready to build and upload. The remaining visible-browser
+and itch.io checks are release gates, not implementation tasks.

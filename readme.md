@@ -67,6 +67,27 @@ Before building, you need to install the following dependencies via Homebrew ([h
 
 ---
 
+## Browser / itch.io Build
+
+The browser version uses the pinned Emscripten 6.0.13 SDK and SDL2/WebGL
+adapter. Install and activate that SDK with `emsdk`, then source its
+`emsdk_env.sh`. Build and package the game with:
+
+```sh
+./scripts/build_web.sh
+```
+
+This creates `mine-out-html5.zip` in the project root. Upload that ZIP to
+itch.io as an HTML game; it contains `index.html` and the required runtime
+files at the archive root. To try the browser build locally, serve
+`build/web/` over HTTP (not `file://`):
+
+```sh
+python3 -m http.server 8000 --directory build/web
+```
+
+Then open `http://localhost:8000/game.html`.
+
 ## Notes
 
 * The executable dynamically links to SFML and its dependencies installed via Homebrew.

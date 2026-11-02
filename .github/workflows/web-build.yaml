@@ -1,0 +1,32 @@
+name: Build Browser Game
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-web:
+    name: Emscripten HTML5 build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 6.0.13
+
+      - name: Build and package itch.io game
+        run: ./scripts/build_web.sh
+
+      - name: Upload itch.io package
+        uses: actions/upload-artifact@v4
+        with:
+          name: mine-out-html5
+          path: mine-out-html5.zip
+          if-no-files-found: error
+          retention-days: 14

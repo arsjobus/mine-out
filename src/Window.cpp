@@ -98,6 +98,10 @@ sf::Vector2u &Window::getScreenResolution() { return uScreenResolution; }
 sf::String &Window::getDefaultWindowTitle() { return defaultWindowTitle; }
 
 bool Window::handleScreenshotHotkey(const sf::Event& event) {
+#ifdef __EMSCRIPTEN__
+	(void)event;
+	return false;
+#else
 	if (event.is<sf::Event::KeyPressed>()) {
 		const auto* keyEvent = event.getIf<sf::Event::KeyPressed>();
 		if (!keyEvent) {
@@ -156,9 +160,14 @@ bool Window::handleScreenshotHotkey(const sf::Event& event) {
 	}
 
 	return false;
+#endif
 }
 
 void Window::saveScreenshot(const std::string& prefix) {
+#ifdef __EMSCRIPTEN__
+	(void)prefix;
+	std::cout << "Screenshot saving is not available in the browser build." << std::endl;
+#else
 	const auto now = std::chrono::system_clock::now();
 	const auto time = std::chrono::system_clock::to_time_t(now);
 	std::tm localTime{};
@@ -193,6 +202,7 @@ void Window::saveScreenshot(const std::string& prefix) {
 	}
 
 	std::cout << "Saved screenshot to " << outputPath << std::endl;
+#endif
 }
 
 /**

@@ -14,6 +14,10 @@
 #include "Log.h"
 #include "Window.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 using namespace std;
 
 // Game state object
@@ -22,6 +26,32 @@ std::unique_ptr<GameState> currentState;
 // State variables
 int stateID = GameState::State::STATE_NULL;
 int nextState = GameState::State::STATE_NULL;
+
+#ifdef __EMSCRIPTEN__
+namespace {
+std::unique_ptr<Window> browserWindow;
+sf::Clock browserDeltaClock;
+
+void browserFrame() {
+    if (stateID == GameState::State::STATE_EXIT) {
+        currentState.reset();
+        PreloadResources::unloadResources();
+        browserWindow->close();
+        emscripten_cancel_main_loop();
+        return;
+    }
+
+    sf::Time dt = browserDeltaClock.restart();
+    if (!browserWindow->hasFocus()) dt = sf::Time::Zero;
+    else dt = std::min(dt, sf::seconds(0.1f));
+
+    currentState->processEvents(*browserWindow);
+    currentState->update(*browserWindow, dt);
+    changeState(*browserWindow);
+    currentState->render(*browserWindow, dt);
+}
+}
+#endif
 
 /**
  * Set the next state of the game.
@@ -88,12 +118,31 @@ void changeState(Window& window) {
 
         // Change the current state ID
         stateID = nextState;
+#ifdef __EMSCRIPTEN__
+        EM_ASM({ window.mineOutGameState = $0; }, stateID);
+#endif
         // NULL the next state ID
         nextState = GameState::State::STATE_NULL;
     }
 }
 
 int main() {
+#ifdef __EMSCRIPTEN__
+    sf::Clock randomTime;
+    std::srand(randomTime.restart().asMicroseconds());
+    Log log;
+    browserWindow = std::make_unique<Window>();
+    browserWindow->create(sf::VideoMode(sf::Vector2u(1024, 768)), browserWindow->getDefaultWindowTitle());
+    browserWindow->updateLetterboxView(1024, 768);
+    browserWindow->clear(sf::Color::Black);
+    browserWindow->display();
+    stateID = GameState::State::STATE_LOAD;
+    currentState = std::make_unique<LoadScreen>(*browserWindow);
+    log.quickWrite(LOG_INFO, "Entering browser game loop...");
+    browserDeltaClock.restart();
+    emscripten_set_main_loop(browserFrame, 0, 1);
+    return 0;
+#else
     sf::Clock randomTime;
     sf::Clock deltaClock;
     std::srand(randomTime.restart().asMicroseconds());
@@ -144,4 +193,5 @@ int main() {
     PreloadResources::unloadResources();
 
     return 0;
+#endif
 }
