@@ -76,17 +76,71 @@ retrieved and built its SDL2 2.32.10 port for the SDL2 proof.
 - [ ] Map browser keyboard and pointer events to existing controls, including
   preventing page scrolling for gameplay keys when the canvas is active.
 
+#### Implementation plan
+
+The application cannot move to a browser loop independently of its renderer:
+game objects, scenes, resources, and events currently use SFML types directly.
+Make the migration in these slices, keeping the existing native SFML build
+working throughout:
+
+1. **Validate the SDL2 backend before changing game code.**
+   - Extend the spike to test the rendering operations the game needs
+     (textures, filled shapes, text, alpha blending, and a 1024 × 768 logical
+     canvas), plus keyboard/focus/resize events.
+   - Check the pinned Emscripten SDK's available image, font, and audio
+     backends; build a small proof for each required format, including OGG
+     music and WAV effects. Do not assume SDL2's core port provides these.
+   - Record the chosen SDL2 APIs and any required ports/libraries. If a
+     required capability is unavailable, resolve the backend choice here
+     rather than after migrating gameplay.
+   - **Checkpoint:** the pinned toolchain builds and serves the feature spike;
+     the native SFML build remains unchanged.
+2. **Create a backend boundary.**
+   - Introduce game-facing window, event, time, drawing, resource, and audio
+     interfaces without SFML types in gameplay headers.
+   - Implement the current native behavior behind an SFML adapter first and
+     keep native window creation, controls, and rendering working.
+   - Replace SFML shape inheritance and direct `window.draw(...)` calls with
+     backend-neutral game objects/draw operations. Migrate resources and
+     audio through the same boundary instead of adding SDL calls throughout
+     gameplay.
+   - **Checkpoint:** the native game builds and its title, levels, transitions,
+     audio, and controls behave as before; gameplay code no longer depends
+     directly on SFML.
+3. **Implement and exercise the SDL2 backend.**
+   - Add an SDL2 implementation for the interfaces and enable it only for the
+     web target; leave the native SFML target and its dependencies intact.
+   - Render into a fixed 1024 × 768 logical view, scaling and letterboxing it
+     in the canvas on resize. Keep input coordinates consistent with that view.
+   - Run a browser title-screen slice first, then migrate and verify gameplay,
+     scene transitions, restart/game-over, and pause/resume.
+   - **Checkpoint:** a browser build starts and plays through the game using
+     the SDL2 backend, with no SFML dependency in the web target.
+4. **Move lifecycle and input onto the browser loop.**
+   - Replace the blocking web loop with Emscripten's main-loop callback while
+     retaining the native loop. Ensure state transitions and cleanup remain
+     valid when the callback is cancelled or the game exits.
+   - Use elapsed frame time with a bounded delta; do not advance gameplay
+     while the page is hidden or focus is lost, and reset timing on resume to
+     avoid a large catch-up step.
+   - Map keyboard events to the existing controls, prevent browser scrolling
+     for gameplay keys while the canvas is active, and handle focus changes.
+     Add pointer input only if an existing control requires it.
+   - **Checkpoint:** verify title, gameplay, state changes, and pause/resume in
+     a browser; resizing preserves the 4:3 view and browser UI remains
+     responsive.
+
 **Exit criteria:** title screen, gameplay, state changes, and pause/resume work
 in a browser without blocking the browser UI.
 
-**Current blocker:** the game still derives `Window` from SFML's
-`sf::RenderWindow`, and all scenes render through SFML. The pinned Emscripten
-toolchain cannot configure the application because SFML 3 is unavailable for
-that target; the SDL2 spike is not an application backend. Migrate the
-window/rendering interface to SDL2 before marking this phase complete or
-adding browser-only lifecycle and input behavior. The native loop now clamps
-long frames and pauses gameplay on focus loss; those safeguards do not satisfy
-the browser exit criteria.
+**Current status:** phase blocked at implementation-plan step 1. The existing
+SDL2 spike proves only window/context creation and frame callbacks; it does
+not yet prove the game-required rendering, font, image, or audio capabilities.
+The application still requires SFML 3 and cannot configure with the pinned
+Emscripten toolchain. Do not mark this phase complete until all four
+checkpoints and the exit criteria pass. The native loop's long-frame clamp and
+focus-loss pause are useful safeguards, but do not satisfy the browser
+criteria.
 
 ### 3. Make assets, audio, and browser-only behavior work
 
