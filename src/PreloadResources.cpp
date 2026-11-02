@@ -57,6 +57,33 @@ void PreloadResources::loadDefaultSettings() {
 // resolvePath and getExecutableBasePath as before
 
 std::string PreloadResources::resolvePath(const std::string &relativePath) {
+    std::string candidate = relativePath;
+
+    const char* assetRootOverride = std::getenv("MINE_OUT_ASSET_ROOT");
+    if (assetRootOverride != nullptr && assetRootOverride[0] != '\0') {
+        std::filesystem::path assetRoot(assetRootOverride);
+        std::filesystem::path desired = assetRoot / relativePath;
+        std::string normalized = desired.lexically_normal().string();
+        if (fs::exists(normalized)) {
+            return normalized;
+        }
+        if (!relativePath.empty() && relativePath.front() == '/') {
+            std::string stripped = relativePath.substr(1);
+            std::string candidateFromRoot = (assetRoot / stripped).lexically_normal().string();
+            if (fs::exists(candidateFromRoot)) {
+                return candidateFromRoot;
+            }
+        }
+    }
+
+#ifdef __EMSCRIPTEN__
+    if (!relativePath.empty() && relativePath.front() == '/') {
+        if (fs::exists(relativePath)) {
+            return relativePath;
+        }
+    }
+#endif
+
 #ifdef __APPLE__
     static std::string bundleRes;
     if (bundleRes.empty()) {
@@ -89,6 +116,19 @@ std::string PreloadResources::resolvePath(const std::string &relativePath) {
         std::string candidate2 = base + relativePath;
         if (fs::exists(candidate2)) {
             return candidate2;
+        }
+    }
+
+    if (!candidate.empty() && candidate.front() == '/') {
+        if (fs::exists(candidate)) {
+            return candidate;
+        }
+    }
+
+    if (!candidate.empty()) {
+        std::filesystem::path maybeRelative = candidate;
+        if (fs::exists(maybeRelative)) {
+            return maybeRelative.lexically_normal().string();
         }
     }
 
