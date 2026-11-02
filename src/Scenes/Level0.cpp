@@ -1,4 +1,5 @@
 #include "Level0.h"
+#include <cmath>
 
 size_t Level0::getBlocksPerRow() { return blocksPerRow; }
 void Level0::setBlocksPerRow(int blockCount) { blocksPerRow = blockCount; }
@@ -85,7 +86,7 @@ void Level0::update(Window &window, sf::Time dt) {
 	// :::: DETECT COLLISIONS ::::
 	// :::::::::::::::::::::::::::
 	if (
-		ball->getCanBounce() && detectCollisionBallAndBlock() ||
+		detectCollisionBallAndBlock() ||
 		ball->isCollisionDetected(panelL.get()) ||
 		ball->isCollisionDetected(player.get()) ||
 		ball->isCollisionDetected(panelR.get()) ||
@@ -176,14 +177,38 @@ void Level0::renderLivesRemaining(Window &window) {
 
 bool Level0::detectCollisionBallAndBlock() {
 	for (int i = 0; i < blocks.size(); ++i) {
-		if (blocks[i]->getActive() && ball->getCanBounce() && ball->getGlobalBounds().findIntersection( blocks[i]->getGlobalBounds() ) ) {
+		if (blocks[i]->getActive()) {
+			const sf::FloatRect ballBounds = ball->getGlobalBounds();
+			const sf::FloatRect blockBounds = blocks[i]->getGlobalBounds();
+			const auto intersection = ballBounds.findIntersection(blockBounds);
+			if (!intersection) continue;
+
 			blocks[i]->setHitPoints( blocks[i]->getHitPoints() - ball->getDamage() );
 			log.quickWrite(std::string( "Ball" + log.getSeparator() + "has dealt " + log.intToString(ball->getDamage()) + " points of damage to " + blocks[i]->getLabel() + "." ));
-			if (ball->getPosition().y > blocks[i]->getGlobalBounds().position.y + blocks[i]->getGlobalBounds().size.y ||
-				ball->getPosition().y < blocks[i]->getGlobalBounds().position.y) {
-				ball->setYVelocity( -ball->getVelocity().y );
-			} else
-				ball->setXVelocity( -ball->getVelocity().x );
+
+			sf::Vector2f position = ball->getPosition();
+			const sf::Vector2f blockCenter(
+				blockBounds.position.x + blockBounds.size.x / 2.f,
+				blockBounds.position.y + blockBounds.size.y / 2.f
+			);
+			if (intersection->size.x < intersection->size.y) {
+				if (position.x < blockCenter.x) {
+					position.x = blockBounds.position.x - ballBounds.size.x / 2.f;
+					ball->setXVelocity(-std::abs(ball->getVelocity().x));
+				} else {
+					position.x = blockBounds.position.x + blockBounds.size.x + ballBounds.size.x / 2.f;
+					ball->setXVelocity(std::abs(ball->getVelocity().x));
+				}
+			} else {
+				if (position.y < blockCenter.y) {
+					position.y = blockBounds.position.y - ballBounds.size.y / 2.f;
+					ball->setYVelocity(-std::abs(ball->getVelocity().y));
+				} else {
+					position.y = blockBounds.position.y + blockBounds.size.y + ballBounds.size.y / 2.f;
+					ball->setYVelocity(std::abs(ball->getVelocity().y));
+				}
+			}
+			ball->setPosition(position);
 			return true;
 		}
 	}
