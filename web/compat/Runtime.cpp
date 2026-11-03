@@ -94,6 +94,8 @@ void RenderWindow::create(VideoMode mode, const String& title) {
 		throw std::runtime_error(std::string("SDL_ttf initialization failed: ") + TTF_GetError());
 	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048) != 0)
 		throw std::runtime_error(std::string("SDL_mixer initialization failed: ") + Mix_GetError());
+	if (Mix_AllocateChannels(64) < 64)
+		throw std::runtime_error(std::string("SDL_mixer channel allocation failed: ") + Mix_GetError());
 
 	Texture::setRenderer(renderer);
 #ifdef __EMSCRIPTEN__
