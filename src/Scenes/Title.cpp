@@ -25,7 +25,9 @@ void Title::processEvents(Window &window) {
 			if (keyEvent->code == sf::Keyboard::Key::Space) {
 				key = TitleScene::Key::Space;
 			} else if (keyEvent->code == sf::Keyboard::Key::Escape) {
+#ifndef __EMSCRIPTEN__
 				key = TitleScene::Key::Escape;
+#endif
 			}
 			switch (titleScene.handleKey(key)) {
 				case TitleScene::Action::StartGame:
@@ -46,4 +48,3 @@ void Title::update(Window &window, sf::Time dt) { }
 void Title::render(Window &window, sf::Time dt) {
 	titleScene.render(window);
 }
-

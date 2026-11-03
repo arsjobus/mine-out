@@ -27,7 +27,9 @@ void GameOver::processEvents(Window &window) {
             if (keyEvent->code == sf::Keyboard::Key::Space) {
                 setNextState(STATE_TITLE);
             } else if (keyEvent->code == sf::Keyboard::Key::Escape) {
+#ifndef __EMSCRIPTEN__
                 setNextState(STATE_EXIT);
+#endif
             }
         }
     }

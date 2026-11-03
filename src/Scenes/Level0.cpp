@@ -57,7 +57,11 @@ void Level0::processEvents(Window &window) {
 				if (isPaused) music->pause();
 				else music->play();
 			}
-            else if (key == sf::Keyboard::Scancode::Escape) setNextState(GameState::State::STATE_EXIT);
+            else if (key == sf::Keyboard::Scancode::Escape) {
+#ifndef __EMSCRIPTEN__
+                setNextState(GameState::State::STATE_EXIT);
+#endif
+            }
         }
         // Handle key release
         else if (const auto* keyRelease = event->getIf<sf::Event::KeyReleased>()) {

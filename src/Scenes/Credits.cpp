@@ -28,7 +28,9 @@ void Credits::processEvents(Window &window) {
 				setNextState(STATE_TITLE);
 			}
 			else if (keyEvent->code == sf::Keyboard::Key::Escape) {
+#ifndef __EMSCRIPTEN__
 				setNextState(STATE_EXIT);
+#endif
 			}
 		}
 	}
@@ -81,5 +83,3 @@ void Credits::loadCredits(Window &window) {
     txtAuthorName->setOrigin(sf::Vector2f(txtAuthorName->getGlobalBounds().size.x / 2, txtAuthorName->getGlobalBounds().size.y / 2));
     txtAuthorName->setPosition(sf::Vector2f(static_cast<float>(window.getScreenResolution().x) / 2.f, static_cast<float>(window.getScreenResolution().y) / 2.f));
 }
-
-
