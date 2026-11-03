@@ -131,6 +131,18 @@ void Level0::render(Window& window, sf::Time dt) {
 	for (int i = 0; i < blocks.size(); ++i)
 		blocks[i]->render(window, dt);
 	renderLivesRemaining(window);
+	if (isPaused) {
+		sf::Text pausedText(resources.getFont(0), "PAUSED", 64);
+		pausedText.setFillColor(sf::Color::White);
+		pausedText.setStyle(sf::Text::Bold);
+		const sf::FloatRect bounds = pausedText.getGlobalBounds();
+		pausedText.setOrigin(sf::Vector2f(bounds.size.x / 2.f, bounds.size.y / 2.f));
+		pausedText.setPosition(sf::Vector2f(
+			static_cast<float>(window.getScreenResolution().x) / 2.f,
+			static_cast<float>(window.getScreenResolution().y) / 2.f
+		));
+		window.draw(pausedText);
+	}
 }
 
 void Level0::renderLivesRemaining(Window &window) {
