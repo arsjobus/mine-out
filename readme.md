@@ -1,7 +1,7 @@
 # Mine-Out Game (SFML C++)
 
 <p align="center">
-  <img src="project_screenshot.png" alt="Project Screenshot" width="600">
+  <img src="cover.png" alt="Project Screenshot" width="600">
 </p>
 
 This is an open-source C++ game built using SFML 3.0.x. The project uses the C++17 standard and supports multiple platforms, including macOS on ARM architecture (Apple Silicon) as well as Windows builds for both x86 and x64 architectures. SFML is linked dynamically and relies on system-installed libraries.
