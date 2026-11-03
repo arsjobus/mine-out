@@ -1,6 +1,6 @@
 .DS_Store
 [bB]uild
 [bB]uild-*
+[dD]ist
 [dD]ylibs
 [lL]og.txt
-/dist/
